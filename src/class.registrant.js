@@ -99,7 +99,7 @@ class Registrant {
       else {
         this.error = 'key_is_junk'
       }
-
+      
     }
 
     return !this.error ? true : false
