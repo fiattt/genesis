@@ -11,7 +11,7 @@ The genesis block generator converts the `snapshot.csv` file committed to this d
 2. Converts into well-formed `genesis.json` file
 
 # Snapshot Generator
-Simple web interface based on web3js based script that generates a token distribution list in CSV format, several other CSVs for verification and full console logging with log download. 
+Simple web interface based on web3js based script that generates a token distribution list in CSV format, several other CSVs for verification and full console logging with log download. **Rhis generator should not be used to generate a testnet genesis.json due to liquid tokens and susceptibility to divergence, it is provided for experimentation and verification purposes**
 
 ## Prerequisites
 - A Local Ethereum Node, **parity** suggested
