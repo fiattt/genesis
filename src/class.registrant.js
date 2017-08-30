@@ -69,7 +69,7 @@ class Registrant {
     }
     
     //Key Validation #TODO improve public key validation for edge cases.
-    else if(!this.eos.startsWith('EOS') || this.eos.length < 53) {
+    else if(!this.eos.startsWith('EOS') || this.eos.length < 53 || /[^a-zA-Z0-9]/.test(this.eos) ) {
       
       //Accept BTS and STM keys, assume advanced users and correct format
       if(!this.eos.startsWith('BTS') && !this.eos.startsWith('STM')) {
