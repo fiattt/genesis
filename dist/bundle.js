@@ -315,9 +315,10 @@ class Registrant {
         }
       }
       //Convert something that looks like a key to EOS key (STM, BTS, ETC)
-      else if (!eos_key.startsWith('EOS') && eos_key >= 53 && !/[^a-zA-Z0-9]/.test(this.eos)) {
+      else if (!eos_key.startsWith('EOS') && eos_key >= 53 && !/[^a-zA-Z0-9]/.test(eos_key)) {
           eos_key = `EOS${eos_key.slice(3, eos_key.length)}`;
         }
+
     this.eos = eos_key;
     return this; //chaining
   }
@@ -386,7 +387,7 @@ const SNAPSHOT_ENV = "testnet";
 
 //User Options
 let CONSOLE_LOGGING = true; // Push activity to developer console, WARNING: unstable in Firefox and Safari
-let OUTPUT_LOGGING = false; // Generate an output log file (±6MB), WARNING: degrades browser performance significantly.
+let OUTPUT_LOGGING = true; // Generate an output log file (±6MB), WARNING: degrades browser performance significantly.
 let VERBOSE_REGISTRY_LOGS = false; // Generate a log entry based on LogRegistry events, WARNING: degrades performance
 let UI_SHOW_STATUS_EVERY = 150; // Shows some status information in console every X logs, useful for debugging.
 

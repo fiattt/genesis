@@ -56,9 +56,10 @@ class Registrant {
       } 
     }
     //Convert something that looks like a key to EOS key (STM, BTS, ETC)
-    else if(!eos_key.startsWith('EOS') && eos_key >= 53 && !/[^a-zA-Z0-9]/.test(this.eos)) {
+    else if(!eos_key.startsWith('EOS') && eos_key >= 53 && !/[^a-zA-Z0-9]/.test(eos_key)) {
       eos_key = `EOS${eos_key.slice(3, eos_key.length)}`
     }
+
     this.eos = eos_key
     return this //chaining
   }
@@ -99,7 +100,7 @@ class Registrant {
       else {
         this.error = 'key_is_junk'
       }
-      
+
     }
 
     return !this.error ? true : false
