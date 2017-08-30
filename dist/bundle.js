@@ -326,39 +326,38 @@ class Registrant {
       this.error = 'balance_insufficient';
     }
 
-    //Everything else
+    //Key Validation #TODO improve public key validation for edge cases.
     else if (!this.eos.startsWith('EOS') || this.eos.length != 53) {
 
-        //It's an empty key
-        if (this.eos.length == 0) {
-          this.error = 'key_is_empty';
-        }
+        //Accept BTS and STM keys, assume advanced users and correct format
+        if (!this.eos.startsWith('BTS') && !this.eos.startsWith('STM')) {
 
-        //It may be an EOS private key
-        else if (this.eos.startsWith('5')) {
-            this.error = 'key_is_private';
+          //It's an empty key
+          if (this.eos.length == 0) {
+            this.error = 'key_is_empty';
           }
 
-          // It almost looks like an EOS key // #TODO ACTUALLY VALIDATE KEY?
-          else if (this.eos.startsWith('EOS')) {
-              this.error = 'key_is_malformed';
+          //It may be an EOS private key
+          else if (this.eos.startsWith('5')) {
+              this.error = 'key_is_private';
             }
 
-            // ETH address
-            else if (this.eos.startsWith('0x')) {
-                this.error = 'key_is_eth';
+            // It almost looks like an EOS key
+            else if (this.eos.startsWith('EOS')) {
+                this.error = 'key_is_malformed';
               }
 
-              //Reject everything else with junk label
-              else {
-                  this.error = 'key_is_junk';
+              // ETH address
+              else if (this.eos.startsWith('0x')) {
+                  this.error = 'key_is_eth';
                 }
-      }
 
-    //Accept BTS and STM keys, assume advanced users and correct format
-    if (this.eos.startsWith('BTS') || this.eos.startsWith('STM')) {
-      this.error = false;
-    }
+                //Reject everything else with junk label
+                else {
+                    this.error = 'key_is_junk';
+                  }
+        }
+      }
 
     return !this.error ? true : false;
   }
