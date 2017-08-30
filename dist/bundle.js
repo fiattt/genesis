@@ -327,7 +327,7 @@ class Registrant {
     }
 
     //Everything else
-    else if (!this.eos.startsWith('EOS')) {
+    else if (!this.eos.startsWith('EOS') || this.eos.length != 53) {
 
         //It's an empty key
         if (this.eos.length == 0) {
@@ -340,7 +340,7 @@ class Registrant {
           }
 
           // It almost looks like an EOS key // #TODO ACTUALLY VALIDATE KEY?
-          else if (this.eos.startsWith('EOS') && this.eos.length != 53) {
+          else if (this.eos.startsWith('EOS')) {
               this.error = 'key_is_malformed';
             }
 
