@@ -16,9 +16,9 @@ const SS_FIRST_BLOCK            = 3904416       //Block EOS Contract was deploye
 const SS_LAST_BLOCK             = 4217886       //TESTNET: Up to last block of period 62, Last block to honor ethereum transactions [NOT FINAL]
 
 //Test Case: Quick, Has orphaned TX, Has a Reclaimed Registrant and has two types of rejects.
-const SS_FIRST_BLOCK            = 4146970    //Block EOS Contract was deployed at
-const SS_LAST_BLOCK             = 4148293    //Last block to honor ethereum transactions
-
+// const SS_FIRST_BLOCK            = 4146970    //Block EOS Contract was deployed at
+// const SS_LAST_BLOCK             = 4148293    //Last block to honor ethereum transactions
+// 
 //For Web3 Init
 const CROWDSALE_ADDRESS         = "0xd0a6E6C54DbC68Db5db3A091B171A77407Ff7ccf"  //for Mapping
 const TOKEN_ADDRESS             = "0x86fa049857e0209aa7d9e616f7eb3b3b78ecfdb0"  //for balanceOf()
