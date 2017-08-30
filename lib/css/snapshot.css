@@ -31,3 +31,6 @@ body.complete #complete div span.output > .genesis.btn:hover, body.complete #com
 
 body #snapshot > .loader { display:block; height:33px; position:relative; padding:0; } 
 body.complete .loader { visibility:hidden; }
+
+body .testnet-message {display:none;}
+body.testnet .testnet-message {display:block;}

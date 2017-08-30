@@ -28,6 +28,8 @@ const init = () => {
   
   web3 = new Web3( new Web3.providers.HttpProvider( NODE ) )
 
+  document.body.className += ' ' + SNAPSHOT_ENV;
+
   if( !web3.isConnected() ) 
     log("error", 'web3 is disconnected'), log("info", 'Please make sure you have a local ethereum node runnning on localhost:8345'), disconnected( init ) 
   else if( !is_synced() )

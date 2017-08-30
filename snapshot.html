@@ -7,6 +7,12 @@
   <link rel="stylesheet" href="lib/css/snapshot.css">
 </head>
 <body>
+<div class="testnet-message wrapper">
+  <h1>Attention</h1>
+  <p>You a presently generating a snapshot for <strong>testnet</strong>. Because EOS ERC20 tokens are liquid on the Ethereum, and not frozen like they will be for <em>mainnet</em>, your snapshot will differ from the snapshot.csv committed to the <a target="_blank" href="https://github.com/eosio/genesis">EOSIO/genesis repository</a>. This is because ethereum balances of registrants are susceptible to change at anytime while tokens are liquid.</p>
+  <p>This interface is provided for experimentation and verification purposes only, and <strong>should not be utilized to generate a testnet genesis.json</strong></p>
+  <p>To generate a testnet genesis.json, please <a href="./genesis.html">click here</a>.</p>
+</div>
 <div class="error disconnected wrapper"></div>
 <div class="error syncing wrapper"></div>
 <div id="snapshot" class="wrapper">
@@ -43,5 +49,6 @@
     <div class="blob blob-5"></div>
   </div>
 </div>
+
 </body>
 </html>
