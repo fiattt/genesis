@@ -55,6 +55,10 @@ class Registrant {
         eos_key = eos_key_mod
       } 
     }
+    //Convert something that looks like a key to EOS key (STM, BTS, ETC)
+    else if(!eos_key.startsWith('EOS') && eos_key >= 53 && !/[^a-zA-Z0-9]/.test(this.eos)) {
+      eos_key = `EOS${eos_key.slice(3, eos_key.length)}`
+    }
     this.eos = eos_key
     return this //chaining
   }
@@ -63,42 +67,37 @@ class Registrant {
   // Reject bad keys and zero balances, elseif was fastest? :/
   valid() {
 
-    //Reject 0 balances
+    //Reject balances lt 1
     if( this.balance.total.lt(1) ) {
       this.error = 'balance_insufficient'
     }
     
     //Key Validation #TODO improve public key validation for edge cases.
     else if(!this.eos.startsWith('EOS') || this.eos.length < 53 || /[^a-zA-Z0-9]/.test(this.eos) ) {
+
+      //It's an empty key
+      if(this.eos.length == 0) {
+        this.error = 'key_is_empty'
+      }
       
-      //Accept BTS and STM keys, assume advanced users and correct format
-      if(!this.eos.startsWith('BTS') && !this.eos.startsWith('STM')) {
-
-        //It's an empty key
-        if(this.eos.length == 0) {
-          this.error = 'key_is_empty'
-        }
-        
-        //It may be an EOS private key
-        else if(this.eos.startsWith('5')) { 
-          this.error = 'key_is_private'
-        }
-        
-        // It almost looks like an EOS key
-        else if(this.eos.startsWith('EOS')) {
-          this.error = 'key_is_malformed'
-        }
-        
-        // ETH address
-        else if(this.eos.startsWith('0x')) {
-          this.error = 'key_is_eth'
-        }
-        
-        //Reject everything else with junk label
-        else {
-          this.error = 'key_is_junk'
-        }
-
+      //It may be an EOS private key
+      else if(this.eos.startsWith('5')) { 
+        this.error = 'key_is_private'
+      }
+      
+      // It almost looks like an EOS key
+      else if(this.eos.startsWith('EOS')) {
+        this.error = 'key_is_malformed'
+      }
+      
+      // ETH address
+      else if(this.eos.startsWith('0x')) {
+        this.error = 'key_is_eth'
+      }
+      
+      //Reject everything else with junk label
+      else {
+        this.error = 'key_is_junk'
       }
 
     }
