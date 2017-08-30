@@ -11,6 +11,9 @@ let   output              = {}
       output.logs         = []
       output.genesis      = {}
 
+//ecc
+let PublicKey
+
 // Web3
 const Web3                = require('web3')
 let   web3 
@@ -27,6 +30,8 @@ const init = () => {
   if(typeof console.time === 'function') console.time('Generated Snapshot')
   
   web3 = new Web3( new Web3.providers.HttpProvider( NODE ) )
+  
+  PublicKey = eosjs_ecc.PublicKey
 
   document.body.className += ' ' + SNAPSHOT_ENV;
 

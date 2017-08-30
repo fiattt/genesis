@@ -56,7 +56,7 @@ class Registrant {
       } 
     }
     //Convert something that looks like a key to EOS key (STM, BTS, ETC)
-    else if(!eos_key.startsWith('EOS') && eos_key >= 53 && !/[^a-zA-Z0-9]/.test(eos_key)) {
+    else if(!eos_key.startsWith('EOS') && eos_key.length >= 53 && !/[^a-zA-Z0-9]/.test(eos_key)) {
       eos_key = `EOS${eos_key.slice(3, eos_key.length)}`
     }
 
@@ -73,8 +73,8 @@ class Registrant {
       this.error = 'balance_insufficient'
     }
     
-    //Key Validation #TODO improve public key validation for edge cases.
-    else if(!this.eos.startsWith('EOS') || this.eos.length < 53 || /[^a-zA-Z0-9]/.test(this.eos) ) {
+    //Key Validation
+    else if(PublicKey.fromString(this.eos) == null) {
 
       //It's an empty key
       if(this.eos.length == 0) {

@@ -6,7 +6,7 @@ const SNAPSHOT_ENV              = "testnet"
 
 //User Options
 let   CONSOLE_LOGGING           = true    // Push activity to developer console, WARNING: unstable in Firefox and Safari
-let   OUTPUT_LOGGING            = false   // Generate an output log file (±6MB), WARNING: degrades browser performance significantly.
+let   OUTPUT_LOGGING            = true   // Generate an output log file (±6MB), WARNING: degrades browser performance significantly.
 let   VERBOSE_REGISTRY_LOGS     = false   // Generate a log entry based on LogRegistry events, WARNING: degrades performance
 let   UI_SHOW_STATUS_EVERY      = 150     // Shows some status information in console every X logs, useful for debugging.
 
@@ -18,7 +18,7 @@ const SS_LAST_BLOCK             = 4217886       //TESTNET: Up to last block of p
 //Test Case: Quick, Has orphaned TX, Has a Reclaimed Registrant and has two types of rejects.
 // const SS_FIRST_BLOCK            = 4146970    //Block EOS Contract was deployed at
 // const SS_LAST_BLOCK             = 4148293    //Last block to honor ethereum transactions
-// 
+
 //For Web3 Init
 const CROWDSALE_ADDRESS         = "0xd0a6E6C54DbC68Db5db3A091B171A77407Ff7ccf"  //for Mapping
 const TOKEN_ADDRESS             = "0x86fa049857e0209aa7d9e616f7eb3b3b78ecfdb0"  //for balanceOf()

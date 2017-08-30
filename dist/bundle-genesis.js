@@ -28,7 +28,6 @@ const snapshot_csv_to_array = csv => {
 };
 
 const snapshot_load = (filename, callback) => {
-
   var xobj = new XMLHttpRequest();
   xobj.overrideMimeType("application/json");
   xobj.open('GET', filename, true); // Replace 'my_data' with the path to your file
