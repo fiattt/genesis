@@ -937,7 +937,7 @@ const download_buttons = () => {
   let buttons = `
       Snapshot Inspection
       <div>
-      <span class="output"><span>Snapshot &nbsp;</span><a href="#" class="btn" onclick="download_snapshot_csv(output.snapshot)" class="snapshot-csv">CSV</a><a href="#" class="btn" onclick="download_snapshot_json(output.snapshot)">JSON</a></span>
+      <span class="output"><span>Snapshot &nbsp;</span><a href="#" class="btn snapshot-csv" onclick="download_snapshot_csv(output.snapshot)">CSV</a><a href="#" class="btn" onclick="download_snapshot_json(output.snapshot)">JSON</a></span>
       <span class="output"><span>Rejects &nbsp;</span><a href="#" class="btn" onclick="download_rejects_csv(output.rejects)">CSV</a><a href="#" class="btn" onclick="download_rejects_json(output.rejects)">JSON</a></span>
       <span class="output"><span>Reclaimable TXs &nbsp;</span><a href="#" class="btn" onclick="download_reclaimable_csv(output.reclaimable)">CSV</a><a href="#" class="btn" onclick="download_reclaimable_json(output.reclaimable)">JSON</a></span>
       <span class="output"><span>Reclaimed TXs &nbsp;</span><a href="#" class="btn" onclick="download_reclaimed_csv(output.reclaimed)">CSV</a><a href="#" class="btn" onclick="download_reclaimed_json(output.reclaimed)">JSON</a></span>`;

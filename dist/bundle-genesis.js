@@ -11,7 +11,7 @@ const init = () => {
 const generate_genesis = () => {
   if (check_url(SNAPSHOT_FILE)) snapshot_load(SNAPSHOT_FILE, response => {
     if (response) snapshot = snapshot_csv_to_array(response), snapshot.shift(), genesis = new Genesis(snapshot), setTimeout(() => document.body.id = "ready", 1000);
-  });
+  });else document.body.id = "error";
 };
 
 const snapshot_csv_to_array = csv => {
@@ -69,7 +69,7 @@ class Genesis {
 
   constructor(snapshot) {
     this.json = {
-      "initial_timestamp": new Date().toISOString(),
+      "initial_timestamp": "2017-03-30T12:00:00",
       "initial_parameters": {
         "maintenance_interval": 86400,
         "maintenance_skip_slots": 3,
