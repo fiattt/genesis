@@ -588,6 +588,8 @@ const init = () => {
 
   web3 = new Web3(new Web3.providers.HttpProvider(NODE));
 
+  document.body.className += ' ' + SNAPSHOT_ENV;
+
   if (!web3.isConnected()) log("error", 'web3 is disconnected'), log("info", 'Please make sure you have a local ethereum node runnning on localhost:8345'), disconnected(init);else if (!is_synced()) log("error", `web3 is still syncing, retrying in 10 seconds. Current block: ${web3.eth.syncing.currentBlock}, Required Height: ${SS_LAST_BLOCK}`), node_syncing(init);else debug = new calculator(), contract.$crowdsale = web3.eth.contract(CROWDSALE_ABI).at(CROWDSALE_ADDRESS), contract.$token = web3.eth.contract(TOKEN_ABI).at(TOKEN_ADDRESS), contract.$utilities = web3.eth.contract(UTILITY_ABI).at(UTILITY_ADDRESS), SS_PERIOD_ETH = period_eth_balance(), SS_LAST_BLOCK_TIME = get_last_block_time(), async.series([scan_registry, find_reclaimables, distribute_tokens, verify, exporter], (error, results) => {
     if (!error) {
       log("success", 'Distribution List Complete');
@@ -896,13 +898,7 @@ logger.groupCollapsed = msg => console.groupCollapsed(msg);
 logger.groupEnd = () => console.groupEnd();
 //minimal UI for now calls for vanilla js and some helpers for cleaner business logic
 let ui_refresh;
-
 let current_step;
-
-// Enable navigation prompt
-window.onbeforeunload = function () {
-  return true;
-};
 
 // document.title updates
 const update_title_bar_progress = (stage = "") => {
@@ -935,20 +931,20 @@ const display_text = text => {
 
 const download_buttons = () => {
   let buttons = `
-      Snapshot Inspection
-      <div>
-      <span class="output"><span>Snapshot &nbsp;</span><a href="#" class="btn snapshot-csv" onclick="download_snapshot_csv(output.snapshot)">CSV</a><a href="#" class="btn" onclick="download_snapshot_json(output.snapshot)">JSON</a></span>
-      <span class="output"><span>Rejects &nbsp;</span><a href="#" class="btn" onclick="download_rejects_csv(output.rejects)">CSV</a><a href="#" class="btn" onclick="download_rejects_json(output.rejects)">JSON</a></span>
-      <span class="output"><span>Reclaimable TXs &nbsp;</span><a href="#" class="btn" onclick="download_reclaimable_csv(output.reclaimable)">CSV</a><a href="#" class="btn" onclick="download_reclaimable_json(output.reclaimable)">JSON</a></span>
-      <span class="output"><span>Reclaimed TXs &nbsp;</span><a href="#" class="btn" onclick="download_reclaimed_csv(output.reclaimed)">CSV</a><a href="#" class="btn" onclick="download_reclaimed_json(output.reclaimed)">JSON</a></span>`;
+    Snapshot Inspection
+    <div>
+    <span class="output"><span>Snapshot &nbsp;</span><a href="#" class="btn snapshot-csv" onclick="download_snapshot_csv(output.snapshot)">CSV</a><a href="#" class="btn" onclick="download_snapshot_json(output.snapshot)">JSON</a></span>
+    <span class="output"><span>Rejects &nbsp;</span><a href="#" class="btn" onclick="download_rejects_csv(output.rejects)">CSV</a><a href="#" class="btn" onclick="download_rejects_json(output.rejects)">JSON</a></span>
+    <span class="output"><span>Reclaimable TXs &nbsp;</span><a href="#" class="btn" onclick="download_reclaimable_csv(output.reclaimable)">CSV</a><a href="#" class="btn" onclick="download_reclaimable_json(output.reclaimable)">JSON</a></span>
+    <span class="output"><span>Reclaimed TXs &nbsp;</span><a href="#" class="btn" onclick="download_reclaimed_csv(output.reclaimed)">CSV</a><a href="#" class="btn" onclick="download_reclaimed_json(output.reclaimed)">JSON</a></span>`;
 
   buttons += OUTPUT_LOGGING ? `<span class="output"><span>Output Log &nbsp;</span><a href="#" class="btn" onclick="download_logs(output.logs)">LOG</a></span>` : "";
   buttons += "</div>";
   buttons += `
-    Genesis Block
-    <div>
-    <span class="output"><a href="#" class="genesis btn" onclick="download_genesis_json(output.genesis)">genesis.json</a></span>
-    </div>`;
+  Genesis Block
+  <div>
+  <span class="output"><a href="#" class="genesis btn" onclick="download_genesis_json(output.genesis)">genesis.json</a></span>
+  </div>`;
   display_text(buttons);
 };
 
@@ -965,6 +961,7 @@ if (typeof console === 'object') {
 
 //quick, ugly, dirty GUI >_<
 ui_refresh = setInterval(() => {
+
   let disconnected = false,
       syncing = false;
 
@@ -973,21 +970,21 @@ ui_refresh = setInterval(() => {
   if (disconnected) {
     let current_url = window.location.href.replace("127.0.0.1", "localhost");
     document.getElementsByClassName('disconnected')[0].innerHTML = `
-        <p>Cannot connect to node at ${NODE}. Please verify the following:
-        <ul>
-          <li>You have started parity or geth with <br/><code>--rpccorsdomain '${current_url}'</code></li>
-          <li>You have an ethereum node running at <code>${NODE}</code></li>
-        </ul>
-        See <a href="https://github.com/EOSIO/eos/blob/master/programs/snapshot/readme.md">Readme</a> for more information
-        </p>
-        <p>Script will continue after it has accessed a running node.</p>
-      `;
+      <p>Cannot connect to node at ${NODE}. Please verify the following:
+      <ul>
+        <li>You have started parity or geth with <br/><code>--rpccorsdomain '${current_url}'</code></li>
+        <li>You have an ethereum node running at <code>${NODE}</code></li>
+      </ul>
+      See <a href="https://github.com/EOSIO/eos/blob/master/programs/snapshot/readme.md">Readme</a> for more information
+      </p>
+      <p>Script will continue after it has accessed a running node.</p>
+    `;
   } else if (syncing) {
     document.getElementsByClassName('syncing')[0].innerHTML = `
-        <p>It looks as though your node is still syncing, in order to run this script, your node will need to be synced up to block #${SS_LAST_BLOCK}, 
-        which means you have ${SS_LAST_BLOCK - web3.eth.syncing.currentBlock} blocks to go. <em>Currently synced up to block ${web3.eth.syncing.currentBlock}</em>
-        <p>Script will continue after your blockchain is synced.</p>
-      `;
+      <p>It looks as though your node is still syncing, in order to run this script, your node will need to be synced up to block #${SS_LAST_BLOCK}, 
+      which means you have ${SS_LAST_BLOCK - web3.eth.syncing.currentBlock} blocks to go. <em>Currently synced up to block ${web3.eth.syncing.currentBlock}</em>
+      <p>Script will continue after your blockchain is synced.</p>
+    `;
   }
 
   // Complete
@@ -1025,6 +1022,11 @@ ui_refresh = setInterval(() => {
   update_title_bar_progress(current_step);
   if (!document.body.className.includes(current_step)) document.body.className += ' ' + current_step;
 }, 1000);
+
+// Enable navigation prompt
+window.onbeforeunload = function () {
+  return true;
+};
 (function (s) {
   var w,
       f = {},
