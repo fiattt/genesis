@@ -314,6 +314,10 @@ class Registrant {
           eos_key = eos_key_mod;
         }
       }
+      //Convert something that looks like a key to EOS key (STM, BTS, ETC)
+      else if (!eos_key.startsWith('EOS') && eos_key >= 53 && !/[^a-zA-Z0-9]/.test(this.eos)) {
+          eos_key = `EOS${eos_key.slice(3, eos_key.length)}`;
+        }
     this.eos = eos_key;
     return this; //chaining
   }
@@ -321,7 +325,7 @@ class Registrant {
   // Reject bad keys and zero balances, elseif was fastest? :/
   valid() {
 
-    //Reject 0 balances
+    //Reject balances lt 1
     if (this.balance.total.lt(1)) {
       this.error = 'balance_insufficient';
     }
@@ -329,34 +333,30 @@ class Registrant {
     //Key Validation #TODO improve public key validation for edge cases.
     else if (!this.eos.startsWith('EOS') || this.eos.length < 53 || /[^a-zA-Z0-9]/.test(this.eos)) {
 
-        //Accept BTS and STM keys, assume advanced users and correct format
-        if (!this.eos.startsWith('BTS') && !this.eos.startsWith('STM')) {
+        //It's an empty key
+        if (this.eos.length == 0) {
+          this.error = 'key_is_empty';
+        }
 
-          //It's an empty key
-          if (this.eos.length == 0) {
-            this.error = 'key_is_empty';
+        //It may be an EOS private key
+        else if (this.eos.startsWith('5')) {
+            this.error = 'key_is_private';
           }
 
-          //It may be an EOS private key
-          else if (this.eos.startsWith('5')) {
-              this.error = 'key_is_private';
+          // It almost looks like an EOS key
+          else if (this.eos.startsWith('EOS')) {
+              this.error = 'key_is_malformed';
             }
 
-            // It almost looks like an EOS key
-            else if (this.eos.startsWith('EOS')) {
-                this.error = 'key_is_malformed';
+            // ETH address
+            else if (this.eos.startsWith('0x')) {
+                this.error = 'key_is_eth';
               }
 
-              // ETH address
-              else if (this.eos.startsWith('0x')) {
-                  this.error = 'key_is_eth';
+              //Reject everything else with junk label
+              else {
+                  this.error = 'key_is_junk';
                 }
-
-                //Reject everything else with junk label
-                else {
-                    this.error = 'key_is_junk';
-                  }
-        }
       }
 
     return !this.error ? true : false;
@@ -774,7 +774,7 @@ const find_reclaimables = on_complete => {
 
   const on_error = () => "Something bad happened while finding reclaimables";
 
-  let async_watcher = LogWatcher(SS_FIRST_BLOCK, SS_LAST_BLOCK, contract.$token.Transfer, query, on_complete, on_result, on_success, on_error, 500, 5000);
+  let async_watcher = LogWatcher(SS_FIRST_BLOCK, SS_LAST_BLOCK, contract.$token.Transfer, query, on_complete, on_result, on_success, on_error, 2500, 5000);
 };
 
 const verify = callback => {

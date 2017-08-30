@@ -273,7 +273,7 @@ const find_reclaimables = ( on_complete ) => {
 
   const on_error = () => "Something bad happened while finding reclaimables"
 
-  let async_watcher = LogWatcher( SS_FIRST_BLOCK, SS_LAST_BLOCK, contract.$token.Transfer, query, on_complete, on_result, on_success, on_error, 500, 5000 )
+  let async_watcher = LogWatcher( SS_FIRST_BLOCK, SS_LAST_BLOCK, contract.$token.Transfer, query, on_complete, on_result, on_success, on_error, 2500, 5000 )
 
 }
 
