@@ -25,8 +25,9 @@ body.complete #complete div span.output > span          { text-align:right; }
 body.complete #complete div span.output a.btn           { color:#bbb; text-decoration:none; }
 body.complete #complete div span.output a.btn:hover     { background:#222; color:#ccc; }
 
-body.complete #complete div span.output > .genesis.btn, .btn.snapshot-csv  { width:100%; background:#6ab86a; color:white; }
-body.complete #complete div span.output > .genesis.btn:hover, .btn.snapshot-csv:hover   { background:#448b44; }
+body.complete #complete div span.output > .genesis.btn { width:100%;   }
+body.complete #complete div span.output > .genesis.btn, body.complete #complete div span.output .btn.snapshot-csv  { background:#6ab86a; color:white !important; }
+body.complete #complete div span.output > .genesis.btn:hover, body.complete #complete div span.output .btn.snapshot-csv:hover   { background:#448b44; }
 
 body #snapshot > .loader { display:block; height:33px; position:relative; padding:0; } 
 body.complete .loader { visibility:hidden; }
