@@ -12,8 +12,8 @@ let   UI_SHOW_STATUS_EVERY      = 150     // Shows some status information in co
 
 // Needs to be set so all snapshots generated are the somewhat the same 
 // Caveat: testnet snapshots will rarely be the same because wallet balances can still change, but setting last block *will* provide consistent registry totals.
-// const SS_FIRST_BLOCK            = 3904416       //Block EOS Contract was deployed at
-// const SS_LAST_BLOCK             = 4217886       //TESTNET: Up to last block of period 62, Last block to honor ethereum transactions [NOT FINAL]
+const SS_FIRST_BLOCK            = 3904416       //Block EOS Contract was deployed at
+const SS_LAST_BLOCK             = 4217886       //TESTNET: Up to last block of period 62, Last block to honor ethereum transactions [NOT FINAL]
 
 //Test Case: Quick, Has orphaned TX, Has a Reclaimed Registrant and has two types of rejects.
 const SS_FIRST_BLOCK            = 4146970    //Block EOS Contract was deployed at
