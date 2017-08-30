@@ -10,7 +10,7 @@ const init = () => {
 
 const generate_genesis = () => {
   if (check_url(SNAPSHOT_FILE)) snapshot_load(SNAPSHOT_FILE, response => {
-    if (response) snapshot = snapshot_csv_to_array(response), snapshot.shift(), genesis = new Genesis(snapshot), setTimeout(() => document.body.id = "ready", 1000);
+    if (response) snapshot = snapshot_csv_to_array(response), snapshot.shift(), genesis = new Genesis(snapshot).json, setTimeout(() => document.body.id = "ready", 1000);
   });else document.body.id = "error";
 };
 
