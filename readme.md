@@ -35,7 +35,7 @@ _Note:_ All outputs were 100% identical despite performance degradation and vary
 
 ### On Github.io (Github Pages)
 1. Navigate to http://eosio.github.io/genesis/snapshot.html
-1. Start your parity or geth node with flag `--rpccorsdomain 'http://eosio.github.io'` ... If you didn't use port `8000`, change accordingly. 
+1. Start your parity or geth node with flag `--rpccorsdomain 'http://eosio.github.io'`
 1. Open developer console for some information, `debug.output()` will give you some calculations
 1. When complete, links to download the snapshot, other datasets and convenience genesis.json will be made available.
 
