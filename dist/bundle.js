@@ -300,6 +300,9 @@ class Registrant {
   }
 
   set_key(eos_key) {
+    //remove whitespace
+    eos_key = eos_key.trim();
+
     //Might be hex, try to convert it.
     if (eos_key.length == 106) {
       let eos_key_from_hex = web3.toAscii(eos_key);
@@ -315,8 +318,9 @@ class Registrant {
         }
       }
       //Convert something that looks like a key to EOS key (STM, BTS, ETC)
-      else if (!eos_key.startsWith('EOS') && eos_key.length >= 53 && !/[^a-zA-Z0-9]/.test(eos_key)) {
-          eos_key = `EOS${eos_key.slice(3, eos_key.length)}`;
+      else if (!eos_key.startsWith('EOS') && !/[^a-zA-Z0-9]/.test(eos_key)) {
+          let eos_key_test = `EOS${eos_key.slice(3, eos_key.length)}`;
+          eos_key = PublicKey.fromString(eos_key_test) != null ? eos_key_test : eos_key;
         }
 
     this.eos = eos_key;
