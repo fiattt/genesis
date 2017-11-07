@@ -73,7 +73,7 @@ balances.reclaimed = ( address, reclaimables, callback ) => {
     for( let tx of reclaimables ) {
       reclaimed_balance = new bn(tx.value).plus( reclaimed_balance ) //Stored in database from_wei for consistency, convert back to wei, so patterns are consistent
     }
-    console.log(`INFO: ${address} reclaimed ${reclaimed_balance.div(WAD)} EOS`)
+    // console.log(`INFO: ${address} reclaimed ${reclaimed_balance.div(WAD)} EOS`)
     callback( reclaimed_balance )
   }
 }
