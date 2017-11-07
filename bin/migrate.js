@@ -1,2 +1,0 @@
-const db = require('../tools/snapshot/models.js')
-db.sequelize.sync({truncate:true, force: true})
