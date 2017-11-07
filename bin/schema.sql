@@ -1,3 +1,16 @@
+# ************************************************************
+# Sequel Pro SQL dump
+# Version 4541
+#
+# http://www.sequelpro.com/
+# https://github.com/sequelpro/sequelpro
+#
+# Host: 127.0.0.1 (MySQL 5.6.37)
+# Database: eos_snapshot
+# Generation Time: 2017-11-07 16:47:34 +0000
+# ************************************************************
+
+
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -9,8 +22,6 @@
 
 # Dump of table buys
 # ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `buys`;
 
 CREATE TABLE `buys` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -29,8 +40,6 @@ CREATE TABLE `buys` (
 # Dump of table claims
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `claims`;
-
 CREATE TABLE `claims` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `tx_hash` varchar(256) NOT NULL DEFAULT '',
@@ -48,8 +57,6 @@ CREATE TABLE `claims` (
 # Dump of table keys
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `keys`;
-
 CREATE TABLE `keys` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `address` varchar(256) NOT NULL DEFAULT '',
@@ -64,8 +71,6 @@ CREATE TABLE `keys` (
 
 # Dump of table reclaimables
 # ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `reclaimables`;
 
 CREATE TABLE `reclaimables` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -83,8 +88,6 @@ CREATE TABLE `reclaimables` (
 # Dump of table registrations
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `registrations`;
-
 CREATE TABLE `registrations` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `tx_hash` varchar(256) NOT NULL DEFAULT '',
@@ -101,8 +104,6 @@ CREATE TABLE `registrations` (
 # Dump of table snapshot
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `snapshot`;
-
 CREATE TABLE `snapshot` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user` varchar(256) NOT NULL DEFAULT '',
@@ -116,8 +117,6 @@ CREATE TABLE `snapshot` (
 # Dump of table state
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `state`;
-
 CREATE TABLE `state` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `meta_key` varchar(256) NOT NULL,
@@ -130,8 +129,6 @@ CREATE TABLE `state` (
 
 # Dump of table transfers
 # ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `transfers`;
 
 CREATE TABLE `transfers` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -151,8 +148,6 @@ CREATE TABLE `transfers` (
 # Dump of table wallets
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `wallets`;
-
 CREATE TABLE `wallets` (
   `address` varchar(256) NOT NULL,
   `eos_key` varchar(256) DEFAULT NULL,
@@ -168,6 +163,9 @@ CREATE TABLE `wallets` (
   PRIMARY KEY (`address`),
   KEY `EOSKEYINDEX` (`eos_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
