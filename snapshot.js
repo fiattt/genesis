@@ -1,2 +1,2 @@
-const boot = require('./tools/snapshot/run')
+const boot = require('./tools/snapshot/index')
 boot()
