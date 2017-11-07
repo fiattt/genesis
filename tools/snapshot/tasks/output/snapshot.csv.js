@@ -1,32 +1,29 @@
-const async        = require('async')
-const json_to_csv  = require('json-to-csv');
-const fs           = require('fs')
+module.exports = ( config, callback ) => {
 
-const db           = require('../../models')
+  const async        = require('async')
+  const json_to_csv  = require('json-to-csv');
+  const fs           = require('fs')
 
-let config
+  const db           = require('../../models')
 
-// TODO callback hell, fix it.
-const csv = callback => {
-  db.Snapshot.findAll()
-    .then( results => {
-      let _results = results.map( result => {
-        return {user: result.dataValues.user, key: result.dataValues.key, balance: result.dataValues.balance}
-      })
-      // TODO Move file/directory variables and functions somewhere else.
-      json_to_csv(_results, config.path_csv, false)
-        .then(() => {
-          console.log(`${results.length} Records Saved to CSV`)
-          fs.createReadStream(config.path_csv).pipe(fs.createWriteStream(config.file_csv))
-          callback()
+  const csv = callback => {
+    db.Snapshot.findAll()
+      .then( results => {
+        let _results = results.map( result => {
+          return {user: result.dataValues.user, key: result.dataValues.key, balance: result.dataValues.balance}
         })
-        .catch( error => { throw new Error(error) })
-    })
-    .catch( error => { throw new Error(error) })
-}
+        // TODO Move file/directory variables and functions somewhere else.
+        json_to_csv(_results, config.path_csv, false)
+          .then(() => {
+            console.log(`${results.length} Records Saved to CSV`)
+            fs.createReadStream(config.path_csv).pipe(fs.createWriteStream(config.file_csv))
+            callback()
+          })
+          .catch( error => { throw new Error(error) })
+      })
+      .catch( error => { throw new Error(error) })
+  }
 
-const generate = (_config, callback) => {
-  config = _config
   db.sequelize
     .query('INSERT INTO `snapshot` (`user`, `key`, `balance`) SELECT `address`, `eos_key`, `balance_total` FROM `wallets` WHERE `valid`=1 ORDER BY `balance_total` DESC')
     .then(results => {
@@ -34,6 +31,5 @@ const generate = (_config, callback) => {
       csv( callback )
     })
     .catch( error => { throw new Error(error) })
-}
 
-module.exports = generate
+}

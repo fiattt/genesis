@@ -1,29 +1,36 @@
-let Table          = require('ascii-table')
-let async          = require('async')
-let bn              = require('bignumber.js')
+module.exports = (state, complete) => {
 
-const Task         = require('../../classes/Task')
-let util           = require('../../utilities')
-let helper         = require('../../helpers')
-let query          = require('../../queries')
+  let Table          = require('ascii-table')
+  let async          = require('async')
+  let bn              = require('bignumber.js')
 
-let index          = 0
-let table
+  let util           = require('../../utilities')
+  let helper         = require('../../helpers')
+  let query          = require('../../queries')
 
+  let index          = 0,
+      cache          = [],
+      table,
+      uniques
 
-class TaskWallet extends Task {
-
-  new(address, next){
+  const init = (address, finished) => {
     let Wallet = require('../../classes/Wallet.Testnet')
-    let wallet = new Wallet( address, this.config )
-    next( null, wallet )
+    let wallet = new Wallet( address, state.config )
+    finished( null, wallet )
   }
 
-  transfers(wallet, finished) {
+  const key = (wallet, finished) => {
+    query.last_register(wallet.address, state.block_begin, state.block_end, eos_key => {
+      wallet.eos_key = eos_key
+      finished( null, wallet )
+    })
+  }
+
+  const transfers = (wallet, finished) => {
     wallet.transfers = []
 
     const add = next => {
-      query.address_transfers_in(wallet.address, this.state.begin_block, this.state.end_block)
+      query.address_transfers_in(wallet.address, state.block_begin, state.block_end)
         .then( results => {
           let _results = results.map( result => new bn(result.dataValues.eos_amount) )
           wallet.transfers = wallet.transfers.concat(_results)
@@ -32,7 +39,7 @@ class TaskWallet extends Task {
     }
 
     const subtract = next => {
-      query.address_transfers_out(wallet.address, this.state.begin_block, this.state.end_block)
+      query.address_transfers_out(wallet.address, state.block_begin, state.block_end)
         .then( results => {
           let _results = results.map( result => new bn(result.dataValues.eos_amount).times(-1) )
           wallet.transfers = wallet.transfers.concat(_results)
@@ -46,9 +53,9 @@ class TaskWallet extends Task {
     ], () => { finished( null, wallet ) })
   }
 
-  claims(wallet, finished) {
+  const claims = (wallet, finished) => {
     // console.log('Wallet Claims')
-    query.address_claims(wallet.address, this.state.begin_block, this.state.end_block)
+    query.address_claims(wallet.address, state.block_begin, state.block_end)
       .then( results => {
         wallet.claims = new Array( CS_NUMBER_OF_PERIODS ).fill( false )
         results.forEach( result => {
@@ -58,103 +65,101 @@ class TaskWallet extends Task {
       })
   }
 
-  buys( wallet, next ) {
-    query.address_buys(wallet.address, this.state.begin_block, this.state.end_block)
+  const buys = ( wallet, finished ) => {
+    query.address_buys(wallet.address, state.block_begin, state.block_end)
       .then( results => {
         wallet.buys = new Array( CS_NUMBER_OF_PERIODS ).fill( new bn(0) )
         results.forEach( result => {
           wallet.buys[ result.dataValues.period ] = wallet.buys[ result.dataValues.period ].plus( new bn(result.dataValues.eth_amount) )
         })
-        next( null, wallet )
+        finished( null, wallet )
       })
   }
 
-  reclaimables( wallet, next ) {
-    query.address_reclaimables( wallet.address, this.state.begin_block, this.state.end_block )
+  const reclaimables = ( wallet, finished ) => {
+    query.address_reclaimables( wallet.address, state.block_begin, state.block_end )
       .then( results  => {
         if( results.length ) {
           wallet.reclaimables = results.map( reclaim => { return { address: wallet.address, value: reclaim.dataValues.eos_amount } } )
-          console.log(wallet.reclaimables)
         }
-        next( null, wallet )
+        finished( null, wallet )
       })
   }
 
-  processing( wallet, next ) {
+  const processing = ( wallet, finished ) => {
     wallet.process( json => {
-      this.log_table_row( wallet )
-      this.cache.push( json )
-      next( null, wallet )
+      log_table_row( wallet )
+      cache.push( json )
+      finished( null, wallet )
     })
   }
 
-  save_or_continue(next_address, finished = false) {
-    if(this.cache.length >= 50 || this.cache.length == this.state.total || finished )
-      helper.address.bulk_upsert( this.cache )
+  const save_or_continue = (next_address, finished = false) => {
+    if(cache.length >= 50 || cache.length == state.total || finished )
+      query.wallets_bulk_upsert( cache )
         .then( () => {
-          this.cache = new Array()
-          this.log_table_render_and_reset()
+          cache = new Array()
+          log_table_render_and_reset()
           next_address()
         })
     else
       next_address()
   }
 
-  setup(){
-    this.cache = new Array()
-    this.state.total = 0
+  const setup = () => {
+    cache = new Array()
+    state.total = 0
   }
 
-  job(){
-    console.log('Syncing Wallets')
-    helper.address.uniques( this.state.begin_block, this.state.end_block, uniques => {
-      this.uniques = new Set(uniques)
-      this.state.total = this.uniques.size
-      this.log_table_reset()
-      async.eachSeries( Array.from(uniques), (address, next_address) => {
-        async.waterfall([
-          (next)         => this.new(address, next),
-          (wallet, next) => this.buys(wallet, next),
-          (wallet, next) => this.claims(wallet, next),
-          (wallet, next) => this.transfers(wallet, next),
-          (wallet, next) => this.reclaimables(wallet, next),
-          (wallet, next) => this.processing(wallet, next)
-        ],
-        (error, wallet) => this.save_or_continue(next_address))
-      },
-      (err, result) => {
-        this.save_or_continue( () => { this.finished() }, true )
-      })
-    })
+  const log_table_reset = () => {
+    table = new Table(`${Math.round(index*50/uniques.size*100)}% [${index*50}/${uniques.size}] `)
+    table.setHeading('V', 'R', 'ETH', 'EOS', 'In Wallet', 'Unclaimed', 'Reclaimed', 'Total', 'Reg. Error')
   }
 
-  log_table_reset(){
-    table = new Table(`${Math.round(index*50/this.uniques.size*100)}% [${index*50}/${this.uniques.size}] `)
-    table.setHeading('A', 'V', 'F', 'ETH', 'EOS', 'In Wallet', 'Unclaimed', 'Reclaimed', 'Total', 'Error(s)')
-  }
-
-  log_table_render_and_reset(){
+  const log_table_render_and_reset = () => {
     index++
     console.log(table.render())
-    this.log_table_reset()
+    log_table_reset()
   }
 
-  log_table_row(wallet){
+  const log_table_row = (wallet) => {
     table.addRow(
-      (!wallet.accepted ? ` ` : `✓`),
-      (wallet.register_error ? ` ` : `✓`),
-      (!wallet.fallback ? ` ` : `✓`),
+      (wallet.accepted ? `✓` : ` `),
+      (wallet.registered ? `✓` : ` `),
+      // (!wallet.fallback ? ` ` : `✓`),
       wallet.address,
       wallet.eos_key,
       `${wallet.balance.wallet} EOS`,
       `${wallet.balance.unclaimed} EOS`,
       `${wallet.balance.reclaimed} EOS`,
       `${wallet.balance.total} EOS`,
-      `${wallet.register_error ? wallet.register_error : ""} ${wallet.fallback_error ? wallet.fallback_error : ""}`
+      // `${wallet.register_error ? wallet.register_error : ""} ${wallet.fallback_error ? wallet.fallback_error : ""}`
+      `${wallet.register_error ? wallet.register_error : ""}`
     )
   }
 
+  console.log('Syncing Wallets')
+  helper.address.uniques( state.block_begin, state.block_end, _uniques => {
+    uniques     = new Set(_uniques)
+    state.total = uniques.size
 
+    log_table_reset()
+
+    async.eachSeries( Array.from(uniques), (address, next_address) => {
+      async.waterfall([
+        (next)         => init(address, next),
+        (wallet, next) => key(wallet, next),
+        (wallet, next) => buys(wallet, next),
+        (wallet, next) => claims(wallet, next),
+        (wallet, next) => transfers(wallet, next),
+        (wallet, next) => reclaimables(wallet, next),
+        (wallet, next) => processing(wallet, next)
+      ],
+      (error, wallet) => save_or_continue(next_address))
+    },
+    (err, result) => {
+      save_or_continue( () => { complete( null, state ) }, true )
+    })
+
+  })
 }
-
-module.exports = TaskWallet
