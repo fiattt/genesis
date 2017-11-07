@@ -167,7 +167,8 @@ Below is the script transposed to plain english.
     		1. Move all valid entries from db state to a snapshot table, ordered by balance DESC. 
     		2. Generate snapshot.csv from table
        2. **snapshot.json** - Snapshot meta data
-       	1. Snapshot parameters
+
+			1. Snapshot parameters
 			2. Test results
 			3. General Statistics
 			4. Generate MD5 Checksums
