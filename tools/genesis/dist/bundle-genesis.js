@@ -89,8 +89,9 @@ class Genesis {
   accounts() {
     if (this.snapshot) {
       this.json.initial_accounts = this.snapshot.map(user => {
+        let eth = user.eth.replace(/"/g, '');
         return {
-          "name": user.eth.replace(/"/g, '').substr(user.eth.length - 12),
+          "name": eth.substr(eth.length - 12),
           "owner_key": user.eos.replace(/"/g, ''),
           "active_key": user.eos.replace(/"/g, ''),
           "liquid_balance": `${user.balance.replace(/"/g, '')} EOS` };
