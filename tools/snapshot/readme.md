@@ -77,9 +77,10 @@ Since Parity v1.7.8 `--warp` is enabled by default, it is **absolutely necessary
 2. Import schema into mysql database, found in `/bin/schema.sql` (Sequalize Migrate presently not configured)
 3. Install dependencies `npm install`
 4. Make sure all systems are go
-	5. Parity is running with RPC ports accessible to application
-	6. Mysql is running
-	7. Redis is running (`bash: redis-server`)
+
+	1. Parity is running with RPC ports accessible to application
+	2. Mysql is running
+	3. Redis is running (`bash: redis-server`)
 4. Run script `node snapshot.js`
 5. Go outside or to bed. 
 
