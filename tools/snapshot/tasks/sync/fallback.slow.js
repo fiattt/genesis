@@ -7,7 +7,7 @@ module.exports = ( state, complete ) => {
   let   util        = require('../../utilities')
   let   web3        = require('../../services/web3').web3
 
-  let   block_index = 4000000
+  let   block_index = 0,
         blocks_total = 0,
         pks_discovered = 0,
         blocks_processed = 0,
