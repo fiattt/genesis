@@ -81,7 +81,7 @@ Since Parity v1.7.8 `--warp` is enabled by default, it is **absolutely necessary
 	1. Parity is running with RPC ports accessible to application
 	2. Mysql is running
 	3. Redis is running (`bash: redis-server`)
-4. Run script `node snapshot.js`
+4. Run script `node snapshot.js` from **project root**
 5. Go outside or to bed. 
 
 
