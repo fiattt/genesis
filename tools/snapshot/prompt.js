@@ -51,20 +51,20 @@ let schema = {
     },
 
     //Meta
-    author: {
-      type: 'string',
-      description: colors.magenta('Author name? (optional)'),
-      message: 'Author must be only letters, spaces, or dashes',
-      default: "Anonymous",
-      ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true
-    },
-
-    //Meta
     persist: {
       type: 'boolean',
       description: colors.magenta('Persist Keys? (advanced)'),
       message: 'Must be true or false',
       default: true,
+      ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true
+    },
+
+    //Meta
+    author: {
+      type: 'string',
+      description: colors.magenta('Author name? (optional)'),
+      message: 'Author must be only letters, spaces, or dashes',
+      default: "Anonymous",
       ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true
     }
 
