@@ -30,9 +30,6 @@ class Iterator  {
 
     //Setup
     this.incrementTo()
-
-    console.log(this)
-    // process.exit()
   }
 
   incrementFrom(){
@@ -88,7 +85,7 @@ class Iterator  {
   time_formatted(){
     return {
       average: this.avg<1000
-        ? `${(this.avg).toFixed(2).toString()} milliseconds per pass`
+        ? `${(this.avg).toFixed(2).toString()} ms/pass`
         : this.avg<60*1000
           ? `${((this.avg)/1000).toFixed(2).toString()} seconds per pass`
           : `${((this.avg)/1000/60).toFixed(2).toString()} minutes per pass`,
