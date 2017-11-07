@@ -55,10 +55,12 @@ class Wallet {
     this.index = index
   }
 
-  set_key( eos_key ) {
+  maybe_fix_key( ) {
     //remove whitespace
-    if( eos_key ) {
-      eos_key = eos_key.trim()
+    let eos_key = null
+
+    if( this.eos_key ) {
+      eos_key = this.eos_key.trim()
 
       //Might be hex, try to convert it.
       if( eos_key.length == 106 ){ //TODO use web3.isHex()
@@ -82,17 +84,26 @@ class Wallet {
     }
 
     // this.eos_key = eos_key ? (this.registered=true, eos_key) : (this.registered=false, null)
-    this.eos_key = eos_key ? eos_key : null
+    this.eos_key = eos_key
+  }
+
+  set_registration_status() {
+    if( util.misc.is_eos_public_key(this.eos_key) ) {
+      this.registered = true
+    }
   }
 
   // Reject bad keys and zero balances, elseif was fastest? :/
   valid() {
-    this.register_error = this.register_error || this.validate()
-    return !this.register_error || this.fallback ? true : false
+    this.register_error = this.validate()
+    return !this.register_error ? true : false
   }
 
   validate(){
     let error = null
+
+    //Sets registration status of any entry with valid key regardless of balance validation.
+    this.set_registration_status()
 
     if( new bn(this.balance.total).lt( new bn(1) ) ) {
       error = 'balance_insufficient'
@@ -112,11 +123,7 @@ class Wallet {
   validate_key(){
     let error = null
 
-    if( util.misc.is_eos_public_key(this.eos_key) ) {
-        this.registered = true
-    }
-
-    else {
+    if(!this.registered) {
       //The registration function was executed, but the key was blank :(
       if(this.eos_key.length == 0) {
         error = 'key_is_empty'
