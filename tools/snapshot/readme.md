@@ -166,13 +166,13 @@ Below is the script transposed to plain english.
     		1. Move all valid entries from db state to a snapshot table, ordered by balance DESC. 
     		2. Generate snapshot.csv from table
        2. **snapshot.json** - Snapshot meta data
-			1. Snapshot parameters
+       	1. Snapshot parameters
 			2. Test results
 			3. General Statistics
-			6. Generate MD5 Checksums
-				7. 	From generated **snapshot.csv** file, useful for debugging and auditing
-				7. From mysql checksum for every table in database (useful for debugging)
-			7. Pass any other useful state variables into object 
+			4. Generate MD5 Checksums
+				1. 	From generated **snapshot.csv** file, useful for debugging and auditing
+				2. From mysql checksum for every table in database (useful for debugging)
+			5. Pass any other useful state variables into object 
 
 With the output, you can use the Genesis Generator to create a well-formed genesis.json file for the EOS platform. 
 
