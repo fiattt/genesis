@@ -3,9 +3,8 @@ const connection = require('./services/mysql')
 
 let db = {}
 
-let stateConfig = {timestamps: false, ignoreDuplicates: true}
+let modelConfig = {timestamps: false, ignoreDuplicates: true}
 
-// model definition
 db.Wallets = connection.define("wallet", {
   address: {
     type:             Sequelize.STRING(256),
@@ -33,7 +32,7 @@ db.Transfers = connection.define('transfer', {
   from:               Sequelize.STRING(256),
   to:                 Sequelize.STRING(256),
   eos_amount:         Sequelize.DECIMAL(65,0)
-}, stateConfig)
+}, modelConfig)
 
 db.Buys = connection.define('buy', {
   id: {
@@ -45,7 +44,7 @@ db.Buys = connection.define('buy', {
   address:            Sequelize.STRING(256),
   period:             Sequelize.INTEGER,
   eth_amount:         Sequelize.DECIMAL(65,0)
-}, stateConfig)
+}, modelConfig)
 
 db.Claims = connection.define('claim', {
   id: {
@@ -57,7 +56,7 @@ db.Claims = connection.define('claim', {
   address:            Sequelize.STRING(256),
   period:             Sequelize.INTEGER,
   eos_amount:         Sequelize.DECIMAL(65,0)
-}, stateConfig)
+}, modelConfig)
 
 db.Reclaimables = connection.define('reclaimable', {
   id: {
@@ -68,7 +67,7 @@ db.Reclaimables = connection.define('reclaimable', {
   block_number:       Sequelize.STRING(256),
   address:            Sequelize.STRING(256),
   eos_amount:         Sequelize.DECIMAL(65,0)
-}, stateConfig)
+}, modelConfig)
 
 db.Registrations = connection.define('registration', {
   id: {
@@ -79,8 +78,9 @@ db.Registrations = connection.define('registration', {
   block_number:       Sequelize.STRING(256),
   address:            Sequelize.STRING(256),
   eos_key:            Sequelize.STRING(256)
-}, stateConfig)
+}, modelConfig)
 
+// Stores state variables (used infrequently)
 db.State = connection.define('state', {
   id: {
     type:             Sequelize.INTEGER,
@@ -95,18 +95,20 @@ db.State = connection.define('state', {
   tableName:          'state'
 })
 
+//Table used to store Snapshot before export to CSV
 db.Snapshot = connection.define('snapshot', {
   user:               Sequelize.STRING(256),
   key:                Sequelize.STRING(256),
   balance:            Sequelize.DECIMAL(15,4)
 }, {timestamps: false, freezeTableName: true, tableName: 'snapshot'})
 
-db.Keys = connection.define('snapshot', {
+//Public Key Cache
+db.Keys = connection.define('keys', {
   address:            Sequelize.STRING(256),
   tx_hash:            Sequelize.STRING(256),
   public_key:         Sequelize.STRING(256),
   derived_eos_key:    Sequelize.STRING(256)
-}, {timestamps: false, freezeTableName: true, tableName: 'keys'})
+}, {timestamps: false, updateOnDuplicate: true})
 
 db.sequelize = connection
 
