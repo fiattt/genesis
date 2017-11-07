@@ -1,13 +1,13 @@
 module.exports = {
-  period: 11,
+  period: 1,
   include_b1: true,
-  persist: false,
+  persist: true,
   fallback: true,
-  author: "Anonymous",
+  author: "Sandwich",
 
   //ETH node
-  eth_node_type: '',
-  eth_node_path: '',
+  // eth_node_type: 'ipc',
+  // eth_node_path: '/Users/sandwich/jsonrpc.ipc',
 
   //redis
   redis_host: null,
@@ -17,5 +17,5 @@ module.exports = {
   mysql_user: "root",
   mysql_pass: null,
   mysql_host: "localhost",
-  mysql_port: 3307
+  mysql_port: 3306
 }
