@@ -1,7 +1,8 @@
 module.exports = (config) => {
-  const waterfall = require('async').waterfall
 
-  let state = { config: config }
+  const waterfall = require('async').waterfall
+  let   state = { config: config }
+
   waterfall([
     next => next(null, state),
     require('./tasks/misc/check-connections'),
@@ -19,4 +20,5 @@ module.exports = (config) => {
     else
       console.log('Result:', result)
   })
+
 }
