@@ -4,7 +4,7 @@ module.exports = ( state, complete ) => {
   const db        = require('../../models')
   const redis     = require('../../services/redis')
 
-  const fallback  = require('../../utilities/register-fallback')
+  const fallback  = require('../../utilities/local-pubkey')
   const util      = require('../../utilities')
   const web3      = require('../../services/web3').web3
 
