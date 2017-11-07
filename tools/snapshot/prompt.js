@@ -3,7 +3,7 @@ let prompt = require('prompt'),
     optimist = require('optimist'),
     fs = require('fs')
 
-let util  = require('./utilities')
+let period  = require('./utilities/periods')
 
 let schema = {
 
@@ -21,16 +21,16 @@ let schema = {
     //Required Configuration
     period: {
       description: colors.magenta('Snapshot up to which Period?'),
-      message: `Period must be in the past and closed (Default: ${util.period.last_closed()})`,
+      message: `Period must be in the past and closed (Default: ${period.last_closed()})`,
       required: true,
       type: 'number',
-      conform: function (period) {
-        if(period > util.period.last_closed())
+      conform: function (p) {
+        if(p > period.last_closed())
           return
         return true
       },
-      default: util.period.last_closed(),
-      ask: () => { return prompt.history('load_config') ? prompt.history('load_config').value===false : true }
+      default: period.last_closed(),
+      ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true
     },
 
     //Options
@@ -39,7 +39,7 @@ let schema = {
       description: colors.magenta('Include B1 Distribution in Snapshot?'),
       message: 'Must be boolean',
       default: true,
-      ask: () => { return prompt.history('load_config') ? prompt.history('load_config').value===false : true }
+      ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true
     },
 
     fallback: {
@@ -47,7 +47,7 @@ let schema = {
       description: colors.magenta('Run registration fallback?'),
       message: 'Must be boolean',
       default: true,
-      ask: () => { return prompt.history('load_config') ? prompt.history('load_config').value===false : true }
+      ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true
     },
 
     //Meta
@@ -56,7 +56,7 @@ let schema = {
       description: colors.magenta('Author name? (optional)'),
       message: 'Author must be only letters, spaces, or dashes',
       default: "Anonymous",
-      ask: () => { return prompt.history('load_config') ? prompt.history('load_config').value===false : true }
+      ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true
     },
 
     //Meta
@@ -65,57 +65,57 @@ let schema = {
       description: colors.magenta('Persist Keys? (advanced)'),
       message: 'Must be true or false',
       default: true,
-      ask: () => { return prompt.history('load_config') ? prompt.history('load_config').value===false : true }
-    },
-
-    //Custom Configuration?
-    custom_config: {
-      type: 'boolean',
-      description: colors.magenta('Do you require custom eth rpc node, mysql and/or redis connection details?'),
-      message: 'Must be boolean',
-      default: false,
-      ask: () => { return prompt.history('load_config') ? prompt.history('load_config').value===false : true }
-    },
-
-    //ETH Node
-    custom_eth_node_config: {
-      type: 'boolean',
-      description: colors.magenta('Custom ethereum node rpc configuration?'),
-      message: 'Would you like to setup custom etherem node configuration? (Note: Infura nodes are not compatible with this script)',
-      default: false,
-      ask: () => { return prompt.history('load_config') ? prompt.history('load_config').value===false : true }
-    },
-
-    eth_node_type: {
-      type: 'string',
-      description: colors.magenta('What RPC type?  (options: http, ws, ipc)'),
-      message: 'What type of node? (options: http, ws, ipc)',
-      default: false,
-      conform: value => (value == 'ipc' || value == 'http' || value == "ws"),
-      ask: () => { return prompt.history('custom_config') ? (prompt.history('custom_config').value && prompt.history('custom_eth_node_config').value === true) : false }
-    },
-
-    eth_path_type: {
-      type: 'string',
-      description: colors.magenta('Node path? Example: localhost:8456 (if left empty, default for type will be used)'),
-      ask: () => { return prompt.history('custom_config') ? (prompt.history('custom_config').value && prompt.history('custom_eth_node_config').value === true) : false }
-    },
-
-    //MySQL
-    custom_mysql_config: {
-      type: 'boolean',
-      description: colors.magenta('Custom Mysql Config?  (options: http, ws, ipc)'),
-      default: false,
-      ask: () => { return prompt.history('custom_config') ? prompt.history('custom_config').value === true : false }
-    },
-
-    //Redis
-    custom_redis_config: {
-      type: 'boolean',
-      description: colors.magenta('Custom Redis Config?  (options: http, ws, ipc)'),
-      default: false,
-      ask: () => { return prompt.history('custom_config') ? prompt.history('custom_config').value === true : false }
+      ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true
     }
+
+    // //Custom Configuration?
+    // custom_config: {
+    //   type: 'boolean',
+    //   description: colors.magenta('Do you require custom eth rpc node, mysql and/or redis connection details?'),
+    //   message: 'Must be boolean',
+    //   default: false,
+    //   ask: () => !prompt.history('load_config')
+    // },
+    //
+    // //ETH Node
+    // custom_eth_node_config: {
+    //   type: 'boolean',
+    //   description: colors.magenta('Custom ethereum node rpc configuration?'),
+    //   message: 'Would you like to setup custom etherem node configuration? (Note: Infura nodes are not compatible with this script)',
+    //   default: false,
+    //   ask: () => !prompt.history('load_config') && prompt.history('custom_config')
+    // },
+    //
+    // eth_node_type: {
+    //   type: 'string',
+    //   description: colors.magenta('What RPC type?  (options: http, ws, ipc)'),
+    //   message: 'What type of node? (options: http, ws, ipc)',
+    //   default: false,
+    //   conform: value => (value == 'ipc' || value == 'http' || value == "ws"),
+    //   ask: () => !prompt.history('load_config') && prompt.history('custom_config') && prompt.history('custom_eth_node_config')
+    // },
+    //
+    // eth_path_type: {
+    //   type: 'string',
+    //   description: colors.magenta('Node path? Example: localhost:8456 (if left empty, default for type will be used)'),
+    //   ask: () => !prompt.history('load_config') && prompt.history('custom_config') && prompt.history('custom_eth_node_config')
+    // },
+    //
+    // // MySQL
+    // custom_mysql_config: {
+    //   type: 'boolean',
+    //   description: colors.magenta('Custom Mysql Config?  (options: http, ws, ipc)'),
+    //   default: false,
+    //   ask: () => !prompt.history('load_config') && prompt.history('custom_config')
+    // },
+    //
+    // //Redis
+    // custom_redis_config: {
+    //   type: 'boolean',
+    //   description: colors.magenta('Custom Redis Config?  (options: http, ws, ipc)'),
+    //   default: false,
+    //   ask: () => !prompt.history('load_config') && prompt.history('custom_config')
+    // }
 
   }
 };
