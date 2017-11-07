@@ -148,12 +148,12 @@ Below is the script transposed to plain english.
 	5. Process
 		6. Save every wallet regardless of validation or balance to `wallets` table
 	6. Fallback _if `balance is gte 1` and `register_error is not null`_
-	   	6. Fast Fallback
+	   1. Fast Fallback
 		   1. Check database for any outgoing transactions (or keys cache), if found...
 	   			1.	Query TX and grab Ethereum public key
 	   			2. Generate and validate EOS Key
 	   			3. If found and valid, set `valid` to `true` otherwise save error into `fallback_error` column
-		5. Slow fallback
+		2. Slow fallback
 			1. Obtain list of unique addresses with balance gte 1 EOS and no EOS key and save them as keys in index (redis is used as index)
 			2. Scan every `from` value in every transaction transaction included in every block between block 0 to end of block range for snapshot for against  _index_ (find a better way and I'll buy you a Sandwich)
 			3. If public key is found, execute fallback registration and revalidate entry, update database row appropriately
