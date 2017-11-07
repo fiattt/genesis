@@ -1,5 +1,4 @@
-let {web3, contract}  = require('../services/web3')
-let bn                = require('bignumber.js')
+let bn = require('bignumber.js')
 
 Number.prototype.between = function (min, max) {
   return this >= min && this <= max;
@@ -33,6 +32,7 @@ const end_to_block = ( period_map, period ) => {
 }
 
 const daily_totals = ( callback ) => {
+  let {contract}  = require('../services/web3')
   contract.$utility.methods.dailyTotals().call().then( totals => { let t = totals.map( total => new bn(total) ); callback(t) } )
 }
 
