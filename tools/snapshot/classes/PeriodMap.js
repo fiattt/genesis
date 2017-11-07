@@ -69,21 +69,3 @@ class PeriodMap {
 }
 
 module.exports = PeriodMap
-
-
-// poll(){
-//   if(!syncing)
-//     util.has_period_changed( this.map.length ) ? this.sync() : ( setTimeout( () => { this.poll }, 60*1000 ), this.map.length-1 )
-// }
-//
-// sync( onComplete ){
-//   if( has_period_changed() )
-//     this.syncing = true,
-//     this.update( map => {
-//       this.syncing = false
-//       this.map = map
-//       onComplete( this.map )
-//     })
-//   else
-//     onComplete( this.map )
-// }
