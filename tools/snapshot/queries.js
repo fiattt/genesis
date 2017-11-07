@@ -9,8 +9,7 @@ const query = {}
 
 // Wallet queries
 query.wallets_bulk_upsert = ( wallets ) => {
-  let Wallets = require('./models').Wallets
-  return Wallets.bulkCreate( wallets, { updateOnDuplicate: true })
+  return db.Wallets.bulkCreate( wallets, { updateOnDuplicate: true })
 }
 
 query.last_register = (address, begin, end, callback) => {
