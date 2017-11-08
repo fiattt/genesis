@@ -21,7 +21,11 @@ module.exports = () => {
         })
       },
       (config, next) => {
-        if(config.load_config) config = require('../../config')
+        if(config.load_config) {
+          try { config = require('../../config') }
+          catch(e) {}
+        }
+
         config = Object.assign( require('../../config.default'), config )
         global.REDIS_HOST             = config.redis_host
         global.REDIS_PORT             = config.redis_port
