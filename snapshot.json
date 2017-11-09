@@ -1,40 +1,40 @@
 {
 	"parameters": {
-		"period": 118,
+		"period": 136,
 		"block_begin": 3904416,
-		"block_end": 4409476,
+		"block_end": 4515874,
 		"b1_dist": true
 	},
 	"accounts": {
-		"registered": 10054,
-		"fallback": 39123,
-		"valid": 49177,
-		"registered_percent": "20.44451674563312%",
-		"fallback_percent": "79.55548325436688%"
+		"valid": 52618,
+		"registered": 10245,
+		"registered_percent": "19.47052339503592%",
+		"fallback": 42373,
+		"fallback_percent": "80.52947660496407%"
 	},
 	"supply": {
-		"expected": 536000000,
-		"liquid": 536000000.0565,
-		"included": 472753498.4287,
+		"expected": 572000000,
+		"included": 504113568.4706,
 		"percent_included": "88%",
+		"liquid": 572000000.062,
 		"margin_of_error": "-0.00000001%"
 	},
 	"meta": {
-		"author": "Sandwich",
-		"timestamp_started": 1509049815,
-		"timestamp_completed": 1509063807
+		"author": "Anonymous",
+		"timestamp_completed": 1510258165
 	},
 	"checksum": {
 		"output": {
-			"snapshot": "2ad7b3eb7a9e7aba709e8eea4a088e62edb7affd"
+			"snapshot": "d856a71f3251704f89bc292364ab4420ba4139c0"
 		},
 		"db": {
-			"wallets": "58ea21bf5e70148bcf23ed886f797e4f",
-			"claims": "8ed65629a2b6bd2ad4fa48fd091fd322",
-			"buys": "b433a449315b25cf6a6204114eca8099",
-			"transfers": "656b64be0572ba073911a2e4140adeb6",
-			"registrations": "243a6d94775366717da5f2ef84582186",
-			"snapshot": "70417977ebaedced429d09f0b793710d"
+			"wallets": "669867f7ededecf6a0ba925c571e63aa3714e103",
+			"buys": "c1aa634c363feaacb95a37878607bdb8460e01b8",
+			"claims": "48eb56d2b0031b19e9ff5fbe1a3c2e0828fda8d2",
+			"registrations": "c8a8b2047aef15f06ed17c4e78f112338ebcfe97",
+			"transfers": "f7f911de966feff35db90f9711c8b2dda542c4a4",
+			"snapshot": "2ff293936c0483d6c6fc13bd908a3e335d9f5755"
 		}
-	}
+	},
+	"stats": {}
 }
