@@ -102,7 +102,7 @@ module.exports = ( state, complete ) => {
     status_log_intval = setInterval( () => {
       redis.keys('*', (err, addresses) => {
 
-        let table = new Table(`Fast Fallback`),
+        let table = new Table(`Slow Fallback`),
             success_rate = Math.floor(pks_found/(addresses.length+pks_found)*100)
 
         table.addRow('Progress', `${Math.floor(blocks_processed/blocks_total*100)}%` )
