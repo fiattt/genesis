@@ -14,7 +14,7 @@ module.exports = ( state, complete ) => {
         status_log_intval = false
 
   const tx_hash_from_query_results = ( results, callback ) => (results.length) ? callback( results[0].dataValues.tx_hash ) : callback( false )
-  const pubkey_from_tx_hash        = ( tx_hash, callback ) => get_tx(tx_hash).then( result => { callback( result.publicKey ) })
+  const pubkey_from_tx_hash        = ( tx_hash, callback ) => util.misc.get_tx(tx_hash).then( result => { callback( result.publicKey ) })
 
   //TODO Fix callback hell
   const iterate_blocks = ( callback ) => {
