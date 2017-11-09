@@ -1,15 +1,16 @@
 module.exports = ( state, complete ) => {
 
-  const async     = require('async')
-  const db        = require('../../models')
-  const redis     = require('../../services/redis')
+  const async     = require('async'),
+        db        = require('../../models'),
+        redis     = require('../../services/redis'),
+        Table     = require('ascii-table')
 
-  let   util        = require('../../utilities')
-  let   web3        = require('../../services/web3').web3
+  let   util        = require('../../utilities'),
+        web3        = require('../../services/web3').web3,
 
-  let   block_index = 0,
+        block_index = 46147, //first ethereum block with txs
         blocks_total = 0,
-        pks_discovered = 0,
+        pks_found = 0,
         blocks_processed = 0,
         status_log_intval = false,
         fallback = {}
@@ -30,11 +31,11 @@ module.exports = ( state, complete ) => {
     }
     try {
       web3.eth
-        .getBlock( block_index )
+        .getBlock( block_index, true )
         .then( block => {
           async.each(
             block.transactions,
-            (tx_hash, next_tx) => check_tx(tx_hash, next_tx),
+            (tx, next_tx) => check_tx(tx, next_tx),
             (err) => {
               if(err)
                 throw new Error(err)
@@ -52,18 +53,15 @@ module.exports = ( state, complete ) => {
   }
 
   //Check TX
-  const check_tx = (tx_hash, next_tx) => {
+  const check_tx = (tx, next_tx) => {
+    // console.log(tx.blockNumber, tx.hash)
     try {
-      web3.eth
-        .getTransaction(tx_hash)
-        .then( tx => {
-          redis.get(tx.from, (err, reply) => {
-            if(reply)
-              update_address_key(tx.from, tx.hash, next_tx)
-            else
-              next_tx()
-          });
-        })
+      redis.get(tx.from, (err, reply) => {
+        if(reply)
+          update_address_key(tx.from, tx.hash, next_tx)
+        else
+          next_tx()
+      });
     }
     catch(e) {
       throw new Error(e)
@@ -91,7 +89,7 @@ module.exports = ( state, complete ) => {
               db.Keys.upsert({ address: address, tx_hash: tx_hash, public_key: pubkey, derived_eos_key: eos_key })
             console.log(`EOS Key Generated: #${block_index} => ${tx_hash} => ${address} => ${pubkey} => ${eos_key}`)
             redis.del(address);
-            pks_discovered++
+            pks_found++
             next_tx()
           })
       else
@@ -103,21 +101,26 @@ module.exports = ( state, complete ) => {
     blocks_total = state.block_end-block_index
     status_log_intval = setInterval( () => {
       redis.keys('*', (err, addresses) => {
-        let success_rate =  (pks_discovered/(addresses.length+pks_discovered)*100) | 0
-        console.log('Status', `${block_index} ~> ${state.block_end}: ${blocks_processed/blocks_total*100 | 0}% Complete [${blocks_processed}/${blocks_total} blocks]`)
-        console.log('Successful Pk Discoveries:', pks_discovered)
-        console.log('Unknown Pub Keys Remaining', addresses.length)
-        console.log('Cumulative Discovery Rate', `${success_rate}%`)
+
+        let table = new Table(`Fast Fallback`),
+            success_rate = Math.floor(pks_found/(addresses.length+pks_found)*100)
+
+        table.addRow('Progress', Math.floor(blocks_processed/blocks_total*100) )
+        table.addRow('PKs Found', pks_found)
+        table.addRow('PKs Unfound', addresses.length)
+        table.addRow('Found Rate', `${success_rate}%`)
+        table.addRow('Current Block', block_index)
+        table.addRow('Syncing to Block', state.block_end)
+        table.addRow(`Total Checked`, blocks_processed)
+        table.addRow(`Total Blocks`, blocks_total)
+        console.log(table.setAlign(0, Table.RIGHT).setAlign(1, Table.LEFT).render())
+
       })
-    }, 10000)
+    }, 60000)
   }
 
-  if(!state.config.fallback) {
-    complete(null, state)
-  }
-  else {
-    status_log( state )
-    iterate_blocks( () => { complete(null, state) } )
-  }
+  console.log('Fallback: Slow')
+  status_log( state )
+  iterate_blocks( () => { complete(null, state) } )
 
 }
