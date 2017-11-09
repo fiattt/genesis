@@ -44,7 +44,7 @@ module.exports = () => {
         Object.keys(config).forEach((key,index) => {
           table.addRow([key, config[key]])
         })
-        console.log(colors.green(table.setAlign(1, Table.LEFT).setAlign(0, Table.RIGHT).render()))
+        console.log(colors.green(table.setAlign(0, Table.RIGHT).setAlign(1, Table.LEFT).render()))
         console.log(colors.white('Starting in 5 seconds.'))
         setTimeout( () => Snapshot(config), 5000)
     })
