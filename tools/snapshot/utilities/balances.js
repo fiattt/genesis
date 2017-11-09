@@ -33,7 +33,7 @@ balances.unclaimed = ( address, buys, claims, period_max, callback) => {
         if(CS_PERIOD_ETH.length > 0)
           next()
         else {
-          util.period.daily_totals( daily_totals => { global.CS_PERIOD_ETH = daily_totals, next() })
+          util.period.daily_totals( daily_totals => { CS_PERIOD_ETH = daily_totals, next() })
         }
       },
       next => {
