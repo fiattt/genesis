@@ -12,6 +12,15 @@ query.wallets_bulk_upsert = ( wallets ) => {
   return db.Wallets.bulkCreate( wallets, { updateOnDuplicate: true })
 }
 
+query.address_uniques = ( block_begin, block_end, callback ) => {
+  db.sequelize
+    .query('SELECT `from` FROM `transfers` WHERE block_number>='+block_begin+' AND block_number<='+block_end+' UNION SELECT `to` FROM `transfers` WHERE block_number>='+block_begin+' AND block_number<='+block_end+' UNION SELECT `address` FROM `claims` WHERE block_number>='+block_begin+' AND block_number<='+block_end+' UNION SELECT `address` FROM `buys` WHERE block_number>='+block_begin+' AND block_number<='+block_end+' ', {type: db.sequelize.QueryTypes.SELECT})
+    .then( results => {
+      addresses = results.map( result => result.address || result.from || result.to  )
+      callback( addresses )
+    })
+}
+
 query.last_register = (address, begin, end, callback) => {
   db.Registrations
     .findAll({
