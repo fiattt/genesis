@@ -70,7 +70,7 @@ module.exports = ( state, complete ) => {
 
   const update_address_key = (address, tx_hash, next_tx) => {
     pubkey_from_tx_hash(tx_hash, pubkey => {
-      const eos_key = convert_ethpk_to_eospk(pubkey)
+      const eos_key = util.misc.convert_ethpk_to_eospk(pubkey)
       if(util.misc.is_eos_public_key(eos_key))
         db.Wallets
           .update({
