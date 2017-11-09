@@ -105,7 +105,7 @@ module.exports = ( state, complete ) => {
         let table = new Table(`Fast Fallback`),
             success_rate = Math.floor(pks_found/(addresses.length+pks_found)*100)
 
-        table.addRow('Progress', Math.floor(blocks_processed/blocks_total*100) )
+        table.addRow('Progress', `${Math.floor(blocks_processed/blocks_total*100)}%` )
         table.addRow('PKs Found', pks_found)
         table.addRow('PKs Unfound', addresses.length)
         table.addRow('Found Rate', `${success_rate}%`)
