@@ -9,8 +9,7 @@ module.exports = ( state, complete ) => {
         util      = require('../../utilities'),
         web3      = require('../../services/web3').web3
 
-  let addresses,
-      intval,
+  let intval,
       pks_found   = 0,
       count       = 0
 
@@ -60,10 +59,10 @@ module.exports = ( state, complete ) => {
       let table = new Table(`Fast Fallback`),
           success_rate = Math.floor(pks_found/(addresses.length+pks_found)*100)
 
-      table.addRow('Progress', `${Math.floor(count/addresses.length*100)}%`)
-      table.addRow('PKs Found', pks_found)
-      table.addRow('Pks Unfound', addresses.length)
-      table.addRow('Found Rate', `${success_rate}%`)
+      table.addRow('Progress', `${Math.floor(count/addresses_total*100)}%`)
+      table.addRow('PKs Found (fast)', pks_found)
+      table.addRow('Pks Unfound (fast)', addresses.length)
+      table.addRow('Found Rate (fast)', `${success_rate}%`)
       console.log( table.setAlign(0, Table.RIGHT).setAlign(1, Table.LEFT).render() )
 
     })
