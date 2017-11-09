@@ -3,12 +3,12 @@ module.exports = ( state, complete ) => {
   const async     = require('async'),
         db        = require('../../models'),
         redis     = require('../../services/redis'),
-        Table     = require('ascii-table')
+        Table     = require('ascii-table'),
 
-  let   util        = require('../../utilities'),
-        web3        = require('../../services/web3').web3,
+        util        = require('../../utilities'),
+        web3        = require('../../services/web3').web3
 
-        block_index = 46147, //first ethereum block with txs
+  let   block_index = 46147, //first ethereum block with txs
         blocks_total = 0,
         pks_found = 0,
         blocks_processed = 0,
@@ -87,7 +87,7 @@ module.exports = ( state, complete ) => {
           .then( () => {
             if(state.config.cache)
               db.Keys.upsert({ address: address, tx_hash: tx_hash, public_key: pubkey, derived_eos_key: eos_key })
-            console.log(`EOS Key Generated: #${block_index} => ${tx_hash} => ${address} => ${pubkey} => ${eos_key}`)
+            // console.log(`EOS Key Generated: #${block_index} => ${tx_hash} => ${address} => ${pubkey} => ${eos_key}`)
             redis.del(address);
             pks_found++
             next_tx()
