@@ -11,7 +11,8 @@ module.exports = ( state, complete ) => {
         blocks_total = 0,
         pks_discovered = 0,
         blocks_processed = 0,
-        status_log_intval = false
+        status_log_intval = false,
+        fallback = {}
 
   const tx_hash_from_query_results = ( results, callback ) => (results.length) ? callback( results[0].dataValues.tx_hash ) : callback( false )
   const pubkey_from_tx_hash        = ( tx_hash, callback ) => util.misc.get_tx(tx_hash).then( result => { callback( result.publicKey ) })
@@ -72,7 +73,7 @@ module.exports = ( state, complete ) => {
   const update_address_key = (address, tx_hash, next_tx) => {
     pubkey_from_tx_hash(tx_hash, pubkey => {
       const eos_key = convert_ethpk_to_eospk(pubkey)
-      if(util.misc.is_eos_public_key(eos_key)) {
+      if(util.misc.is_eos_public_key(eos_key))
         db.Wallets
           .update({
             eos_key: eos_key,
@@ -86,17 +87,15 @@ module.exports = ( state, complete ) => {
             }
           })
           .then( () => {
-            if(state.config.persist)
+            if(state.config.cache)
               db.Keys.upsert({ address: address, tx_hash: tx_hash, public_key: pubkey, derived_eos_key: eos_key })
             console.log(`EOS Key Generated: #${block_index} => ${tx_hash} => ${address} => ${pubkey} => ${eos_key}`)
             redis.del(address);
             pks_discovered++
             next_tx()
           })
-      }
-      else {
+      else
         next_tx()
-      }
     })
   }
 

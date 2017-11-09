@@ -1,7 +1,7 @@
 module.exports = {
   period: 1,
   include_b1: true,
-  persist: false,
+  cache: false,
   fallback: true,
   author: "Anonymous",
 

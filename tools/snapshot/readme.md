@@ -53,7 +53,7 @@ There are three methods for configuration
 - `period` (integer) The period to sync to, it will sync to the last block of any given period.
 - `include_b1` (true, false) Include block.one distribution
 - `fallback` (true, false) Use fallback registration
-- `persist` (true, false) Will cache successful fallbacks, including full paper trail: Block number, address, transaction, public key and generated EOS key. Can speed up the slow fallback method if running several times.
+- `cache` (true, false) Will cache successful fallbacks, including full paper trail: Block number, address, transaction, public key and generated EOS key. Can speed up the slow fallback method if running several times.
 - `eth_node_type` (http, ipc , ws) [default: http] Based on testing, IPC is recommended for performance
 - `eth_node_path` (valid host/path) Relative to type as defined above
 - `redis_host`

@@ -17,7 +17,7 @@ module.exports = ( state, complete ) => {
 
   const process_uniques = ( addresses, next ) => {
     async.eachSeries( addresses, (address, next_address) => {
-      fallback( address, state.config.persist, (error, eos_key) => {
+      fallback( address, state.config.cache, (error, eos_key) => {
         if(error || !eos_key)
           db.Wallets
             .update(
