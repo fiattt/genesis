@@ -106,9 +106,9 @@ module.exports = ( state, complete ) => {
             success_rate = Math.floor(pks_found/(addresses.length+pks_found)*100)
 
         table.addRow('Progress', `${Math.floor(blocks_processed/blocks_total*100)}%` )
-        table.addRow('PKs Found', pks_found)
-        table.addRow('PKs Unfound', addresses.length)
-        table.addRow('Found Rate', `${success_rate}%`)
+        table.addRow('PKs Found (slow)', pks_found)
+        table.addRow('PKs Unfound (slow)', addresses.length)
+        table.addRow('Found Rate (slow)', `${success_rate}%`)
         table.addRow('Current Block', block_index)
         table.addRow('Syncing to Block', state.block_end)
         table.addRow(`Total Checked`, blocks_processed)
