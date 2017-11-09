@@ -59,21 +59,22 @@ module.exports = ( state, complete ) => {
       let table = new Table(`Fast Fallback`),
           success_rate = Math.floor(pks_found/(addresses.length+pks_found)*100)
 
-      table.addRow('Progress', `${Math.floor(count/addresses_total*100)}%`)
+      table.addRow('Progress', `${Math.floor(count/(addresses.length+pks_found)*100)}%`)
       table.addRow('PKs Found (fast)', pks_found)
       table.addRow('Pks Unfound (fast)', addresses.length)
       table.addRow('Found Rate (fast)', `${success_rate}%`)
+      table.addRow('Addresses Processed', count)
       console.log( table.setAlign(0, Table.RIGHT).setAlign(1, Table.LEFT).render() )
 
     })
   }
 
   const periodic_log = () => {
-    intval = setInterval( log, 30000 )
+    intval = setInterval( log, 10000 )
   }
 
   console.log('Fallback: Fast')
-
+  periodic_log()
   async.waterfall([
       get_uniques,
       process_uniques
