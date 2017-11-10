@@ -1,15 +1,17 @@
 module.exports = ( state, complete ) => {
 
-  const async     = require('async')
-  const db        = require('../../models')
-  const redis     = require('../../services/redis')
+  const async     = require('async'),
+        Table     = require('ascii-table'),
 
-  const fallback  = require('../../utilities/local-pubkey')
-  const util      = require('../../utilities')
-  const web3      = require('../../services/web3').web3
+        db        = require('../../models'),
+        redis     = require('../../services/redis'),
+        fallback  = require('../../utilities/local-pubkey'),
+        util      = require('../../utilities'),
+        web3      = require('../../services/web3').web3
 
-  let addresses,
-      pks_discovered
+  let intval,
+      pks_found   = 0,
+      count       = 0
 
   const get_uniques = ( next ) => {
     redis.keys('*', (err, addresses) => next( null, addresses ) )
@@ -17,7 +19,7 @@ module.exports = ( state, complete ) => {
 
   const process_uniques = ( addresses, next ) => {
     async.eachSeries( addresses, (address, next_address) => {
-      fallback( address, state.config.persist, (error, eos_key) => {
+      fallback( address, state.config.cache, (error, eos_key) => {
         if(error || !eos_key)
           db.Wallets
             .update(
@@ -38,20 +40,45 @@ module.exports = ( state, complete ) => {
             )
             .then( () => {
               redis.del(address);
-              pks_discovered++
+              pks_found++
               next_address()
             })
       })
+      count++
     },
     (err, result) => {
-      console.log('Processed all addresses')
+      clearInterval( intval )
+      log()
       next()
     })
   }
 
-  async.waterfall([
-    get_uniques,
-    process_uniques
-  ], () => complete(null, state) )
+  const log = () => {
+    redis.keys('*', (err, addresses) => {
 
+      let table = new Table(`Fast Fallback`),
+          success_rate = Math.floor(pks_found/(addresses.length+pks_found)*100)
+
+      table.addRow('Progress', `${Math.floor(count/(addresses.length+pks_found)*100)}%`)
+      table.addRow('PKs Found (fast)', pks_found)
+      table.addRow('Pks Unfound (fast)', addresses.length)
+      table.addRow('Found Rate (fast)', `${success_rate}%`)
+      table.addRow('Addresses Processed', count)
+      console.log( table.setAlign(0, Table.RIGHT).setAlign(1, Table.LEFT).render() )
+
+    })
+  }
+
+  const periodic_log = () => {
+    intval = setInterval( log, 10000 )
+  }
+
+  console.log('Fallback: Fast')
+  periodic_log()
+  async.waterfall([
+      get_uniques,
+      process_uniques
+    ],
+    () => setTimeout( () => complete(null, state), 5000 )
+  )
 }

@@ -51,9 +51,9 @@ let schema = {
     },
 
     //Meta
-    persist: {
+    cache: {
       type: 'boolean',
-      description: colors.magenta('Persist Keys? (advanced)'),
+      description: colors.magenta('Cache Keys? (advanced)'),
       message: 'Must be true or false',
       default: true,
       ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true

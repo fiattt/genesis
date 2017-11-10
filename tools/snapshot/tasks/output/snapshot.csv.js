@@ -7,7 +7,8 @@ module.exports = ( config, callback ) => {
   const db           = require('../../models')
 
   const csv = callback => {
-    db.Snapshot.findAll()
+    db.Snapshot
+      .findAll({ order: [ ['balance', 'DESC'] ] })
       .then( results => {
         let _results = results.map( result => {
           return {user: result.dataValues.user, key: result.dataValues.key, balance: result.dataValues.balance}

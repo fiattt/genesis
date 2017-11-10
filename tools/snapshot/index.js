@@ -21,7 +21,11 @@ module.exports = () => {
         })
       },
       (config, next) => {
-        if(config.load_config) config = require('../../config')
+        if(config.load_config) {
+          try { config = require('../../config') }
+          catch(e) {}
+        }
+
         config = Object.assign( require('../../config.default'), config )
         global.REDIS_HOST             = config.redis_host
         global.REDIS_PORT             = config.redis_port
@@ -40,7 +44,7 @@ module.exports = () => {
         Object.keys(config).forEach((key,index) => {
           table.addRow([key, config[key]])
         })
-        console.log(colors.green(table.setAlign(1, Table.LEFT).setAlign(0, Table.RIGHT).render()))
+        console.log(colors.green(table.setAlign(0, Table.RIGHT).setAlign(1, Table.LEFT).render()))
         console.log(colors.white('Starting in 5 seconds.'))
         setTimeout( () => Snapshot(config), 5000)
     })

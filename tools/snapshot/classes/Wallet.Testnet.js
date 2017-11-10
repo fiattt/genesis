@@ -55,7 +55,7 @@ class WalletSnapshot extends Wallet {
 
   // process_fallback( complete ) {
   //   if(new bn(this.balance.total).gte(1) && this.register_error!==null)
-  //     fallback( this.address, this.config.persist, (error, eos_key) => {
+  //     fallback( this.address, this.config.cache, (error, eos_key) => {
   //       if(error || !eos_key)
   //         this.fallback_error = error
   //       else

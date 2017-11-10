@@ -1,17 +1,16 @@
 module.exports = (state, complete) => {
 
-  let Table          = require('ascii-table')
-  let async          = require('async')
-  let bn              = require('bignumber.js')
+  const Table        = require('ascii-table'),
+        async        = require('async'),
+        bn           = require('bignumber.js'),
 
-  let util           = require('../../utilities')
-  let helper         = require('../../helpers')
-  let query          = require('../../queries')
+        util         = require('../../utilities'),
+        query        = require('../../queries')
 
-  let index          = 0,
-      cache          = [],
-      table,
-      uniques
+  let   index        = 0,
+        cache        = [],
+        table,
+        uniques
 
   const init = (address, finished) => {
     let Wallet = require('../../classes/Wallet.Testnet')
@@ -126,40 +125,37 @@ module.exports = (state, complete) => {
     table.addRow(
       (wallet.accepted ? `✓` : ` `),
       (wallet.registered ? `✓` : ` `),
-      // (!wallet.fallback ? ` ` : `✓`),
       wallet.address,
       wallet.eos_key,
       `${wallet.balance.wallet} EOS`,
       `${wallet.balance.unclaimed} EOS`,
       `${wallet.balance.reclaimed} EOS`,
       `${wallet.balance.total} EOS`,
-      // `${wallet.register_error ? wallet.register_error : ""} ${wallet.fallback_error ? wallet.fallback_error : ""}`
       `${wallet.register_error ? wallet.register_error : ""}`
     )
   }
 
   console.log('Syncing Wallets')
-  helper.address.uniques( state.block_begin, state.block_end, _uniques => {
-    uniques     = new Set(_uniques)
-    state.total = uniques.size
+  query.address_uniques( state.block_begin, state.block_end, _uniques => {
+      uniques     = new Set(_uniques)
+      state.total = uniques.size
 
-    log_table_reset()
+      log_table_reset()
 
-    async.eachSeries( Array.from(uniques), (address, next_address) => {
-      async.waterfall([
-        (next)         => init(address, next),
-        (wallet, next) => key(wallet, next),
-        (wallet, next) => buys(wallet, next),
-        (wallet, next) => claims(wallet, next),
-        (wallet, next) => transfers(wallet, next),
-        (wallet, next) => reclaimables(wallet, next),
-        (wallet, next) => processing(wallet, next)
-      ],
-      (error, wallet) => save_or_continue(next_address))
-    },
-    (err, result) => {
-      save_or_continue( () => { complete( null, state ) }, true )
-    })
-
+      async.eachSeries( Array.from(uniques), (address, next_address) => {
+        async.waterfall([
+          (next)         => init(address, next),
+          (wallet, next) => key(wallet, next),
+          (wallet, next) => buys(wallet, next),
+          (wallet, next) => claims(wallet, next),
+          (wallet, next) => transfers(wallet, next),
+          (wallet, next) => reclaimables(wallet, next),
+          (wallet, next) => processing(wallet, next)
+        ],
+        (error, wallet) => save_or_continue(next_address))
+      },
+      (err, result) => {
+        save_or_continue( () => { complete( null, state ) }, true )
+      })
   })
 }

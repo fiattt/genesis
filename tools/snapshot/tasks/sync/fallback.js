@@ -31,12 +31,13 @@ module.exports = ( state, complete ) => {
   if(state.config.fallback)
     async.series([
         populate_index,
-        // next => fallback_fast(state, next),
+        next => fallback_fast(state, next),
         next => fallback_slow(state, next),
       ],
       () => complete()
     )
   else
+    console.log('Fallback: Skipping Fallback'),
     complete()
-    
+
 }

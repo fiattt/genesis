@@ -70,7 +70,7 @@ const complete = (error, pubkey, callback) => {
 
 const skip = (address) => [CS_ADDRESS_CROWDSALE, CS_ADDRESS_TOKEN, CS_ADDRESS_B1].indexOf(address.toLowerCase()) > -1
 
-module.exports = ( address, persist, finished ) => {
+module.exports = ( address, cache, finished ) => {
   if( skip(address) )
     finished()
   else
