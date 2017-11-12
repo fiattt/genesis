@@ -11,6 +11,15 @@ Tools used to initialize a genesis block for the EOS Platform
 - _Simple Look-up Tool (in progress)_
 - _Snapshot Frontend (planned)_
 
-## Useful Files
-- **snapshot.csv** Comma-delimited list
+## Snapshots
+
+**There are only two official snapshots.** However, snapshot.csv in this repository will be periodically updated for informational, educational and for purposes of testing.
+
+### Dates
+Testnet: Up to a particular period (Exact Period TBD)
+Mainnet: ~24+ Hours After ICO Closes (Exact Time/Date TBD)
+
+### Overview
+- **snapshot.csv** Comma-delimited list of Ethereum Addresses, EOS claim keys and Balances from which a genesi.json can be generated.
 - **snapshot.json** Meta data for the snapshot in the repo, describes the parameters of snapshot, some statistics and data for debugging
+
