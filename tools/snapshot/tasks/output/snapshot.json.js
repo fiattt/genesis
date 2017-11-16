@@ -135,7 +135,7 @@ module.exports = ( state, complete ) => {
 
   let get_time_elapsed = callback => {
     let prettyMs = require('pretty-ms');
-    data.meta.total_time = prettyMs( (data.meta.timestamp_completed-data.meta.timestamp_started)*1000 )
+    if(data.meta.timestamp_started && data.meta.timestamp_completed) data.meta.total_time = prettyMs( (data.meta.timestamp_completed-data.meta.timestamp_started)*1000 )
     callback()
   }
 

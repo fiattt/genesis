@@ -1,39 +1,39 @@
 {
 	"parameters": {
-		"period": 136,
+		"period": 142,
 		"block_begin": 3904416,
-		"block_end": 4515874,
+		"block_end": 4551720,
 		"b1_dist": true
 	},
 	"accounts": {
-		"valid": 52618,
-		"registered": 10245,
-		"registered_percent": "19.47052339503592%",
-		"fallback": 42373,
-		"fallback_percent": "80.52947660496407%"
+		"valid": 53068,
+		"registered": 10344,
+		"registered_percent": "19.491972563503428%",
+		"fallback": 42724,
+		"fallback_percent": "80.50802743649656%"
 	},
 	"supply": {
-		"expected": 572000000,
-		"included": 504113568.4706,
-		"percent_included": "88%",
-		"liquid": 572000000.062,
+		"expected": 584000000,
+		"included": 512897597.3049,
+		"percent_included": "87%",
+		"liquid": 584000000.0583,
 		"margin_of_error": "-0.00000001%"
 	},
 	"meta": {
 		"author": "Anonymous",
-		"timestamp_completed": 1510258165
+		"timestamp_completed": 1510761028
 	},
 	"checksum": {
 		"output": {
-			"snapshot": "d856a71f3251704f89bc292364ab4420ba4139c0"
+			"snapshot": "c4232d98f4188964b3e09f2d50bf7071e1cf91ec"
 		},
 		"db": {
-			"wallets": "669867f7ededecf6a0ba925c571e63aa3714e103",
-			"buys": "c1aa634c363feaacb95a37878607bdb8460e01b8",
-			"claims": "48eb56d2b0031b19e9ff5fbe1a3c2e0828fda8d2",
-			"registrations": "c8a8b2047aef15f06ed17c4e78f112338ebcfe97",
-			"transfers": "f7f911de966feff35db90f9711c8b2dda542c4a4",
-			"snapshot": "2ff293936c0483d6c6fc13bd908a3e335d9f5755"
+			"wallets": "530859734e7971e60289cc65bb71f1156eb43909",
+			"buys": "a41ac1c6e28cfdfa6b8c6cb348fa92f69308b8bb",
+			"claims": "b34e5952c5505f1994f59b655bd9076583aa4dce",
+			"registrations": "814cc9b5bbb4c1f6188bf8a1ee0c5229b906a7ab",
+			"transfers": "3cd436014f8b3c0be8493ff85307d656de2ee3e0",
+			"snapshot": "1b79d413b4b978b96ebe803b2e5f2f60d20e2ce0"
 		}
 	},
 	"stats": {}
