@@ -17,8 +17,8 @@ module.exports = (config) => {
     console.log(`Snapshot for Period #${state.config.period} Completed.`)
     if(error)
       console.log('Error:', error)
-    else
-      console.log('Result:', result)
+    // else
+    //   console.log('Result:', result)
   })
 
 }
