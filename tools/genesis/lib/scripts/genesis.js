@@ -4,14 +4,13 @@ let   snapshot = null
 
 window.onload = () => init()
 
-const init = () => { document.body.id = "loading", generate_genesis() }
+const init = () => { document.body.id = "loading", snapshot_load() }
 
-const generate_genesis = () => {
+const snapshot_load = () => {
   if( check_url(SNAPSHOT_FILE) )
-    snapshot_load( SNAPSHOT_FILE, response => {
+    snapshot_load_csv( SNAPSHOT_FILE, response => {
       if(response)
         snapshot = snapshot_csv_to_array(response),
-        genesis = new Genesis( snapshot ).json,
         setTimeout( () => document.body.id = "ready", 1000 )
     })
   else
@@ -33,7 +32,7 @@ const snapshot_csv_to_array = (csv) => {
   return output
 }
 
-const snapshot_load = (filename, callback) => {
+const snapshot_load_csv = (filename, callback) => {
     var xobj = new XMLHttpRequest()
         xobj.overrideMimeType("application/json")
     xobj.open('GET', filename, true); // Replace 'my_data' with the path to your file
