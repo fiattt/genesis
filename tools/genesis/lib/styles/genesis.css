@@ -1,23 +1,26 @@
-h1 {font-size:20pt; letter-spacing:1px; text-transform:uppercase; font-weight:normal; color:#555;}
+body { transition: all 1s ease; }
+body > * {opacity:1}
+/*body#loading {background:#333;}*/
+body#loading > * { opacity:0 }
+body#loading .loader {display:block; position:absolute; top:50%; left:50%; transform: translateX(-50%) translateY(-50%) }
+body#ready .loader {display:none;}
+
+#logo {margin:auto; max-height:150px; width:auto; display:block; margin-bottom:5px; }
+
+h1 {font-size:9pt; letter-spacing:4px; text-transform:uppercase; font-weight:normal; color:#f1efaf; }
 h2 {color:#bbb; text-transform:uppercase; font-size:12pt; letter-spacing: 2px; }
 button#export_genesis_config, input#export_genesis_json, input.add-account { color:white; display:block; margin:22px 0 0;  border:5px solid rgba(0,0,0,0.1); opacity: 0.9; }
 button#export_genesis_config:hover, input#export_genesis_json:hover, input.add-account:hover { opacity:1; }
-button#export_genesis_config, input#export_genesis_json {text-transform: uppercase;font-size:12pt; padding:11px 22px; background:#6ab86a; display:inline-block; }
-input#export_genesis_json { border-radius: 6px 0 0 6px; border-right:none; padding:11px 77px; }
-button#export_genesis_config { border-radius: 0 6px 6px 0; border-left:none;  }
+button#export_genesis_config, input#export_genesis_json {text-transform: uppercase;font-size:12pt; padding:11px 22px; background:#f1efaf; display:inline-block; }
+input#export_genesis_json { border-radius: 6px 0 0 6px; border-right:none; padding:11px 77px; color:#111 }
+button#export_genesis_config { border-radius: 0 6px 6px 0; border-left:none; }
 button#export_genesis_config { background: rgba(0,0,0,0.9); color:#999; border-color:rgba(255,255,255,0.2) }
-input.add-account { background:#6ab86a; font-size:10pt; padding:5px 11px; margin:auto }
+input.add-account { background:#f1efaf; font-size:10pt; padding:5px 11px; margin:auto; color:#111 }
 button:hover  { background:#448b44; cursor:pointer; }
 
 .form-group {margin-bottom:20px; padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.04)}
 
 .wrapper {color:#F0F0F0; padding-bottom:44px;}
-
-body { transition: all 1s ease; }
-body#loading {background:#333;}
-body#loading > * {display:none; }
-body#loading .loader {display:block; position:absolute; top:50%; left:50%; transform: translateX(-50%) translateY(-50%) }
-body#ready .loader {display:none;}
 
 body#error > * {display:none;}
 body .error { display:none; }
