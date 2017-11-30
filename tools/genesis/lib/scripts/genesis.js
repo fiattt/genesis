@@ -10,7 +10,7 @@ const snapshot_load = () => {
   if( check_url(SNAPSHOT_FILE) )
     snapshot_load_csv( SNAPSHOT_FILE, response => {
       if(response)
-        snapshot = snapshot_csv_to_array(response),
+        SNAPSHOT = snapshot_csv_to_array(response),
         setTimeout( () => document.body.id = "ready", 1000 )
     })
   else
@@ -23,7 +23,7 @@ const snapshot_csv_to_array = (csv) => {
 
   for (var i=0; i<rows.length; i++) {
     let _registrant
-        ,registrant = rows[i].split(',')
+        ,registrant = rows[i].replace(/"/g, '').split(',')
         ,[eth, eos, balance] = registrant
     if(eth && eos && balance)
       _registrant = { eth: eth, eos: eos, balance: balance },
