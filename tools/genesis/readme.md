@@ -2,4 +2,4 @@
 
 Simple interface to generate a _genesis block_ from the committed snapshot to this repository. Can be used to configure and generate a genesis block from any properly formatted snapshot.csv.
 
-The genesis block configurator can be accessed [here](http://eosio.github.com/genesis/tools/genesis)
+The genesis block configurator can be accessed [here](https://eosio.github.io/genesis/)
