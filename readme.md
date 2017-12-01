@@ -5,7 +5,7 @@ Tools used to initialize a genesis block for the EOS Platform
 ## Tools
 
 - Snapshot Generator ([readme](https://github.com/EOSIO/genesis/tree/master/tools/snapshot)) - Generates a snapshot from the EOS Crowdsale and Token contracts (saves a snapshot.csv and snapshot.json [metadata] into root directory of project)
-- Genesis Generator ([readme](https://github.com/EOSIO/genesis/tree/master/tools/genesis)) - Enables configuration of a well-formed genesis.json file from a snapshot.csv.
+- [Genesis Block Configurator](https://eosio.github.io/genesis/) ([readme](https://github.com/EOSIO/genesis/tree/master/tools/genesis)) - Enables configuration of a well-formed genesis.json file from a snapshot.csv. 
 - _Offline Key Validator (in progress)_
 - _Offline Key Generator (in progress)_
 - _Simple Look-up Tool (in progress)_
