@@ -1,7 +1,16 @@
-body { background:#000; color:#c0c0c0; font-family:sans-serif; }
-a {color:lightblue;}
-.wrapper  { position:relative; margin:22px auto; padding:33px 55px; max-width: 600px; text-align:center; color:#c0c0c0; background:rgba(255,255,255,0.1); border:11px solid rgba(0,0,0,0.2); }
+html, body {margin:0; padding:0}
 
+html {
+  color:#c0c0c0;
+  font-family:sans-serif;
+  background: #000 url(/tools/genesis/lib/images/bg.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+a {color:lightblue;}
+.wrapper  { position:relative; margin:22px auto; padding:33px 55px; max-width: 600px; text-align:center; color:#c0c0c0; background:rgba(0,0,0,0.9); border:11px solid rgba(255,255,255,0.05); }
 
 /*laoder, modified from https://codepen.io/woodwork/pen/YWjWzo*/
 .blob { width: 2rem; height: 2rem; background: rgba(0,0,0,0.50); border-radius: 50%; position: absolute; left: calc(50% - 1rem); top: calc(50% - 1rem); box-shadow: 0 0 1rem rgba(255, 255, 255, 0.10);}

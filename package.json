@@ -28,6 +28,6 @@
     "babel-cli": "6.26.0"
   },
   "scripts": {
-    "compile-genesis": "babel ./tools/genesis/lib/scripts/genesis.js ./tools/genesis/lib/scripts/class.genesis.js ./tools/genesis/lib/scripts/export.js --plugins babel-polyfill --out-file ./tools/genesis/dist/bundle-genesis.js"
+    "compile-genesis": "babel ./tools/genesis/lib/scripts/genesis.js ./tools/genesis/lib/scripts/class.genesis.js ./tools/genesis/lib/scripts/export.js  --plugins babel-polyfill --out-file ./tools/genesis/dist/bundle-genesis.js"
   }
 }
