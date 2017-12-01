@@ -20,7 +20,7 @@ const is_ethereum_address = (address) => {
 
 const generate_account_name = ( name, index ) => {
   return ( is_ethereum_address( name ) )
-    ? base32.encode( index.toString() ).toUpperCase()
+    ? base32.encode( index.toString() ).replace(/=/g, "").toLowerCase()
     : name
 }
 
