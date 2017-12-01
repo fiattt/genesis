@@ -34,10 +34,9 @@ module.exports = ( state, complete ) => {
         next => fallback_fast(state, next),
         next => fallback_slow(state, next),
       ],
-      () => complete()
+      () => complete( null, state )
     )
   else
     console.log('Fallback: Skipping Fallback'),
-    complete()
-
+    complete( null, state )
 }
