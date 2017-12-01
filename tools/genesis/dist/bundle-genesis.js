@@ -1,4 +1,4 @@
-const SNAPSHOT_FILE = '/snapshot.csv';
+const SNAPSHOT_FILE = '/genesis/snapshot.csv';
 let snapshot = null;
 genesis = null;
 
