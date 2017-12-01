@@ -10,7 +10,7 @@ const init = () => {
 
 const snapshot_load = () => {
   if (check_url(SNAPSHOT_FILE)) snapshot_load_csv(SNAPSHOT_FILE, response => {
-    if (response) SNAPSHOT = snapshot_csv_to_array(response), setTimeout(() => document.body.id = "ready", 1000);
+    if (response) SNAPSHOT = snapshot_csv_to_array(response), setTimeout(() => document.body.id = "ready", 2500);
   });else document.body.id = "error";
 };
 

@@ -1,4 +1,4 @@
-const SNAPSHOT_FILE = '/snapshot.csv'
+const SNAPSHOT_FILE = '/genesis/snapshot.csv'
 let   snapshot = null
       genesis = null
 
@@ -11,7 +11,7 @@ const snapshot_load = () => {
     snapshot_load_csv( SNAPSHOT_FILE, response => {
       if(response)
         SNAPSHOT = snapshot_csv_to_array(response),
-        setTimeout( () => document.body.id = "ready", 1000 )
+        setTimeout( () => document.body.id = "ready", 2500 )
     })
   else
     document.body.id = "error"
