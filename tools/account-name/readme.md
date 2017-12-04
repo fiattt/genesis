@@ -1,5 +1,3 @@
-## Genesis Block Configurator
+## Account Name Lookup
 
-Simple interface to generate a _genesis block_ from the committed snapshot to this repository. Can be used to configure and generate a genesis block from any properly formatted snapshot.csv.
-
-The genesis block configurator can be accessed [here](https://eosio.github.io/genesis/)
+Looks up your account on Testnet if you're in the Genesis file, located [here](https://eosio.github.io/genesis/tools/account-name/index.html)
