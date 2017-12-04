@@ -103,6 +103,10 @@ class Genesis {
   }
 
   append_to_initial_accounts(){
+    this.options.additional_accounts.map( account => {
+      account.liquid_balance = `${account.liquid_balance} EOS`
+      return account
+    })
     this.json.initial_accounts = this.json.initial_accounts.concat( this.options.additional_accounts )
   }
 
