@@ -41,7 +41,9 @@ body  .error.wrapper { background:rgba(255,0,0,0.2) }
 
 body#error-not-found .error > div span, body#error-invalid .error > div span { color:white }
 
-input[type=text] { margin-right:10px; background:rgba(255,255,255,0.05); color:#AAA; padding:6px 12px; border:2px solid rgba(255,255,255,0.1); width:250px }
+input[type=text], input[type=submit] { margin-right:10px; background:rgba(255,255,255,0.05); color:#AAA; padding:6px 12px; border:2px solid rgba(255,255,255,0.1); font-size:13pt; }
+input[type=text] {width:70%;  }
+input[type=submit] {background:rgba(255,255,255,0.15);}
 input[type=text]:focus { color:#00AA00; }
 label { font-size:8pt; text-transform: uppercase; color:#888; letter-spacing:1px; }
 

@@ -1,5 +1,4 @@
 $( function(){
-  // $('input:text').on('keyup', function(){ lookup( $(this).val() ) })
   $('form').on('submit', function(e){
     e.preventDefault()
     lookup( $(this).find('input:text').val() )
