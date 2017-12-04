@@ -2,6 +2,7 @@
   "dependencies": {
     "ascii-table": "0.0.9",
     "async": "^2.5.0",
+    "babel-polyfill": "6.26.0",
     "bignumber.js": "^4.0.4",
     "chalk": "^2.1.0",
     "checksum": "0.1.1",
@@ -28,6 +29,7 @@
     "babel-cli": "6.26.0"
   },
   "scripts": {
-    "compile-genesis": "babel ./tools/genesis/lib/scripts/genesis.js ./tools/genesis/lib/scripts/class.genesis.js ./tools/genesis/lib/scripts/export.js  --plugins babel-polyfill --out-file ./tools/genesis/dist/bundle-genesis.js"
+    "compile-genesis": "babel ./tools/genesis/lib/scripts/genesis.js ./tools/genesis/lib/scripts/class.genesis.js ./tools/genesis/lib/scripts/export.js  --plugins babel-polyfill --out-file ./tools/genesis/dist/bundle-genesis.js",
+    "compile-account-name": "babel ./tools/account-name/lib/scripts/load-snapshot.js ./tools/account-name/lib/scripts/init.js  --plugins babel-polyfill --out-file ./tools/account-name/dist/bundle-account-name.js"
   }
 }
