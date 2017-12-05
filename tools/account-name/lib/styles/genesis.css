@@ -62,4 +62,6 @@ button.delete, input.add-account, input[type=submit], button { cursor:pointer; }
 
 .import-config { padding:20px }
 
+em { font-size:9pt; display:block; margin-top:11px; color:#999 }
+
 /*.fields.initial-parameters input { clear:both; display:block;}*/
