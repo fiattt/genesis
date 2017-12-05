@@ -10,19 +10,25 @@ const lookup = function( value ){
     let found = -1
 
     if(startsWithETH(value)) {
-      console.log('ETH');
+      // console.log('ETH');
       found = SNAPSHOT.findIndex( function(row){ return row.eth == value } )
     }
     else if(startsWithEOS(value)) {
-      console.log('EOS');
-      found = SNAPSHOT.findIndex( function(row){ return row.eos == value } )
+      // console.log('EOS');
+      found = SNAPSHOT.filter( function(row){ return row.eos == value } )
     }
     else { display_invalid( value ) }
 
+    if(typeof found == "object" && found.length) {
+      if(found.length > 1) { display_account_names( found ) }
+      else                 { display_account_name( SNAPSHOT.findIndex( function(row){ return row.eth == found[0].eth } ) ) }
 
-    if(found > 1) {
+    }
+    else if(typeof found == "number"  && found > -1) {
       display_account_name( found )
-    } else {
+      console.log('here?')
+    }
+    else {
       display_not_found( value )
     }
 
@@ -31,6 +37,18 @@ const lookup = function( value ){
 const display_account_name = function(row_num) {
   $('body').attr('id','result')
   $('.result').find('span').html( account_name( row_num ) )
+}
+
+const display_account_names = function( row_nums ) {
+  console.log(row_nums)
+  $('body').attr('id','result')
+  let total = row_nums.length
+  let string = ""
+  row_nums.forEach( function( value, index ){
+    string = string + account_name( SNAPSHOT.findIndex( function(row){ return row.eth == value.eth } ) )
+    if(index+1 < total) string = string + ", "
+  })
+  $('.result').html(`Your account names are <span>${string}</strong>`)
 }
 
 const display_not_found = function( value ){
@@ -61,4 +79,12 @@ const startsWithEOS = (query) => {
   var searchPattern = new RegExp('EOS', 'i');
   // console.log(`${query} has eos`, searchPattern.test(query) )
   return searchPattern.test(query)
+}
+
+const getAllIndexes = (arr, val) => {
+    var indexes = [], i = -1;
+    while ((i = arr.indexOf(val, i+1)) != -1){
+        indexes.push(i);
+    }
+    return indexes;
 }
