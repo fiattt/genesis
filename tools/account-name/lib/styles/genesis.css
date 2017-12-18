@@ -17,6 +17,7 @@ button#export_genesis_config { border-radius: 0 6px 6px 0; border-left:none; }
 button#export_genesis_config { background: rgba(0,0,0,0.9); color:#999; border-color:rgba(255,255,255,0.2) }
 input.add-account { background:#f1efaf; font-size:10pt; padding:5px 11px; margin:auto; color:#111 }
 button:hover  { background:#448b44; cursor:pointer; }
+em { font-size:9pt; display:block; margin-top:11px; color:#999 }
 
 .form-group {margin-bottom:20px; padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.04)}
 
@@ -32,7 +33,7 @@ body.error .error {background:rgba(255,0,0,0.3); line-height:20pt; text-align:le
 .result { color:#777; font-size:24pt }
 .result span { color: white; }
 
-body#result form {display:none}
+body#result form, body#result em.note { display:none }
 
 body#error-not-found .error, body#error-invalid .error { display:block; }
 body#error-not-found .error > div { display:none }
@@ -61,7 +62,5 @@ label { font-size:8pt; text-transform: uppercase; color:#888; letter-spacing:1px
 button.delete, input.add-account, input[type=submit], button { cursor:pointer; }
 
 .import-config { padding:20px }
-
-em { font-size:9pt; display:block; margin-top:11px; color:#999 }
 
 /*.fields.initial-parameters input { clear:both; display:block;}*/

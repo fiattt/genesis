@@ -7,14 +7,13 @@ $( function(){
 })
 
 const lookup = function( value ){
+
     let found = -1
 
     if(startsWithETH(value)) {
-      // console.log('ETH');
-      found = SNAPSHOT.findIndex( function(row){ return row.eth == value } )
+      found = SNAPSHOT.findIndex( function(row){ return row.eth.toLowerCase() == value.toLowerCase() } )
     }
     else if(startsWithEOS(value)) {
-      // console.log('EOS');
       found = SNAPSHOT.filter( function(row){ return row.eos == value } )
     }
     else { display_invalid( value ) }
@@ -22,11 +21,9 @@ const lookup = function( value ){
     if(typeof found == "object" && found.length) {
       if(found.length > 1) { display_account_names( found ) }
       else                 { display_account_name( SNAPSHOT.findIndex( function(row){ return row.eth == found[0].eth } ) ) }
-
     }
     else if(typeof found == "number"  && found > -1) {
       display_account_name( found )
-      console.log('here?')
     }
     else {
       display_not_found( value )
@@ -40,7 +37,6 @@ const display_account_name = function(row_num) {
 }
 
 const display_account_names = function( row_nums ) {
-  console.log(row_nums)
   $('body').attr('id','result')
   let total = row_nums.length
   let string = ""
@@ -77,7 +73,6 @@ const startsWithETH = (query) => {
 
 const startsWithEOS = (query) => {
   var searchPattern = new RegExp('EOS', 'i');
-  // console.log(`${query} has eos`, searchPattern.test(query) )
   return searchPattern.test(query)
 }
 

@@ -7,7 +7,6 @@ window.onload = function() { init() }
 var init = function() { document.body.id = "loading", snapshot_load() }
 
 var snapshot_load = function() {
-  console.log('Loading Snapshot')
   if( check_url(SNAPSHOT_FILE) )
     snapshot_load_csv( SNAPSHOT_FILE, response => {
       if(response)
