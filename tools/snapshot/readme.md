@@ -1,33 +1,28 @@
 # Genesis Tools: Snapshot
 
-- [Snapshot Generator](#snapshot)
-	- [Installation](#snapshot-install)
-		- [Docker](#snapshot-install-docker)
-		- [Manual](#snapshot-install-manual)
-	- [Usage](#snapshot-install-usage)
-	- [Development](#snapshot-install-development)
-	- [How it Works](#snapshot-install-about)
-		- [High Level](#snapshot-install-about-highlevel)
-		- [Low Level](#snapshot-install-about-lowlevel)
+- [Snapshot Generator](#snapshot-generator)
+	- [Installation](#installation)
+		- [Docker](#docker-installation-and-usage)
+		- [Manual](#manual-installation)
+	- [Usage](#manual-install-usage)
+	- [Development](#development)
+	- [How it Works](#how-it-works)
+		- [High Level](#high-level)
+		- [Low Level](#low-level)
 
 
-<a name="snapshot"></a>
 ## Snapshot Generator
 
-<a name="snapshot-install"></a>
 ### Installation
 
-<a name="snapshot-install-docker"></a>
 #### Docker Installation and Usage
 _Docker installation is a work in progress_
 
 
-<a name="snapshot-install-manual"></a>
 #### Manual Installation
 
 Manual install is recommended for advanced users only.
 
-<a name="snapshot-install-manual-prerequisites"></a>
 #### Prerequisites
 
 1. MySQL
@@ -35,7 +30,6 @@ Manual install is recommended for advanced users only.
 3. Parity 1.7.8 (Recommended) or Geth
 4. Node v0.6.X
 
-<a name="snapshot-install-manual-system"></a>
 #### System requirements
 
 1. 8GB Ram Recommended, can make due with 4gb
@@ -64,13 +58,11 @@ There are three methods for configuration
 - `mysql_host`
 - `mysql_port`
 
-<a name="snapshot-install-notes"></a>
 ### Important notes on Parity
 
 Since Parity v1.7.8 `--warp` is enabled by default, it is **absolutely necessary** that you include the flag `--no-warp`. Warping will skip over historical data that the snapshot requires, tricking web3 into thinking the chain is synced when it is not. Warping is useful for miners, whereas for this situation it is poison and will throw errors/produce an inaccurate snapshot. 
 
 
-<a name="snapshot-install-manual-usage"></a>
 ### Manual Install Usage
 
 1. Configure using one of three available options
@@ -85,19 +77,16 @@ Since Parity v1.7.8 `--warp` is enabled by default, it is **absolutely necessary
 5. Go outside or to bed. 
 
 
-<a name="snapshot-install-manual-notes"></a>
 ### Notes
 
 - For your convenience, if web3 is syncing, the app will attempt to start every 30 seconds until it Parity is fully synced
 - If parity crashes, you'll need to start over. 
 
 
-<a name="snapshot-install-manual-about"></a>
 ### How it Works
 
 
-<a name="snapshot-install-manual-about-highlevel"></a>
-#### High Level (constraints)
+#### High Level
 
 The snapshot parameters this software proposes are as follows
 
