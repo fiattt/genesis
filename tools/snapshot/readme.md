@@ -1,15 +1,15 @@
 # Genesis Tools: Snapshot
 
-- [Snapshot Generator](#snapshot-generator)
-	- [Installation](#installation)
-		- [Docker](#docker-installation-and-usage)
-		- [Manual](#manual-installation)
-	- [Usage](#manual-install-usage)
-	- [Development](#development)
-	- [How it Works](#how-it-works)
-		- [High Level](#high-level)
-		- [Low Level](#low-level)
-	- [Logic differences between mainnet and testnet](#difference-between-testnet-and-mainnet)
+
+- [Installation](#installation)
+	- [Docker](#docker-installation-and-usage)
+	- [Manual](#manual-installation)
+- [Usage](#manual-install-usage)
+- [Development](#development)
+- [How it Works](#how-it-works)
+	- [High Level](#high-level)
+	- [Low Level](#low-level)
+- [Logic differences between mainnet and testnet](#difference-between-testnet-and-mainnet)
 
 
 ## Snapshot Generator
