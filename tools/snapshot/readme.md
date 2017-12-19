@@ -9,6 +9,7 @@
 	- [How it Works](#how-it-works)
 		- [High Level](#high-level)
 		- [Low Level](#low-level)
+	- [Logic differences between mainnet and testnet](#difference-between-testnet-and-mainnet)
 
 
 ## Snapshot Generator
