@@ -23,7 +23,10 @@
     "Tabby": "github:cferdinandi/tabby",
     "crypto": "1.0.1",
     "eosjs-ecc": "2.0.1",
+    "flowtype-js": "0.1.1",
+    "jade": "1.11.0",
     "jquery": "3.2.1",
+    "pug": "2.0.0-rc.4",
     "seedrandom": "2.4.3",
     "sha256": "0.2.0"
   }

@@ -409,7 +409,7 @@
 		if ( !hash ) return;
 		var toggle = document.querySelector( settings.selectorToggle + '[href*="' + hash + '"]' );
 		tabby.toggleTab( hash, toggle );
-
+    
 	};
 
 	/**

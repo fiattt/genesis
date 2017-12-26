@@ -43,7 +43,7 @@ const display_account_names = function( row_nums ) {
   row_nums.forEach( function( value, index ){
     string = string + account_name( SNAPSHOT.findIndex( function(row){ return row.eth == value.eth } ) )
     if(index+1 < total) string = string + ", "
-  })
+    })
   $('.result').html(`Your account names are <span>${string}</strong>`)
 }
 
@@ -64,7 +64,6 @@ const account_name = function(row_num){
 const reset = function() {
   $('body').attr('id', 'ready')
 }
-
 
 const startsWithETH = (query) => {
   var searchPattern = new RegExp('0x', 'i');

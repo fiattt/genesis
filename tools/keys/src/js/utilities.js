@@ -5,37 +5,38 @@ const ecc         = require('eosjs-ecc'),
       seedrandom  = require('seedrandom'),
       crypto      = require('crypto'),
       algorithm   = 'aes-256-ctr',
-      sha256      = require('sha256')
+      sha256      = require('sha256'),
 
-let   SEED_SHOW,
-      errors,
-      tries
+      util        = {}
 
-const util = {}
+let   errors      = [],
+      tries       = 0
 
 util.genKeyPair = (seed) => {
-  var d
-  if(typeof seed !== 'undefined')
-    d = ecc.PrivateKey.fromSeed(seed)
-  else
-    d = ecc.PrivateKey.randomKey()
+  const {PrivateKey, PublicKey} = ecc
 
-  var privkey = d.toWif()
-  var pubkey = d.toPublic().toString()
+
+  if(typeof seed !== 'undefined')
+    PrivateKey.fromSeed( seed )
+  else
+    PrivateKey.fromSeed( new String(  ) )
+
+  let privkey = d.toWif()
+  let pubkey = d.toPublic().toString()
 
   // console.log(privkey, pubkey)
 
-  var pubkeyError = null
+  let pubkeyError = null
   try {
-    ecc.PublicKey.fromStringOrThrow(pubkey)
+    PublicKey.fromStringOrThrow(pubkey)
   } catch(error) {
     console.log('pubkeyError', error, pubkey)
     pubkeyError = error.message + ' => ' + pubkey
   }
 
-  var privkeyError = null
+  let privkeyError = null
   try {
-    var pub2 = ecc.PrivateKey.fromWif(privkey).toPublic().toString()
+    let pub2 = PrivateKey.fromWif(privkey).toPublic().toString()
     if(pubkey !== pub2)
       throw {message: 'public key miss-match: ' + pubkey + ' !== ' + pub2}
   } catch(error) {
@@ -74,8 +75,8 @@ util.encrypt = (keypair, password) => {
 }
 
 util.decrypt = (encrypted, password) => {
-  var decipher = crypto.createDecipher(algorithm, password)
-  var dec = decipher.update(text,'hex','utf8')
+  let decipher = crypto.createDecipher(algorithm, password)
+  let dec = decipher.update(text,'hex','utf8')
   dec += decipher.final('utf8')
   return dec;
 }
@@ -101,35 +102,52 @@ util.generateSeed = (update, finished) => {
   const every = util.randomBetween(200, 300)
   const loops = util.randomBetween(8, 12)
 
-  let t = []
-  let count = 0
-  let total = 0
-  let seed = ""
+  let t, count, total, seed
+
+  const reset = () => {
+    t = []
+    count = 0
+    total = 0
+    seed = ""
+
+    fin()
+    document.addEventListener('mousemove',gen)
+    document.addEventListener('keyup', gen)
+    globals.GENERATE_SEED = true
+  }
 
   const gen = e => {      // Define a custom entropy collector.
+    if(!globals.GENERATE_SEED) return true
+
     let random
-    count++
-    update( Math.floor(total/every*loops) )
+
+    update( Math.floor( total / every*loops ) )
+
+    console.log(`${total} / ${every*loops}`)
+
     if(typeof e.pageX != 'undefined')
       t.push([e.pageX, e.pageY, +new Date])
+
     if(typeof e.key != 'undefined')
       t.push(e.key)
-    if(count > every)
+
+    if(t.length > every)
       random = new Math.seedrandom(t, {entropy: true}),
       seed = sha256(new String(random.int32())+seedrandom(seed)),
-      t = [],
-      total += count,
-      count = 0
+      total += t.length,
+      t = []
       if(total > every*loops)
-        fin(),
-        finished(seed)
+        finished(seed),
+        fin()
   }
+
   const fin = () => {
+    globals.GENERATE_SEED = false
     document.removeEventListener('mousemove', gen)
     document.removeEventListener('keyup', gen)
   }
-  document.addEventListener('mousemove',gen)
-  document.addEventListener('keyup', gen)
+
+  reset()
 }
 
 util.randomBetween = (min,max) => {

@@ -1,5 +1,7 @@
-
-
 input.error { border-color:red; }
 input.valid { border-color:green; }
-.progress {height:10px; background:black; width:0%; display:block}
+.progress {height:10px; background:black; width:0%; display:block; transition: all 2s ease;}
+a.expanded {font-weight:bold;}
+
+div.toggle {display:none;}
+div.toggle.expanded {display:block}

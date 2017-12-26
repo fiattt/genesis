@@ -1,6 +1,7 @@
-const $     = require('jquery'),
-      tabby = require('./tabby.js'),
-      util = require('./utilities.js')
+let   $         = require('jquery'),
+      flowtype  = require('flowtype-js'),
+      tabby     = require('./tabby.js'),
+      util      = require('./utilities.js')
 
 $(() => {
   bind.tabby()
@@ -42,7 +43,7 @@ app.keygenSelect = (sel) => {
     helpers.quickGen()
   })
   //Advanced Toggle
-  $el.find('.advancedToggle').on('click', () => {
+  $el.find('.advanced.toggle').on('click', function(){
     const $container = $el.find('.advanced')
     if($container.hasClass('expanded')) {
       $container.removeClass('expanded')
@@ -59,13 +60,13 @@ app.keygenSelect = (sel) => {
 }
 
 app.generateSeed = (sel) => {
+
   const complete = seed => {
     tabby.toggleTab('#outputDisplay')
     gui.displayKey( util.genKeyPair(seed) )
   }
 
   const update = progress => {
-    console.log(progress)
     $(sel).find('.progress').width(`${progress}%`)
   }
 
@@ -73,7 +74,7 @@ app.generateSeed = (sel) => {
 }
 
 app.inputSeed = (sel) => {
-  $(sel).find('#inputSeed form').submit(function(e){
+  $(sel).find('form').submit(function(e){
     e.preventDefault()
     gui.displayKey( util.genKeyPair( $(this).find('input:text').val() ) )
   })
@@ -96,35 +97,51 @@ helpers.quickGen = () => {
 
 //GUI
 gui.displayKey = keypair => {
-  tabby.toggleTab(sel)
+  tabby.toggleTab("#outputDisplay")
   const $form = $('#outputDisplay form')
   $form.find('input[name=public_key]').attr('value', keypair.public)
   $form.find('input[name=private_key]').attr('value', keypair.private)
 }
 
 gui.reset = () => {
-  tabby.toggleTab(sel)
-
-  const $output = $('#outputDisplay form')
-  $output.find('input[name=public_key]').attr('value', null)
-  $output.find('input[name=private_key]').attr('value', null)
-
-  const $validator = $('#validator form')
-  $validator.find('input[name=public_key]').attr('value', null)
-  $validator.find('input[name=private_key]').attr('value', null)
+  location.reload()
+  // tabby.toggleTab('#welcome')
+  //
+  // const $output = $('#outputDisplay form')
+  // $output.find('input[name=public_key]').attr('value', null)
+  // $output.find('input[name=private_key]').attr('value', null)
+  //
+  // const $validator = $('#validator form')
+  // $validator.find('input[name=public_key]').attr('value', null)
+  // $validator.find('input[name=private_key]').attr('value', null)
 }
 
 //Bindings
 bind.reset = () => {
+  $('a.reset').off('click', gui.reset)
   $('a.reset').on('click', gui.reset)
 }
 
 bind.tabby = () => {
   tabby.init({
-    callback: (tabs, toggle) => {
-      const id = $(tabs).attr('id')
-      if(typeof app[id] === 'function') app[id](`${id}`)
-      return true
-    }
+    callback: (tabs, toggle) => initApp
   })
+}
+
+const initApp = (tabs, toggle) = {
+  const id = $(tabs).attr('id')
+  if(typeof app[id] === 'function')
+    app[id](`#${id}`),
+    typography(`#${id}`)
+  return true
+}
+
+const typography = (sel) => {
+  flowtype(document.querySelector(sel), {
+    minimum   : 500,
+    maximum   : 1200,
+    minFont   : 12,
+    maxFont   : 40,
+    fontRatio : 30
+  });
 }
