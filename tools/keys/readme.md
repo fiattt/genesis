@@ -13,14 +13,15 @@ This tool is experimental and downloadble binaries are not yet available.
 - Windows - Untested
 - Linux - Untested
 
+
 ## Building Binaries Youself
 
-Install [electron]()
+Install dependencies
 ```bash
-npm install -f electron`
+npm install
 ```
 
-Install [electron-packager](https://github.com/electron-userland/electron-packager) locally
+Install [electron-packager](https://github.com/electron-userland/electron-packager) globally
 
 ```bash
 npm install electron-packager
