@@ -46,6 +46,8 @@ Compile for current platform
 npm run compile
 ```
 
+You'll now find a **build** directory in the project root, where you can find an executable for your system. 
+
 ## Compile for all Platforms
 
 ### Building for All Platforms
