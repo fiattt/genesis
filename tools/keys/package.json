@@ -1,33 +1,27 @@
 {
-  "name": "electron-quick-start",
-  "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "name": "eos-genesis-keys-utility",
+  "version": "0.0.1",
+  "description": "EOS Genesis Keys Utility",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "compile": "sh ./bin/compile.sh"
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
+    "EOS",
+    "eosjs-ecc",
+    "genesis"
   ],
-  "author": "GitHub",
+  "author": "Sandwich",
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "~1.7.8"
   },
   "dependencies": {
     "Tabby": "github:cferdinandi/tabby",
-    "crypto": "1.0.1",
+    "async": "2.6.0",
+    "clipboard": "1.7.1",
     "eosjs-ecc": "2.0.1",
-    "flowtype-js": "0.1.1",
-    "jade": "1.11.0",
-    "jquery": "3.2.1",
-    "pug": "2.0.0-rc.4",
-    "seedrandom": "2.4.3",
-    "sha256": "0.2.0"
+    "jquery": "3.2.1"
   }
 }

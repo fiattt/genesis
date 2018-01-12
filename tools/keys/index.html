@@ -4,68 +4,46 @@
     <meta charset="UTF-8">
     <title>EOS Keys Utility</title>
     <link rel="stylesheet" href="./src/css/tabby.min.css"></link>
+    <link rel="stylesheet" href="./src/fonts/fonts.css">
     <link rel="stylesheet" href="./src/css/main.css"></link>
   </head>
   <body>
-    <div data-tabs-content>
+    <div id="entropy">
+      <span>Adding CPU Entropy</span>
+    </div>
+    <div id="indicator"></div>
+    <div data-tabs-content id="wrapper">
       <div data-tabs-pane class="tabs-pane active" id="welcome">
-        <img src="./src/images/logo.png" />
+        <img src="./src/images/logo.png" id="logo" />
+        <a data-tabs-pane href="#keyGen">Generator</a>
         <a data-tabs-pane href="#validator">Validator</a>
-        <a href="#keygenSelect">Generator</a>
-        <a href="#" class="reset">Start Over</a>
       </div>
-      <div data-tabs-pane class="tabs-pane" id="keygenSelect">
-        <div class="select">
-          <a href="#" class="quick">Quick Keygen</a>
-          <a href="#" class="advanced toggle">Advanced</a>
-          <div class="advanced toggle">
-            <a href="#generateSeed" class="generateSeed">Generate a Seed (more entropy)</a>
-            <a data-tab href="#inputSeed" class="inputSeed">Input Your Own Seed</a>
-          </div>
-        </div>
-        <a href="#" class="reset">Start Over</a>
-      </div>
-      <div data-tabs-pane class="tabs-pane" id="generateSeed">
+      <div data-tabs-pane class="tabs-pane" id="keyGen">
         <div class="message">
-          Move your mouse around and press keys, the more random the better :)
+          Below is a valid EOS keypair, click each key to copy.
         </div>
-        <div class="progress"></div>
-        <div class="seed"></div>
-        <a href="#" class="reset">Start Over</a>
-      </div>
-      <div data-tabs-pane class="tabs-pane" id="inputSeed">
-        <div class="warning">
-          <H1>Warning!</h2>
-          <p>This is intended for <strong>advanced users only</strong>. <em>If your seed is compromised, so is your key!</em></p>
-        </div>
-        <form class="inputSeed">
-          <input type="text" name="seed">
-          <input type="submit" value="Generate Keypair" />
-        </form>
-        <a href="#" class="reset">Start Over</a>
-      </div>
-      <div data-tabs-pane class="tabs-pane" id="outputDisplay">
         <form>
           <label for="public_key">Public Key</label>
-          <input type="text" name="public_key" readonly />
+          <input type="text" name="public_key" readonly data-clipboard-target="this" />
           <label for="private_key">Private key</label>
-          <input type="text" name="private_key" readonly />
+          <input type="text" name="private_key" readonly data-clipboard-target="this" />
         </form>
-        <a href="#" class="reset">Start Over</a>
-      </div>
-      <div data-tabs-pane class="tabs-pane" id="outputSave">
-        <button id="downloadFile"></button>
-        <a href="#" class="reset">Start Over</a>
+        <a href="#" class="regenerate">Regenerate</a>
+        <a href="#" class="reset">Go Back</a>
       </div>
       <div data-tabs-pane class="tabs-pane" id="validator">
+        <div class="message">
+          <span class="valid">Valid</span>
+          <span class="invalid">Invalid</span>
+        </div>
         <form>
           <label for="public_key">Public Key</label>
-          <input type="text" name="public_key" value="EOS5AgpY4XyRvgnQRk5N3VYycoP98WNNxGqZsCRU4yaF9oPkSYq3Q" />
+          <input type="text" name="public_key" value="EOS5AgpY4XyRvgnQRk5N3VYycoP98WNNxGqZsCRU4yaF9oPkSYq3Q" placeholder="EOS..." />
           <label for="private_key">Private key</label>
-          <input type="text" name="private_key" value="5KAATZPGtqeTB2heLdzL8DjDrL9yxSjq8LtG1j5uTfuvwfP1sjt" />
+          <input type="text" name="private_key" value="5KAATZPGtqeTB2heLdzL8DjDrL9yxSjq8LtG1j5uTfuvwfP1sjt" placeholder="5..." />
           <input type="submit" value="Validate" />
         </form>
-        <a href="#" class="reset">Start Over</a>
+        <a href="#" class="reset">Go Back</a>
       </div>
     </divb>
     <script>

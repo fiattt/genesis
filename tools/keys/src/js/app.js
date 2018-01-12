@@ -1,128 +1,95 @@
-let   $         = require('jquery'),
-      flowtype  = require('flowtype-js'),
+const $         = require('jquery'),
       tabby     = require('./tabby.js'),
-      util      = require('./utilities.js')
-
-$(() => {
-  bind.tabby()
-  bind.reset()
-})
+      util      = require('./utilities.js'),
+      clipboard = require('clipboard')
 
 const app     = {},
       helpers = {},
       gui     = {},
       bind    = {}
 
+let   entropied = false;
+
+$(() => {
+  bind.tabby()
+  bind.reset()
+  bind.regenerate()
+  gui.reset()
+  window.addEventListener('will-navigate', e => e.preventDefault());
+
+  new clipboard('#keyGen input', {
+    target: function(trigger) {
+        return trigger;
+    }
+  });
+
+})
+
 app.validator = (sel) => {
-  console.log('validator.')
   $(sel).find('form').submit( function(e){
-    console.log('submit.')
     e.preventDefault()
-    const $pub    = $(this).find('input[name=public_key]'),
+    const $fields = $(this).find('input'),
+          $pub    = $(this).find('input[name=public_key]'),
           $priv   = $(this).find('input[name=private_key]'),
           pub     = $pub.val(),
           priv    = $priv.val(),
           isValid = util.validateKeypair(pub, priv)
 
-    $pub.removeClass('error') && $priv.removeClass('error')
+    $('body').removeClass('error valid')
 
-    if(!isValid.publicKey && $pub.val().length)
-      $pub.addClass('error')
+    if(isValid)
+      $('body').addClass('valid')
     else
-      $pub.addClass('valid')
-
-    if(!isValid.privateKey && $priv.val().length)
-      $priv.addClass('error')
-    else
-      $priv.addClass('valid')
+      $('body').addClass('error')
   })
 }
 
-app.keygenSelect = (sel) => {
-  const $el = $(sel)
-  //quick
-  $el.find('a.quick').on('click', () => {
-    helpers.quickGen()
+app.keyGen = (sel) => {
+  if(!entropied) $('body').addClass('entropy')
+  util.genKeyPair().then( keypair => {
+    gui.displayKey( keypair )
+    $('body').removeClass('entropy')
+    entropied = true
   })
-  //Advanced Toggle
-  $el.find('.advanced.toggle').on('click', function(){
-    const $container = $el.find('.advanced')
-    if($container.hasClass('expanded')) {
-      $container.removeClass('expanded')
-      $(this).removeClass('expanded')
-    } else {
-      $container.addClass('expanded')
-      $(this).addClass('expanded')
-    }
-  // //Generate Seed
-  // $el.find('.generateSeed').on('click', () => app.generateSeed() )
-  // //Input Your Own Seed
-  // $el.find('.inputSeed').on('click', () => app.inputSeed() )
-  })
-}
-
-app.generateSeed = (sel) => {
-
-  const complete = seed => {
-    tabby.toggleTab('#outputDisplay')
-    gui.displayKey( util.genKeyPair(seed) )
-  }
-
-  const update = progress => {
-    $(sel).find('.progress').width(`${progress}%`)
-  }
-
-  util.generateSeed( update, complete )
-}
-
-app.inputSeed = (sel) => {
-  $(sel).find('form').submit(function(e){
-    e.preventDefault()
-    gui.displayKey( util.genKeyPair( $(this).find('input:text').val() ) )
-  })
-}
-
-app.outputDisplay = (sel) => {
-  //bind copy func
-}
-
-app.outputSave = (sel) => {
-  //ecrypt and save the file
-  //provide link to file.
-}
-
-
-//Helpers
-helpers.quickGen = () => {
-  console.log(util.genKeyPair())
-  gui.displayKey( util.genKeyPair() )
 }
 
 //GUI
 gui.displayKey = keypair => {
-  tabby.toggleTab("#outputDisplay")
-  const $form = $('#outputDisplay form')
+  const $form = $('#keyGen form')
   $form.find('input[name=public_key]').attr('value', keypair.public)
   $form.find('input[name=private_key]').attr('value', keypair.private)
 }
 
 gui.reset = () => {
-  location.reload()
-  // tabby.toggleTab('#welcome')
-  //
-  // const $output = $('#outputDisplay form')
-  // $output.find('input[name=public_key]').attr('value', null)
-  // $output.find('input[name=private_key]').attr('value', null)
-  //
-  // const $validator = $('#validator form')
-  // $validator.find('input[name=public_key]').attr('value', null)
-  // $validator.find('input[name=private_key]').attr('value', null)
+  gui.bodyID('welcome')
+  $('body').removeClass('error valid')
+
+  const $output = $('#keyGen form')
+  $output.find('input[name=public_key]').attr('value', null)
+  $output.find('input[name=private_key]').attr('value', null)
+
+  const $validator = $('#validator form')
+  $validator.find('input[name=public_key]').attr('value', null)
+  $validator.find('input[name=private_key]').attr('value', null)
+
+  tabby.toggleTab('#welcome')
+}
+
+gui.validatorReady = ( form ) = {
+  // if(form)
+}
+
+gui.bodyID = id => {
+    $('body').attr('id', `${id}-active`)
 }
 
 //Bindings
 bind.reset = () => {
-  $('a.reset').off('click', gui.reset)
   $('a.reset').on('click', gui.reset)
+}
+
+bind.regenerate = () => {
+  $('a.regenerate').on('click', app.keyGen)
 }
 
 bind.tabby = () => {
@@ -134,8 +101,9 @@ bind.tabby = () => {
 const initApp = (tabs, toggle) => {
   const id = $(tabs).attr('id')
   if(typeof app[id] === 'function')
-    app[id](`#${id}`),
-    typography(`#${id}`)
+    gui.bodyID(id),
+    app[id](`#${id}`)
+    // typography(`#${id}`)
   return true
 }
 
