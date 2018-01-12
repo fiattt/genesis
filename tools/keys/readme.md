@@ -1,5 +1,6 @@
 # EOS Genesis Key Utility
 
+![EOS Genesis Key Utility Screenshot](https://raw.githubusercontent.com/EOSIO/genesis/keys-simple/tools/keys/src/images/screenshot.png)
 
 An offline EOS key utility built with nodejs and Electron. This utility does two things: 
 
