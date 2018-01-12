@@ -14,7 +14,9 @@ const app     = {},
       bind    = {}
 
 app.validator = (sel) => {
+  console.log('validator.')
   $(sel).find('form').submit( function(e){
+    console.log('submit.')
     e.preventDefault()
     const $pub    = $(this).find('input[name=public_key]'),
           $priv   = $(this).find('input[name=private_key]'),
@@ -92,6 +94,7 @@ app.outputSave = (sel) => {
 
 //Helpers
 helpers.quickGen = () => {
+  console.log(util.genKeyPair())
   gui.displayKey( util.genKeyPair() )
 }
 
@@ -124,11 +127,11 @@ bind.reset = () => {
 
 bind.tabby = () => {
   tabby.init({
-    callback: (tabs, toggle) => initApp
+    callback: initApp
   })
 }
 
-const initApp = (tabs, toggle) = {
+const initApp = (tabs, toggle) => {
   const id = $(tabs).attr('id')
   if(typeof app[id] === 'function')
     app[id](`#${id}`),

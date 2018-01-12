@@ -13,22 +13,20 @@ let   errors      = [],
       tries       = 0
 
 util.genKeyPair = (seed) => {
-  const {PrivateKey, PublicKey} = ecc
-
 
   if(typeof seed !== 'undefined')
-    PrivateKey.fromSeed( seed )
+    d = ecc.PrivateKey.fromSeed( seed )
   else
-    PrivateKey.fromSeed( new String(  ) )
+    d = ecc.PrivateKey.randomKey()
 
-  let privkey = d.toWif()
+  let privkey = d.then(toWif()
   let pubkey = d.toPublic().toString()
 
-  // console.log(privkey, pubkey)
+  console.log(privkey, pubkey)
 
   let pubkeyError = null
   try {
-    PublicKey.fromStringOrThrow(pubkey)
+    ecc.PublicKey.fromStringOrThrow(pubkey)
   } catch(error) {
     console.log('pubkeyError', error, pubkey)
     pubkeyError = error.message + ' => ' + pubkey
@@ -36,7 +34,7 @@ util.genKeyPair = (seed) => {
 
   let privkeyError = null
   try {
-    let pub2 = PrivateKey.fromWif(privkey).toPublic().toString()
+    let pub2 = ecc.PrivateKey.fromWif(privkey).toPublic().toString()
     if(pubkey !== pub2)
       throw {message: 'public key miss-match: ' + pubkey + ' !== ' + pub2}
   } catch(error) {
@@ -50,6 +48,8 @@ util.genKeyPair = (seed) => {
 
   if(tries > 3)
     return "Does not compute."
+
+  console.log({ public: pubkey, private: privkey })
 
   return { public: pubkey, private: privkey }
 }
