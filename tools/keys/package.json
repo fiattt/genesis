@@ -4,7 +4,8 @@
   "description": "EOS Genesis Keys Utility",
   "main": "main.js",
   "scripts": {
-    "compile": "sh ./bin/compile.sh"
+    "compile": "sh ./bin/compile.sh",
+    "compile-all": "sh ./bin/compile-all.sh"
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [
