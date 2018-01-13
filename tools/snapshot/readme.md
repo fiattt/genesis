@@ -112,7 +112,7 @@ Below is the script transposed to plain english.
 4. Generate Period Map
 	1. Used to define block ranges of periods
 	2. Determines the block range that the snapshot is based upon
-5. Set Applicatrion State Variables (including user configurations)
+5. Set Application State Variables (including user configurations)
 5. Sync history of token and crowdsale contract. 
 	1. EOS Transfers
 	2. Buys
