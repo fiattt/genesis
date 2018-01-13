@@ -1,6 +1,5 @@
 const async  = require('async')
 const bn     = require('bignumber.js')
-
 const Wallet = require('./Wallet')
 const util = require('../utilities')
 
