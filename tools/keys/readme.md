@@ -7,7 +7,7 @@ An offline EOS key utility built with nodejs and Electron. This utility does two
 - Generate a valid EOS keypair
 - Validate an existing EOS keypair
 
-This tool is experimental and downloadable binaries are not yet available. 
+This tool is experimental and downloadable executables are not yet available. 
 
 ## Status
 - MacOS - Tested, Functional
@@ -19,7 +19,7 @@ This tool is experimental and downloadable binaries are not yet available.
 - electron (installed globally)
 - electron package manager (installed globally)
 
-## Building Binaries Youself
+## Building Executables Youself
 
 Install dependencies
 ```bash
