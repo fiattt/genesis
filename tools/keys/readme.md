@@ -26,12 +26,6 @@ Install dependencies
 npm install
 ```
 
-Install [electron-packager](https://github.com/electron-userland/electron-packager) globally
-
-```bash
-npm install electron-packager
-```
-
 Clone the repo
 
 ```bash 
@@ -46,7 +40,17 @@ cd genesis/tools/keys
 
 Compile for current platform
 
+Method one: With Electron
+
 ```bash
+npm install -g electron
+electron .
+```
+
+Method Two: With Electron package Manager
+
+```bash
+npm install -g electron-packager
 npm run compile
 ```
 
