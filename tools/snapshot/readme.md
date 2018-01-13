@@ -146,7 +146,7 @@ Below is the script transposed to plain english.
 	   			3. If found and valid, set `valid` to `true` otherwise save error into `fallback_error` column
 		2. Slow fallback
 			1. Obtain list of unique addresses with balance gte 1 EOS and no EOS key and save them as keys in index (redis is used as index)
-			2. Scan every `from` value in every transaction transaction included in every block between block 0 to end of block range for snapshot for against  _index_ (find a better way and I'll buy you a Sandwich)
+			2. Scan every `from` value in every transaction transaction included in every block between block 0 to end of block range for snapshot for against  _index_ 
 			3. If public key is found, execute fallback registration and revalidate entry, update database row appropriately
     6. Test
     	1. Daily Totals from DB against daily totals from EOS Utility Contract, failure here would not fail the below tests, but would instead result in inaccurate unclaimed balances. Difficult problem to detect without this test. 
