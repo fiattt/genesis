@@ -5,8 +5,7 @@ module.exports = () => {
         colors = require("colors/safe"),
         waterfall = require('async').waterfall,
         prompt = require('./prompt'),
-        fs = require('fs'),
-        Snapshot = require('./snapshot')
+        fs = require('fs')
 
   const boot = () => {
     waterfall([
