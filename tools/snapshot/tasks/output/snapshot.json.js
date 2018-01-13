@@ -26,12 +26,12 @@ module.exports = ( state, complete ) => {
 
   let get_state_variables = callback => {
     data.parameters = {
-      period:                state.config.period,
+      period:                config.period,
       block_begin:           state.block_begin,
       block_end:             state.block_end,
-      b1_dist:               state.config.include_b1
+      b1_dist:               config.include_b1
     }
-    data.meta.author = state.config.author
+    data.meta.author = config.author
     data.meta.timestamp_started = state.started
     callback()
   }
@@ -47,8 +47,8 @@ module.exports = ( state, complete ) => {
   }
 
   let get_supply_expected = callback => {
-    data.supply.expected = 200000000+(state.config.period*2000000)
-    if(state.config.include_b1) data.supply.expected += 100000000
+    data.supply.expected = 200000000+(config.period*2000000)
+    if(config.include_b1) data.supply.expected += 100000000
     callback()
   }
 
@@ -66,7 +66,7 @@ module.exports = ( state, complete ) => {
   let get_supply_liquid = callback => {
     //Sequelize giving me trouble, reverted to raw queries.
     let query = `SELECT sum(balance_total) FROM wallets WHERE address!="${CS_ADDRESS_TOKEN}" AND address!="${CS_ADDRESS_CROWDSALE}"`
-    if(!state.config.include_b1)
+    if(!config.include_b1)
       query = `${query} AND address!="${CS_ADDRESS_B1}"`
 
     db.sequelize

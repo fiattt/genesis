@@ -14,7 +14,7 @@ module.exports = (state, complete) => {
 
   const init = (address, finished) => {
     let Wallet = require('../../classes/Wallet.Testnet')
-    let wallet = new Wallet( address, state.config )
+    let wallet = new Wallet( address, config )
     finished( null, wallet )
   }
 

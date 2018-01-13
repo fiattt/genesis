@@ -1,4 +1,4 @@
-let {web3, contract}  = require('../services/web3')
+let {web3, contract}  = require('../services/eth')
 
 const ecc       = require('eosjs-ecc')
 const secp256k1 = require('secp256k1')

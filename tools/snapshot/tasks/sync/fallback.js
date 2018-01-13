@@ -5,7 +5,6 @@ module.exports = ( state, complete ) => {
         Op            = Sequelize.Op,
 
         db            = require('../../models'),
-        redis         = require('../../services/redis'),
         fallback_fast = require('./fallback.fast'),
         fallback_slow = require('./fallback.slow')
 
@@ -28,7 +27,7 @@ module.exports = ( state, complete ) => {
       })
   }
 
-  if(state.config.fallback)
+  if(config.fallback)
     async.series([
         populate_index,
         next => fallback_fast(state, next),

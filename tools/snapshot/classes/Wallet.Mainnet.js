@@ -1,39 +1,39 @@
-const async  = require('async')
-const bn     = require('bignumber.js')
-const Wallet = require('./Wallet')
-const util = require('../utilities')
+const async  = require('async'),
+      bn     = require('bignumber.js'),
+      Wallet = require('./Wallet'),
+      util = require('../utilities')
 
-class WalletTestnet extends Wallet {
+class WalletMainnet extends Wallet {
 
   process_key( complete = () => {} ){
     this.maybe_fix_key()
-    complete(null, this.eos_key)
+    complete()
   }
 
   process_balance_wallet( complete = () => {} ){
-    util.balance.wallet_cumulative( this.address, this.transfers, balance => {
+    util.balance.wallet_token_state( this.address, balance => {
       this.balance.set( 'wallet', balance)
-      complete( null, balance )
+      complete()
     })
   }
 
   process_balance_unclaimed( complete = () => {} ){
     util.balance.unclaimed( this.address, this.buys, this.claims, this.config.period, balance => {
       this.balance.set( 'unclaimed', balance )
-      complete( null, balance )
+      complete()
     })
   }
 
   process_balance_reclaimed( complete = () => {} ){
     util.balance.reclaimed( this.address, this.reclaimables, balance => {
       this.balance.set( 'reclaimed', balance )
-      complete( null, balance )
+      complete()
     })
   }
 
   process_balance_sum( complete = () => {} ){
     this.balance.sum()
-    complete( null, this.balance.total )
+    complete()
   }
 
   process_balance_from_wei( complete = () => {} ){
@@ -75,4 +75,4 @@ class WalletTestnet extends Wallet {
   }
 }
 
-module.exports = WalletTestnet
+module.exports = WalletMainnet

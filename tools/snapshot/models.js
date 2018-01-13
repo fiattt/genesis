@@ -1,9 +1,8 @@
-const Sequelize = require('sequelize')
-const connection = require('./services/mysql')
+const Sequelize = require('sequelize'),
+      connection = require('./services/mysql')
 
-let db = {}
-
-let modelConfig = {timestamps: false, ignoreDuplicates: true}
+let   db = {},
+      modelConfig = {timestamps: false, ignoreDuplicates: true}
 
 db.Wallets = connection.define("wallet", {
   address: {

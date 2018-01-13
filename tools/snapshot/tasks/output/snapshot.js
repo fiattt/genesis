@@ -27,7 +27,7 @@ module.exports = ( state, complete ) => {
     ss_fs_config.file_csv = 'snapshot.csv'
     ss_fs_config.file_json = 'snapshot.json'
     ss_fs_config.data_dir = './data'
-    ss_fs_config.dir = `${ss_fs_config.data_dir}/${state.config.period}`
+    ss_fs_config.dir = `${ss_fs_config.data_dir}/${config.period}`
     ss_fs_config.path_csv = `${ss_fs_config.dir}/${ss_fs_config.file_csv}`
     ss_fs_config.path_json = `${ss_fs_config.dir}/${ss_fs_config.file_json}`
     return ss_fs_config

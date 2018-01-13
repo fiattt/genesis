@@ -1,11 +1,10 @@
-const Sequelize    = require('Sequelize')
-const Op           = Sequelize.Op
-const async        = require('async')
-const bn           = require('bignumber.js')
+const Sequelize    = require('Sequelize'),
+      Op           = Sequelize.Op,
+      async        = require('async'),
+      bn           = require('bignumber.js'),
+      db             = require('./models'),
 
-let db             = require('./models')
-
-const query = {}
+      query = {}
 
 // Wallet queries
 query.wallets_bulk_upsert = ( wallets ) => {

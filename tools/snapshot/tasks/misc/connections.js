@@ -1,10 +1,7 @@
 module.exports = (state, complete) => {
 
   const async     = require('async'),
-        sequelize = require('../../models').sequelize,
         colors    = require('colors/safe')
-  let   redis,
-        web3
 
   const check = connected => {
     async.series([
@@ -18,7 +15,8 @@ module.exports = (state, complete) => {
   const check_redis = connected => {
     const check = () => {
       try {
-        redis = require('../../services/redis')
+        const redis = require('./services/redis')
+        global.redis = redis(config.redis_host, config.redis_port)
         return true
       }
       catch(e) {
@@ -36,23 +34,32 @@ module.exports = (state, complete) => {
   }
 
   const check_mysql = connected => {
+    const mysql = require('./services/mysql')
+
     const check = () => {
-      return sequelize.authenticate()
+      global.mysql = mysql(config.mysql_db, config.mysql_user, config.mysql_pass, config.mysql_host, config.mysql_port)
+      return mysql.authenticate()
     }
+
+    const not_connected = retry => {
+      console.log(colors.red.bold(`MySQL: Not Connected (trying again in 5 seconds)`)),
+      setTimeout( retry, 1000*5 )
+    }
+
     check().then( errors => {
       if(!errors)
         console.log(colors.green.bold('MySQL: Connected')),
         connected()
       else
-        console.log(colors.red.bold(`MySQL: Not Connected (trying again in 5 seconds)`)),
-        setTimeout( check, 1000*5 )
+        not_connected( () => check_mysql(connected) )
     })
   }
 
   const check_web3_connected = connected => {
-    // TODO atrocious pattern result of another atrocious pattern (result of attempt to separate web3 logic from Snapshot logic. Possibly misguided)
+    const web3 = require('./services/web3')
 
     const check = () => {
+      global.web3 = web3(config.eth_node_type, config.eth_node_path)
       return web3.eth.net.isListening()
     }
 
@@ -61,14 +68,12 @@ module.exports = (state, complete) => {
       setTimeout( retry, 1000*5 )
     }
 
-    web3 = require('../../services/web3').web3
-
     check().then( ready => {
       if(ready)
         console.log(colors.green.bold('Web3: Connected')),
         connected()
       else
-        not_connected()
+        not_connected( () => check_web3_connected(connected) )
     })
 
   }

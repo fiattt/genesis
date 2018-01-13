@@ -1,5 +1,5 @@
 let BigNumber   = require('bignumber.js')
-let {web3}      = require('../services/web3')
+let {web3}      = require('../services/eth')
 
 class Balance {
 

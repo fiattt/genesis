@@ -6,8 +6,7 @@ module.exports = ( state, complete ) => {
         db_config    = {ignoreDuplicates: true}
 
   let   util           = require('../../utilities'),
-        web3           = require('../../services/web3').web3,
-        web3Query      = require('../../services/web3').query,
+        scanCollection = require('../../helpers/collection').query,
         bn             = require('bignumber.js'),
         Iterator       = require('../../classes/Iterator'),
 
@@ -18,7 +17,7 @@ module.exports = ( state, complete ) => {
 
   const transfers = (iterator, next) => {
     let request = []
-    web3Query.collection.transfers( iterator.from, iterator.to )
+    scanCollection.transfers( iterator.from, iterator.to )
       .then( transfers => {
         let request = []
         if(transfers.length) {
@@ -44,7 +43,7 @@ module.exports = ( state, complete ) => {
 
   const buys = (iterator, next) => {
     let request = []
-    web3Query.collection.buys( iterator.from, iterator.to )
+    scanCollection.buys( iterator.from, iterator.to )
       .then( buys => {
         let request = []
         if(buys.length) {
@@ -70,7 +69,7 @@ module.exports = ( state, complete ) => {
 
   const claims = (iterator, next) => {
     let request = []
-    web3Query.collection.claims( iterator.from, iterator.to )
+    scanCollection.claims( iterator.from, iterator.to )
       .then( claims => {
         let request = []
         if(claims.length) {
@@ -96,7 +95,7 @@ module.exports = ( state, complete ) => {
 
   const registrations = (iterator, next) => {
     let request = []
-    web3Query.collection.registrations( iterator.from, iterator.to )
+    scanCollection.registrations( iterator.from, iterator.to )
       .then( registrations => {
         let request = []
         if(registrations.length) {
@@ -121,7 +120,7 @@ module.exports = ( state, complete ) => {
 
   const reclaimables = (iterator, next) => {
     let request = []
-    web3Query.collection.reclaimables( iterator.from, iterator.to )
+    scanCollection.reclaimables( iterator.from, iterator.to )
       .then( reclaimables => {
         let request = []
         if(reclaimables.length) {

@@ -93,17 +93,15 @@ class Wallet {
     }
   }
 
-  // Reject bad keys and zero balances, elseif was fastest? :/
   valid() {
+    //Set registration status of any entry with valid key regardless of balance validation.
+    this.set_registration_status()
     this.register_error = this.validate()
     return !this.register_error ? true : false
   }
 
   validate(){
     let error = null
-
-    //Sets registration status of any entry with valid key regardless of balance validation.
-    this.set_registration_status()
 
     if( new bn(this.balance.total).lt( new bn(1) ) ) {
       error = 'balance_insufficient'
@@ -124,6 +122,7 @@ class Wallet {
     let error = null
 
     if(!this.registered) {
+
       //The registration function was executed, but the key was blank :(
       if(this.eos_key.length == 0) {
         error = 'key_is_empty'

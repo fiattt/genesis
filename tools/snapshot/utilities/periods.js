@@ -32,7 +32,7 @@ const end_to_block = ( period_map, period ) => {
 }
 
 const daily_totals = ( callback ) => {
-  let {contract}  = require('../services/web3')
+  let {contract}  = require('../services/eth')
   contract.$utility.methods.dailyTotals().call().then( totals => { let t = totals.map( total => new bn(total) ); callback(t) } )
 }
 
