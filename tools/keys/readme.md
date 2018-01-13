@@ -14,6 +14,10 @@ This tool is experimental and downloadable binaries are not yet available.
 - Windows - Untested
 - Linux - Untested
 
+## Dependencies
+- Nodejs & npm
+- electron (installed globally)
+- electron package manager (installed globally)
 
 ## Building Binaries Youself
 
