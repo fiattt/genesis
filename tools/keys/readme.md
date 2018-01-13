@@ -1,5 +1,6 @@
 # EOS Genesis Key Utility
 
+![EOS Genesis Key Utility Screenshot](https://raw.githubusercontent.com/EOSIO/genesis/keys-simple/tools/keys/src/images/screenshot.png)
 
 An offline EOS key utility built with nodejs and Electron. This utility does two things: 
 
@@ -44,6 +45,8 @@ Compile for current platform
 ```bash
 npm run compile
 ```
+
+You'll now find a **build** directory in the project root, where you can find an executable for your system. 
 
 ## Compile for all Platforms
 
