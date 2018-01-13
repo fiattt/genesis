@@ -18,7 +18,7 @@ class WalletMainnet extends Wallet {
   }
 
   process_balance_unclaimed( complete = () => {} ){
-    util.balance.unclaimed( this.address, this.buys, this.claims, this.config.period, balance => {
+    util.balance.unclaimed( this.address, this.buys, this.claims, CS_NUMBER_OF_PERIODS, balance => {
       this.balance.set( 'unclaimed', balance )
       complete()
     })
