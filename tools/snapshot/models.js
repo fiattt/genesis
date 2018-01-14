@@ -1,10 +1,9 @@
-const Sequelize = require('sequelize'),
-      connection = require('./services/mysql')
+const Sequelize = require('sequelize')
 
 let   db = {},
       modelConfig = {timestamps: false, ignoreDuplicates: true}
 
-db.Wallets = connection.define("wallet", {
+db.Wallets = mysql.define("wallet", {
   address: {
     type:             Sequelize.STRING(256),
     primaryKey:       true
@@ -21,7 +20,7 @@ db.Wallets = connection.define("wallet", {
   valid:              Sequelize.BOOLEAN,
 }, {updateOnDuplicate: true, timestamps: false})
 
-db.Transfers = connection.define('transfer', {
+db.Transfers = mysql.define('transfer', {
   id: {
     type:             Sequelize.INTEGER,
     primaryKey:       true
@@ -33,7 +32,7 @@ db.Transfers = connection.define('transfer', {
   eos_amount:         Sequelize.DECIMAL(65,0)
 }, modelConfig)
 
-db.Buys = connection.define('buy', {
+db.Buys = mysql.define('buy', {
   id: {
     type:             Sequelize.INTEGER,
     primaryKey:       true
@@ -45,7 +44,7 @@ db.Buys = connection.define('buy', {
   eth_amount:         Sequelize.DECIMAL(65,0)
 }, modelConfig)
 
-db.Claims = connection.define('claim', {
+db.Claims = mysql.define('claim', {
   id: {
     type:             Sequelize.INTEGER,
     primaryKey:       true
@@ -57,7 +56,7 @@ db.Claims = connection.define('claim', {
   eos_amount:         Sequelize.DECIMAL(65,0)
 }, modelConfig)
 
-db.Reclaimables = connection.define('reclaimable', {
+db.Reclaimables = mysql.define('reclaimable', {
   id: {
     type:             Sequelize.INTEGER,
     primaryKey:       true
@@ -68,7 +67,7 @@ db.Reclaimables = connection.define('reclaimable', {
   eos_amount:         Sequelize.DECIMAL(65,0)
 }, modelConfig)
 
-db.Registrations = connection.define('registration', {
+db.Registrations = mysql.define('registration', {
   id: {
     type:             Sequelize.INTEGER,
     primaryKey:       true
@@ -80,7 +79,7 @@ db.Registrations = connection.define('registration', {
 }, modelConfig)
 
 // Stores state variables (used infrequently)
-db.State = connection.define('state', {
+db.State = mysql.define('state', {
   id: {
     type:             Sequelize.INTEGER,
     primaryKey:       true
@@ -95,20 +94,20 @@ db.State = connection.define('state', {
 })
 
 //Table used to store Snapshot before export to CSV
-db.Snapshot = connection.define('snapshot', {
+db.Snapshot = mysql.define('snapshot', {
   user:               Sequelize.STRING(256),
   key:                Sequelize.STRING(256),
   balance:            Sequelize.DECIMAL(15,4)
 }, {timestamps: false, freezeTableName: true, tableName: 'snapshot'})
 
 //Public Key Cache
-db.Keys = connection.define('keys', {
+db.Keys = mysql.define('keys', {
   address:            Sequelize.STRING(256),
   tx_hash:            Sequelize.STRING(256),
   public_key:         Sequelize.STRING(256),
   derived_eos_key:    Sequelize.STRING(256)
 }, {timestamps: false, updateOnDuplicate: true})
 
-db.sequelize = connection
+db.sequelize = mysql
 
 module.exports = db

@@ -93,8 +93,8 @@ module.exports = (state, complete) => {
     })
   }
 
-  const save_or_continue = (next_address, finished = false) => {
-    if(cache.length >= 50 || cache.length == state.total || finished )
+  const save_or_continue = (next_address, is_complete = false) => {
+    if(cache.length >= 50 || is_complete || cache.length == state.total )
       query.wallets_bulk_upsert( cache )
         .then( () => {
           cache = new Array()

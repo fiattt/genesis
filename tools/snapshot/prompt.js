@@ -44,9 +44,9 @@ let schema = {
 
     fallback: {
       type: 'boolean',
-      description: colors.magenta('Run registration fallback?'),
+      description: colors.magenta('Run experimental registration fallback? (will take days, not exagerating)'),
       message: 'Must be boolean',
-      default: true,
+      default: false,
       ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true
     },
 
@@ -55,7 +55,7 @@ let schema = {
       type: 'boolean',
       description: colors.magenta('Cache Keys? (advanced)'),
       message: 'Must be true or false',
-      default: true,
+      default: false,
       ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true
     },
 
