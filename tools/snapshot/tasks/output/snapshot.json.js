@@ -5,7 +5,7 @@ module.exports = ( state, complete ) => {
   let bn        = require('bignumber.js')
   let checksum  = require('checksum')
   let md5       = require('md5')
-  let Sequelize = require('Sequelize')
+  let Sequelize = require('sequelize')
   let Op        = Sequelize.Op
 
   let db        = require('../../models')

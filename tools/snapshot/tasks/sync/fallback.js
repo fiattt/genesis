@@ -1,7 +1,7 @@
 module.exports = ( state, complete ) => {
 
   const async         = require('async'),
-        Sequelize     = require('Sequelize'),
+        Sequelize     = require('sequelize'),
         Op            = Sequelize.Op,
 
         db            = require('../../models'),

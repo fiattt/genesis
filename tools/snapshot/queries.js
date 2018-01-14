@@ -1,4 +1,4 @@
-const Sequelize    = require('Sequelize')
+const Sequelize    = require('sequelize')
 const Op           = Sequelize.Op
 const async        = require('async')
 const bn           = require('bignumber.js')
