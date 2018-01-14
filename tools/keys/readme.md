@@ -19,7 +19,7 @@ This tool is experimental and downloadable executables are not yet available.
 - electron (installed globally)
 - electron package manager (installed globally)
 
-## Building Executables Youself
+## Building Executables Yourself
 
 Install dependencies
 ```bash
