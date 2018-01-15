@@ -13,7 +13,10 @@ module.exports = (state, complete) => {
         uniques
 
   const init = (address, finished) => {
-    let Wallet = require('../../classes/Wallet.Testnet')
+
+    let Wallet = (typeof config.mode != undefined && config.mode == 'mainnet')
+                  ? require('../../classes/Wallet.Mainnet')
+                  : require('../../classes/Wallet.Testnet')
     let wallet = new Wallet( address, config )
     finished( null, wallet )
   }
@@ -26,6 +29,14 @@ module.exports = (state, complete) => {
   }
 
   const transfers = (wallet, finished) => {
+
+    //Cumulative balance calculations are not required for mainnet because tokens will be frozen
+    //mainnet balance calculation uses EOS ERC20 token's balanceOf() method.
+    if( typeof config.mode !== 'undefined' && config.mode == 'mainnet') {
+      finished(null, wallet)
+      return
+    }
+
     wallet.transfers = []
 
     const add = next => {
@@ -96,13 +107,15 @@ module.exports = (state, complete) => {
   const save_or_continue = (next_address, is_complete = false) => {
     if(cache.length >= 50 || is_complete || cache.length == state.total )
       query.wallets_bulk_upsert( cache )
-        .then( () => {
-          cache = new Array()
-          log_table_render_and_reset()
-          next_address()
-        })
+        .then( reset_cache )
     else
       next_address()
+  }
+
+  const reset_cache = () => {
+    cache = new Array()
+    log_table_render_and_reset()
+    next_address()
   }
 
   const setup = () => {
