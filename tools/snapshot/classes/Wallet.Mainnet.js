@@ -5,43 +5,43 @@ const async  = require('async'),
 
 class WalletMainnet extends Wallet {
 
-  process_key( complete = () => {} ){
+  process_key( complete ){
     this.maybe_fix_key()
     complete()
   }
 
-  process_balance_wallet( complete = () => {} ){
+  process_balance_wallet( complete ){
     util.balance.wallet_token_state( this.address, balance => {
       this.balance.set( 'wallet', balance)
       complete()
     })
   }
 
-  process_balance_unclaimed( complete = () => {} ){
+  process_balance_unclaimed( complete ){
     util.balance.unclaimed( this.address, this.buys, this.claims, CS_NUMBER_OF_PERIODS, balance => {
       this.balance.set( 'unclaimed', balance )
       complete()
     })
   }
 
-  process_balance_reclaimed( complete = () => {} ){
+  process_balance_reclaimed( complete ){
     util.balance.reclaimed( this.address, this.reclaimables, balance => {
       this.balance.set( 'reclaimed', balance )
       complete()
     })
   }
 
-  process_balance_sum( complete = () => {} ){
+  process_balance_sum( complete ){
     this.balance.sum()
     complete()
   }
 
-  process_balance_from_wei( complete = () => {} ){
+  process_balance_from_wei( complete ){
     this.balance.from_wei()
     complete()
   }
 
-  process_judgement( complete = () => {} ){
+  process_judgement( complete ){
     this.valid() ? this.accept() : this.reject()
     if(util.misc.is_eos_public_key(this.eos_key) && !this.registered)
       console.log(this),
