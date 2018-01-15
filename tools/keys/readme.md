@@ -7,25 +7,23 @@ An offline EOS key utility built with nodejs and Electron. This utility does two
 - Generate a valid EOS keypair
 - Validate an existing EOS keypair
 
-This tool is experimental and downloadble binaries are not yet available. 
+This tool is experimental and downloadable executables are not yet available. 
 
 ## Status
 - MacOS - Tested, Functional
 - Windows - Untested
 - Linux - Untested
 
+## Dependencies
+- Nodejs & npm
+- electron (installed globally)
+- electron package manager (installed globally)
 
-## Building Binaries Youself
+## Building Executables Yourself
 
 Install dependencies
 ```bash
 npm install
-```
-
-Install [electron-packager](https://github.com/electron-userland/electron-packager) globally
-
-```bash
-npm install electron-packager
 ```
 
 Clone the repo
@@ -42,7 +40,17 @@ cd genesis/tools/keys
 
 Compile for current platform
 
+Method one: With Electron
+
 ```bash
+npm install -g electron
+electron .
+```
+
+Method Two: With Electron package Manager
+
+```bash
+npm install -g electron-packager
 npm run compile
 ```
 
