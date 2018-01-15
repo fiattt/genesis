@@ -1,8 +1,7 @@
-let {web3, contract}  = require('../services/eth')
-
-const ecc       = require('eosjs-ecc')
-const secp256k1 = require('secp256k1')
-const ejs       = require('ethereumjs-util')
+const ecc       = require('eosjs-ecc'),
+      secp256k1 = require('secp256k1'),
+      ejs       = require('ethereumjs-util'),
+      contract  = require('../helpers/web3-contract')
 
 const repeat = (x, n) => {
   return new Array(n + 1).join("x")

@@ -107,12 +107,12 @@ module.exports = (state, complete) => {
   const save_or_continue = (next_address, is_complete = false) => {
     if(cache.length >= 50 || is_complete || cache.length == state.total )
       query.wallets_bulk_upsert( cache )
-        .then( reset_cache )
+        .then( () => reset_cache(next_address) )
     else
       next_address()
   }
 
-  const reset_cache = () => {
+  const reset_cache = ( next_address ) => {
     cache = new Array()
     log_table_render_and_reset()
     next_address()

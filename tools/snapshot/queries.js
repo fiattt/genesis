@@ -2,6 +2,7 @@ const Sequelize    = require('sequelize'),
       Op           = Sequelize.Op,
       async        = require('async'),
       bn           = require('bignumber.js'),
+      db           = require('./models')
 
       query = {}
 

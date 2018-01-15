@@ -4,7 +4,7 @@ module.exports = ( state, complete ) => {
         db        = require('../../models'),
         Table     = require('ascii-table'),
 
-        util        = require('../../utilities'),
+        util        = require('../../utilities')
 
   let   block_index = 46147, //first ethereum block with txs
         blocks_total = 0,

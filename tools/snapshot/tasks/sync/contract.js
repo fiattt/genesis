@@ -6,7 +6,7 @@ module.exports = ( state, complete ) => {
         db_config    = {ignoreDuplicates: true}
 
   let   util           = require('../../utilities'),
-        scanCollection = require('../../helpers/collection').query,
+        scanCollection = require('../../helpers/web3-collection'),
         bn             = require('bignumber.js'),
         Iterator       = require('../../classes/Iterator'),
 

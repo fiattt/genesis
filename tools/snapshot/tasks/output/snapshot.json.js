@@ -80,7 +80,7 @@ module.exports = ( state, complete ) => {
   }
 
   let get_supply_total = callback => {
-    let query = `SELECT sum(balance_total) FROM wallets"`
+    let query = `SELECT sum(balance_total) FROM wallets`
     db.sequelize
       .query(query, {type: db.sequelize.QueryTypes.SELECT})
       .then( sum => {

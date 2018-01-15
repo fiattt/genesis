@@ -1,4 +1,4 @@
-let {web3, contract}  = require('../services/eth')
+let contract  = require('../helpers/web3-contract')
 
 const head = ( callback ) => {
   web3.eth.getBlock().then( callback )
