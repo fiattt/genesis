@@ -11,5 +11,5 @@ Tools used to initialize a genesis block for the EOS Platform
 - _Snapshot Frontend (planned)_
 
 ## Useful Files
-- **snapshot.csv** Comma-delimited list
+- **snapshot.csv** Comma-delimited distribution list
 - **snapshot.json** Meta data for the snapshot in the repo, describes the parameters of snapshot, some statistics and data for debugging
