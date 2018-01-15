@@ -1,7 +1,10 @@
 module.exports = (state, all_systems_go) => {
 
   const async     = require('async'),
-        colors    = require('colors/safe')
+        colors    = require('colors/safe'),
+        _util      = require('util')
+
+  const util = require('util')
 
   const connect = () => {
     async.series([
@@ -13,7 +16,10 @@ module.exports = (state, all_systems_go) => {
   }
 
   const connect_redis = connected => {
-    if( !config.fallback ) connected() //skip
+    if( !config.fallback ) {
+      connected() //skip
+      return false
+    }
 
     const check = () => {
       try {
@@ -40,8 +46,7 @@ module.exports = (state, all_systems_go) => {
 
     const check = () => {
       global.mysql = mysql(config.mysql_db, config.mysql_user, config.mysql_pass, config.mysql_host, config.mysql_port)
-      console.dir(mysql)
-      return mysql.authenticate()
+      return global.mysql.authenticate()
     }
 
     const not_connected = retry => {
@@ -63,7 +68,7 @@ module.exports = (state, all_systems_go) => {
 
     const check = () => {
       global.web3 = web3(config.eth_node_type, config.eth_node_path)
-      return web3.eth.net.isListening()
+      return global.web3.eth.net.isListening()
     }
 
     const not_connected = retry => {
@@ -83,7 +88,7 @@ module.exports = (state, all_systems_go) => {
 
   const connect_web3_synced = synced => {
     const check = () => {
-      web3.eth.isSyncing().then( syncing => {
+      global.web3.eth.isSyncing().then( syncing => {
         if(!syncing)
           console.log(`Web3: Synced`),
           synced()

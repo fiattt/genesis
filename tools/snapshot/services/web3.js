@@ -3,9 +3,10 @@ module.exports = (type, path) => {
   const Web3 = require('web3'),
         abi  = require('../lib/abi.js')
 
-  let web3,
-      type = typeof SS_CONFIG_ETHAPI_TYPE!=="undefined" ? SS_CONFIG_ETHAPI_TYPE : null,
-      path = typeof SS_CONFIG_ETHAPI_PATH!=="undefined" ? SS_CONFIG_ETHAPI_PATH : null
+  let web3
+
+  type = typeof type!=="undefined" ? type : null,
+  path = typeof path!=="undefined" ? path : null
 
   console.log(type, path)
 
@@ -18,5 +19,3 @@ module.exports = (type, path) => {
 
   return web3
 }
-
-module.exports = { web3: web3, contract: contract, query : { user: user, collection: collection } }

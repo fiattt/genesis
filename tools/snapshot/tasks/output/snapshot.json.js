@@ -79,6 +79,17 @@ module.exports = ( state, complete ) => {
       .catch( error => { throw new Error(error) })
   }
 
+  let get_supply_total = callback => {
+    let query = `SELECT sum(balance_total) FROM wallets"`
+    db.sequelize
+      .query(query, {type: db.sequelize.QueryTypes.SELECT})
+      .then( sum => {
+        data.supply.total = parseFloat(sum[0]['sum(balance_total)'])
+        callback()
+      })
+      .catch( error => { throw new Error(error) })
+  }
+
   let get_accounts_registered = callback => {
     db.Wallets
       .count({
@@ -86,7 +97,7 @@ module.exports = ( state, complete ) => {
       })
       .then( count => {
         data.accounts.registered = count
-        data.accounts.registered_percent = new String(data.accounts.registered/data.accounts.valid*100)+"%"
+        data.accounts.registered_included_percent = new String(data.accounts.registered/data.accounts.valid*100)+"%"
         callback()
       })
       .catch( error => { throw new Error(error) })
@@ -99,7 +110,7 @@ module.exports = ( state, complete ) => {
       })
       .then( count => {
         data.accounts.fallback = count
-        data.accounts.fallback_percent = new String(data.accounts.fallback/data.accounts.valid*100)+"%"
+        data.accounts.fallback_included_percent = new String(data.accounts.fallback/data.accounts.valid*100)+"%"
         callback()
       })
       .catch( error => { throw new Error(error) })
@@ -158,6 +169,7 @@ module.exports = ( state, complete ) => {
     get_accounts_total,
     get_accounts_registered,
     get_accounts_fallback,
+    get_supply_total,
     get_supply_expected,
     get_supply_included,
     get_supply_liquid,
