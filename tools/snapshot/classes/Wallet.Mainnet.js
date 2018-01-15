@@ -49,12 +49,12 @@ class WalletMainnet extends Wallet {
     complete()
   }
 
-  process_exempt(complete){
-    const exempt = [CS_ADDRESS_CROWDSALE, CS_ADDRESS_TOKEN]
-    if(!this.config.include_b1) exempt.push(CS_ADDRESS_B1)
-    if(exempt.indexOf(this.address.toLowerCase()) > -1)
+  process_exclude(complete){
+    const exclude = [CS_ADDRESS_CROWDSALE, CS_ADDRESS_TOKEN]
+    if(!this.config.include_b1) exclude.push(CS_ADDRESS_B1)
+    if(exclude.indexOf(this.address.toLowerCase()) > -1)
       this.accepted           = false,
-      this.register_error     = 'exempt'
+      this.register_error     = 'exclude'
     complete()
   }
 
@@ -67,7 +67,7 @@ class WalletMainnet extends Wallet {
       ( complete ) => this.process_balance_sum( complete ),
       ( complete ) => this.process_balance_from_wei( complete ),
       ( complete ) => this.process_judgement( complete ),
-      ( complete ) => this.process_exempt( complete )
+      ( complete ) => this.process_exclude( complete )
     ],(err, result) => {
       this.balance.format()
       callback( this.json() )
