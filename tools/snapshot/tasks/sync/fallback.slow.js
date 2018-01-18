@@ -3,7 +3,6 @@ module.exports = ( state, complete ) => {
   const async     = require('async'),
         db        = require('../../models'),
         Table     = require('ascii-table'),
-
         util        = require('../../utilities')
 
   let   block_index = 46147, //first ethereum block with txs
