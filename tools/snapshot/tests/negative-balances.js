@@ -6,9 +6,10 @@ module.exports = ( state, callback ) => {
     .query(`SELECT address FROM wallets WHERE balance_wallet<0 OR balance_unclaimed<0 OR balance_reclaimed<0`, {type: db.sequelize.QueryTypes.SELECT})
     .then(anomalies => {
       if(anomalies)
-        callback('Found ${anomalies.length} Wallets with Negative Balances!!!')
-      else {
-        callback(null, 'Pass')
-      }
+        state.tests.negative_balances = `Found ${anomalies.length} Wallets with Negative Balances!!! [SELECT address FROM wallets WHERE balance_wallet<0 OR balance_unclaimed<0 OR balance_reclaimed<0]`
+      else
+        state.tests.negative_balances = true
+
+      callback(null, state)
     })
 }

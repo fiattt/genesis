@@ -12,6 +12,10 @@ module.exports = (state, complete) => {
         table,
         uniques
 
+  const add_initial_distribution = () => {
+    return new bn(1000000000) //1 billion, initial balance of crowdsale contract.
+  }
+
   const init = (address, finished) => {
 
     let Wallet = (typeof config.mode != undefined && config.mode == 'mainnet')
@@ -46,6 +50,10 @@ module.exports = (state, complete) => {
           wallet.transfers = wallet.transfers.concat(_results)
           next()
         })
+
+      //Required for accurate contract wallet balance.
+      if(wallet.address == CS_ADDRESS_CROWDSALE)
+        wallet.transfers.push(add_initial_distribution())
     }
 
     const subtract = next => {

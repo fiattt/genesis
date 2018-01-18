@@ -66,6 +66,15 @@ let schema = {
       message: 'Author must be only letters, spaces, or dashes',
       default: "Anonymous",
       ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true
+    },
+
+    //Meta
+    overwrite_snapshot: {
+      type: 'string',
+      description: colors.magenta('Overwrite snapshot in project root? (optional)'),
+      message: 'Must be true or false',
+      default: true,
+      ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true
     }
 
     // //Custom Configuration?

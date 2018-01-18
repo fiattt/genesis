@@ -123,7 +123,7 @@ class Wallet {
 
     if(!this.registered) {
 
-      //The registration function was executed, but the key was blank :(
+      //Key is blank
       if(this.eos_key.length == 0) {
         error = 'key_is_empty'
       }

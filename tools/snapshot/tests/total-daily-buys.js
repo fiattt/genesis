@@ -42,9 +42,10 @@ module.exports = (state, callback) => {
     test
   ], (error) => {
     if(error)
-      callback('Fail: ${error}')
-    else {
-      callback(null, "Pass")
-    }
+      state.tests.daily_buys = error
+    else
+      state.tests.daily_buys = true
+
+    callback(null, state)
   })
 }
