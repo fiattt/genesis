@@ -41,7 +41,7 @@ module.exports = ( state, complete ) => {
   ], (error, results) => {
     console.log(results)
     if(error) {
-      throw error
+      throw new Error(error)
       process.exit()
     } else {
       passed(results.tests)

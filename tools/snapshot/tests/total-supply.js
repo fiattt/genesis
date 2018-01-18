@@ -10,10 +10,10 @@ module.exports = ( state, callback ) => {
           expected = new bn(200000000+((CS_NUMBER_OF_PERIODS-1)*2000000))
       if(config.include_b1) expected += 100000000
       const diff = total.sub(expected)
-      if(diff < 1.5 && diff > -1.5)
+      if(diff < SS_ACCEPTABLE_SUPPLY_DEVIATION && diff > SS_ACCEPTABLE_SUPPLY_DEVIATION*-1)
         state.tests.total_supply = true
       else
-        state.tests.total_supply =  `${new bn(100).minus(new bn(total).div(new bn(expected)).times(100)).toFixed(16)}% Margin of Error is too high!`
+        state.tests.total_supply =  `Total supply deviation is ${diff}, that's a ${new bn(100).minus(new bn(total).div(new bn(expected)).times(100)).toFixed(16)}% Margin of Error which is too high!`
 
       callback(null, state)
     })
