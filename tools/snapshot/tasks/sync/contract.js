@@ -14,6 +14,13 @@ module.exports = ( state, complete ) => {
         log_intval,
         iterator
 
+  state.sync_contracts = {
+    buys:0,
+    claims:0,
+    registrations:0,
+    transfers:0,
+    reclaimables:0
+  }
 
   const transfers = (iterator, next) => {
     let request = []
@@ -192,8 +199,8 @@ module.exports = ( state, complete ) => {
 
     const sync_options = {
       from: state.block_begin,
-      max: state.block_end, //Buys are considered valid not by block, but by transaction timestamp so we add a buffer. This solves final discrepancy
-      increment: 100,
+      max: state.block_end,
+      increment: 100, //only scan 100 blocks at a time, if there's too many transactions per block it will cause memory heap issues. Ethereum wasn't built to be queried, it was built to be synced (kind of)
       onComplete: (err, res) => {
         clearInterval(log_intval)
         log('green', true)
@@ -207,14 +214,6 @@ module.exports = ( state, complete ) => {
     log_periodically()
 
     iterator.iterate()
-  }
-
-  state.sync_contracts = {
-    buys:0,
-    claims:0,
-    registrations:0,
-    transfers:0,
-    reclaimables:0
   }
 
   sync_contracts( () => {
