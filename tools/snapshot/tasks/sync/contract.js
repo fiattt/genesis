@@ -183,7 +183,6 @@ module.exports = ( state, complete ) => {
           next => registrations( iterator, next ),
           next => reclaimables( iterator, next )
       ], result => {
-        // syncContractLog(iterator)
         if(iterator.finish)
           console.log('finished'),
           iterator.onComplete()
@@ -205,7 +204,7 @@ module.exports = ( state, complete ) => {
 
     iterator = new Iterator( sync_txs, sync_options )
 
-    console.log('Syncing Contracts, this will take a while.')
+    console.log(`Syncing Contracts between block #${state.block_begin} and #${state.block_end}, this may take a while.`)
     log_periodically()
 
     iterator.iterate()
