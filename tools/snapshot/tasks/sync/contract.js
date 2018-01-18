@@ -37,7 +37,6 @@ module.exports = ( state, complete ) => {
               eos_amount:   new bn(transfer.returnValues.value).toFixed()
             })
           })
-          // iterator.args.table.addRow('Transfers', request.length)
           state.sync_contracts.transfers+=request.length
           db.Transfers.bulkCreate( request )
             .then( () => { next() })
@@ -63,7 +62,6 @@ module.exports = ( state, complete ) => {
               eth_amount:   new bn(buy.returnValues.amount).toFixed()
             })
           })
-          // iterator.args.table.addRow('Buys', request.length)
           state.sync_contracts.buys+=request.length
           db.Buys.bulkCreate( request )
             .then( () => { next() })
@@ -89,7 +87,6 @@ module.exports = ( state, complete ) => {
                 eos_amount:   new bn(claim.returnValues.amount).toFixed()
               })
           })
-          // iterator.args.table.addRow('Claims', request.length)
           state.sync_contracts.claims+=request.length
           db.Claims.bulkCreate( request )
             .then( () => { next() })
@@ -114,7 +111,6 @@ module.exports = ( state, complete ) => {
               eos_key:      registration.returnValues.key
             })
           })
-          // iterator.args.table.addRow('Registrations', request.length)
           state.sync_contracts.registrations+=request.length
           db.Registrations.bulkCreate( request, db_config )
             .then( () => { next() })
@@ -142,7 +138,6 @@ module.exports = ( state, complete ) => {
               })
             }
           });
-          // iterator.args.table.addRow('Reclaimables', request.length)
           state.sync_contracts.reclaimables+=request.length
           db.Reclaimables.bulkCreate( request, db_config )
             .then( () => { next() })
