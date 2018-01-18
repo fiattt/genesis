@@ -8,8 +8,6 @@ module.exports = (type, path) => {
   type = typeof type!=="undefined" ? type : null,
   path = typeof path!=="undefined" ? path : null
 
-  console.log(type, path)
-
   if(type == 'ipc' && typeof path !== null)
     web3  = new Web3( new Web3.providers.IpcProvider( path, require('net') ) )
   else if(type == 'ws')
