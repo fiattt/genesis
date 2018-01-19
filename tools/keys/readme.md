@@ -38,16 +38,14 @@ Navigate to keys directory
 cd genesis/tools/keys
 ```
 
-Compile for current platform
-
-Method one: With Electron
+**Method one:** Launch project with Electron
 
 ```bash
 npm install -g electron
 electron .
 ```
 
-Method Two: With Electron package Manager
+**Method Two:** Compile the project Electron package Manager
 
 ```bash
 npm install -g electron-packager
