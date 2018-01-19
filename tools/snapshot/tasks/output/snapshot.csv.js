@@ -17,7 +17,7 @@ module.exports = ( config, callback ) => {
         json_to_csv(_results, config.path_csv, false)
           .then(() => {
             console.log(`${results.length} Records Saved to CSV`)
-            fs.createReadStream(config.path_csv).pipe(fs.createWriteStream(config.file_csv))
+            if(config.overwrite_snapshot) fs.createReadStream(config.path_csv).pipe(fs.createWriteStream(config.file_csv))
             callback()
           })
           .catch( error => { throw new Error(error) })

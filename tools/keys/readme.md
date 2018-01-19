@@ -2,12 +2,12 @@
 
 ![EOS Genesis Key Utility Screenshot](https://raw.githubusercontent.com/EOSIO/genesis/keys-simple/tools/keys/src/images/screenshot.png)
 
-An offline EOS key utility built with nodejs and Electron. This utility does two things: 
+An offline EOS key utility built with nodejs and Electron. This utility does two things:
 
 - Generate a valid EOS keypair
 - Validate an existing EOS keypair
 
-This tool is experimental and downloadable executables are not yet available. 
+This tool is experimental and downloadable executables are not yet available.
 
 ## Status
 - MacOS - Tested, Functional
@@ -28,7 +28,7 @@ npm install
 
 Clone the repo
 
-```bash 
+```bash
 git clone https://github.com/EOSIO/genesis.git
 ```
 
@@ -54,7 +54,7 @@ npm install -g electron-packager
 npm run compile
 ```
 
-You'll now find a **build** directory in the project root, where you can find an executable for your system. 
+You'll now find a **build** directory in the project root, where you can find an executable for your system.
 
 ## Compile for all Platforms
 

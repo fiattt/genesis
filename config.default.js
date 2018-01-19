@@ -1,8 +1,11 @@
 module.exports = {
+
   period: 1,
   include_b1: true,
   cache: false,
   fallback: true,
+  overwrite_snapshot: false,
+  recalculate_wallets: false,
   author: "Anonymous",
 
   //ETH node
@@ -18,4 +21,5 @@ module.exports = {
   mysql_pass: null,
   mysql_host: "localhost",
   mysql_port: 3306
+
 }

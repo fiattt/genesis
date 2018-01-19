@@ -1,8 +1,7 @@
-const async             = require('async')
-const bn                = require('bignumber.js')
-const {web3, contract}  = require('../services/web3')
+const async             = require('async'),
+      bn                = require('bignumber.js'),
+      contract          = require('../helpers/web3-contract')
 
-// :thinking_face:
 const util = {
   block: require('./blocks'),
   misc: require('./misc'),

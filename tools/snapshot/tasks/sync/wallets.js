@@ -12,9 +12,16 @@ module.exports = (state, complete) => {
         table,
         uniques
 
+  const add_initial_distribution = () => {
+    return new bn(1000000000).times(WAD) //1 billion, initial balance of crowdsale contract.
+  }
+
   const init = (address, finished) => {
-    let Wallet = require('../../classes/Wallet.Testnet')
-    let wallet = new Wallet( address, state.config )
+
+    let Wallet = (typeof config.mode != undefined && config.mode == 'mainnet')
+                  ? require('../../classes/Wallet.Mainnet')
+                  : require('../../classes/Wallet.Testnet')
+    let wallet = new Wallet( address, config )
     finished( null, wallet )
   }
 
@@ -26,9 +33,21 @@ module.exports = (state, complete) => {
   }
 
   const transfers = (wallet, finished) => {
+
+    //Cumulative balance calculations are not required for mainnet because tokens will be frozen
+    //mainnet balance calculation uses EOS ERC20 token's balanceOf() method.
+    if( typeof config.mode !== 'undefined' && config.mode == 'mainnet') {
+      finished(null, wallet)
+      return
+    }
+
     wallet.transfers = []
 
     const add = next => {
+      //Required for accurate contract wallet balance.
+      if(wallet.address.toLowerCase() == CS_ADDRESS_CROWDSALE.toLowerCase())
+        wallet.transfers.push(add_initial_distribution())
+
       query.address_transfers_in(wallet.address, state.block_begin, state.block_end)
         .then( results => {
           let _results = results.map( result => new bn(result.dataValues.eos_amount) )
@@ -93,16 +112,18 @@ module.exports = (state, complete) => {
     })
   }
 
-  const save_or_continue = (next_address, finished = false) => {
-    if(cache.length >= 50 || cache.length == state.total || finished )
+  const save_or_continue = (next_address, is_complete = false) => {
+    if(cache.length >= 50 || is_complete || cache.length == state.total )
       query.wallets_bulk_upsert( cache )
-        .then( () => {
-          cache = new Array()
-          log_table_render_and_reset()
-          next_address()
-        })
+        .then( () => reset_cache(next_address) )
     else
       next_address()
+  }
+
+  const reset_cache = ( next_address ) => {
+    cache = new Array()
+    log_table_render_and_reset()
+    next_address()
   }
 
   const setup = () => {

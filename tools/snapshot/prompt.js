@@ -44,9 +44,9 @@ let schema = {
 
     fallback: {
       type: 'boolean',
-      description: colors.magenta('Run registration fallback?'),
+      description: colors.magenta('Run experimental registration fallback? (will take days, not exagerating)'),
       message: 'Must be boolean',
-      default: true,
+      default: false,
       ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true
     },
 
@@ -55,7 +55,7 @@ let schema = {
       type: 'boolean',
       description: colors.magenta('Cache Keys? (advanced)'),
       message: 'Must be true or false',
-      default: true,
+      default: false,
       ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true
     },
 
@@ -65,6 +65,15 @@ let schema = {
       description: colors.magenta('Author name? (optional)'),
       message: 'Author must be only letters, spaces, or dashes',
       default: "Anonymous",
+      ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true
+    },
+
+    //Meta
+    overwrite_snapshot: {
+      type: 'string',
+      description: colors.magenta('Overwrite snapshot in project root? (optional)'),
+      message: 'Must be true or false',
+      default: true,
       ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true
     }
 

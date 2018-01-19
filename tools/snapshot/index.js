@@ -5,12 +5,10 @@ module.exports = () => {
         colors = require("colors/safe"),
         waterfall = require('async').waterfall,
         prompt = require('./prompt'),
-        async = require('async'),
-        fs = require('fs'),
-        Snapshot = require('./snapshot')
+        fs = require('fs')
 
   const boot = () => {
-    async.waterfall([
+    waterfall([
       next => {
         prompt.start(),
         prompt.get( prompt.schema, (error, config) => {
@@ -27,15 +25,7 @@ module.exports = () => {
         }
 
         config = Object.assign( require('../../config.default'), config )
-        global.REDIS_HOST             = config.redis_host
-        global.REDIS_PORT             = config.redis_port
-        global.SS_CONFIG_MYSQL_DB     = config.mysql_db
-        global.SS_CONFIG_MYSQL_USER   = config.mysql_user
-        global.SS_CONFIG_MYSQL_PASS   = config.mysql_pass
-        global.SS_CONFIG_MYSQL_HOST   = config.mysql_host
-        global.SS_CONFIG_MYSQL_PORT   = config.mysql_port
-        global.SS_CONFIG_ETHAPI_TYPE  = config.eth_node_type
-        global.SS_CONFIG_ETHAPI_PATH  = config.eth_node_path
+
         next(null, config)
       }],
       //complete
@@ -46,7 +36,29 @@ module.exports = () => {
         })
         console.log(colors.green(table.setAlign(0, Table.RIGHT).setAlign(1, Table.LEFT).render()))
         console.log(colors.white('Starting in 5 seconds.'))
-        setTimeout( () => Snapshot(config), 5000)
+
+        //Save config globally
+        global.config = config;
+
+        setTimeout( () => {
+          let   state = {}
+          waterfall([
+            next => next(null, state),
+            require('./tasks/misc/connections'),
+            require('./tasks/misc/truncate-db'),
+            require('./tasks/sync/periods'),
+            require('./tasks/sync/contract'),
+            require('./tasks/sync/wallets'),
+            require('./tasks/misc/tests'),
+            require('./tasks/sync/fallback'),
+            require('./tasks/output/snapshot'),
+          ], (error, result) => {
+            console.log(`Snapshot for Period #${config.period} Completed.`)
+            if(error)
+              console.log('Error:', error)
+          })
+
+        }, 5000)
     })
   }
 

@@ -1,7 +1,7 @@
 module.exports = ( state, complete )  => {
 
-  const async           = require('async')
-  const db              = require('../../models')
+  const async           = require('async'),
+        db              = require('../../models')
 
   const get_period_map = (callback = () => {}) => {
     db.State
@@ -25,15 +25,15 @@ module.exports = ( state, complete )  => {
   get_period_map( map => {
     const PeriodMap = require('../../classes/PeriodMap')
     let periods = new PeriodMap(map)
-    if(periods.syncedToPeriod() < state.config.period ) {
-      periods.periodMax = state.config.period
+    if(periods.syncedToPeriod() < config.period ) {
+      periods.periodMax = config.period
       periods.generate( result => {
         db.State
           .upsert({meta_key: 'period_block_map', meta_value: JSON.stringify(periods.map)})
           .then( () => {
             state.period_map          = periods.map
             state.block_begin         = periods.map[0].begin
-            state.block_end           = periods.map[state.config.period].end
+            state.block_end           = periods.map[config.period].end
             complete( null, state )
           })
       })
@@ -41,7 +41,7 @@ module.exports = ( state, complete )  => {
     else {
       state.period_map          = periods.map
       state.block_begin         = periods.map[0].begin
-      state.block_end           = periods.map[state.config.period].end
+      state.block_end           = periods.map[config.period].end
       complete( null, state  )
     }
   })

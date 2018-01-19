@@ -2,6 +2,7 @@ const bn = require('bignumber.js')
 
 global.SS_STARTED_TIMESTAMP               = Date.now()/1000 | 0
 global.SS_MAINNET_TIMESTAMP_END           = 0 //A cutoff timestamp should be provided so snapshot audits are not impossible. Mainnet snapshot would only account for registrations/claims up to the last block with a timestamp lte this timestamp.
+global.SS_ACCEPTABLE_SUPPLY_DEVIATION     = 5 //total number of EOS deviation allowed in for accurate snapshot, usually less than 1/-1. 5 is generous.
 
 global.WAD                                = new bn(1000000000000000000)
 
@@ -18,3 +19,7 @@ global.CS_CREATE_FIRST_PERIOD             = new bn(200000000).times(WAD)
 global.CS_CREATE_PER_PERIOD               = new bn(2000000).times(WAD)
 global.CS_NUMBER_OF_PERIODS               = 351
 global.CS_PERIOD_ETH                      = []
+
+global.web3
+global.mysql
+global.redis

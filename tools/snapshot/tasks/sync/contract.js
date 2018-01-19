@@ -1,13 +1,18 @@
 module.exports = ( state, complete ) => {
 
+  if(config.recalculate_wallets === true) {
+    console.log('recalculate_wallets set to true, skipping contract sync')
+    complete(null, state)
+    return
+  }
+
   const async          = require('async'),
         db             = require('../../models'),
 
         db_config    = {ignoreDuplicates: true}
 
   let   util           = require('../../utilities'),
-        web3           = require('../../services/web3').web3,
-        web3Query      = require('../../services/web3').query,
+        scanCollection = require('../../helpers/web3-collection'),
         bn             = require('bignumber.js'),
         Iterator       = require('../../classes/Iterator'),
 
@@ -15,10 +20,16 @@ module.exports = ( state, complete ) => {
         log_intval,
         iterator
 
+  state.sync_contracts = {
+    buys:0,
+    claims:0,
+    registrations:0,
+    transfers:0,
+    reclaimables:0
+  }
 
   const transfers = (iterator, next) => {
-    let request = []
-    web3Query.collection.transfers( iterator.from, iterator.to )
+    scanCollection.transfers( iterator.from, iterator.to )
       .then( transfers => {
         let request = []
         if(transfers.length) {
@@ -31,7 +42,6 @@ module.exports = ( state, complete ) => {
               eos_amount:   new bn(transfer.returnValues.value).toFixed()
             })
           })
-          // iterator.args.table.addRow('Transfers', request.length)
           state.sync_contracts.transfers+=request.length
           db.Transfers.bulkCreate( request )
             .then( () => { next() })
@@ -43,8 +53,7 @@ module.exports = ( state, complete ) => {
   }
 
   const buys = (iterator, next) => {
-    let request = []
-    web3Query.collection.buys( iterator.from, iterator.to )
+    scanCollection.buys( iterator.from, iterator.to )
       .then( buys => {
         let request = []
         if(buys.length) {
@@ -57,7 +66,6 @@ module.exports = ( state, complete ) => {
               eth_amount:   new bn(buy.returnValues.amount).toFixed()
             })
           })
-          // iterator.args.table.addRow('Buys', request.length)
           state.sync_contracts.buys+=request.length
           db.Buys.bulkCreate( request )
             .then( () => { next() })
@@ -69,8 +77,7 @@ module.exports = ( state, complete ) => {
   }
 
   const claims = (iterator, next) => {
-    let request = []
-    web3Query.collection.claims( iterator.from, iterator.to )
+    scanCollection.claims( iterator.from, iterator.to )
       .then( claims => {
         let request = []
         if(claims.length) {
@@ -83,7 +90,6 @@ module.exports = ( state, complete ) => {
                 eos_amount:   new bn(claim.returnValues.amount).toFixed()
               })
           })
-          // iterator.args.table.addRow('Claims', request.length)
           state.sync_contracts.claims+=request.length
           db.Claims.bulkCreate( request )
             .then( () => { next() })
@@ -95,8 +101,7 @@ module.exports = ( state, complete ) => {
   }
 
   const registrations = (iterator, next) => {
-    let request = []
-    web3Query.collection.registrations( iterator.from, iterator.to )
+    scanCollection.registrations( iterator.from, iterator.to )
       .then( registrations => {
         let request = []
         if(registrations.length) {
@@ -108,7 +113,6 @@ module.exports = ( state, complete ) => {
               eos_key:      registration.returnValues.key
             })
           })
-          // iterator.args.table.addRow('Registrations', request.length)
           state.sync_contracts.registrations+=request.length
           db.Registrations.bulkCreate( request, db_config )
             .then( () => { next() })
@@ -120,8 +124,7 @@ module.exports = ( state, complete ) => {
   }
 
   const reclaimables = (iterator, next) => {
-    let request = []
-    web3Query.collection.reclaimables( iterator.from, iterator.to )
+    scanCollection.reclaimables( iterator.from, iterator.to )
       .then( reclaimables => {
         let request = []
         if(reclaimables.length) {
@@ -136,7 +139,6 @@ module.exports = ( state, complete ) => {
               })
             }
           });
-          // iterator.args.table.addRow('Reclaimables', request.length)
           state.sync_contracts.reclaimables+=request.length
           db.Reclaimables.bulkCreate( request, db_config )
             .then( () => { next() })
@@ -182,7 +184,6 @@ module.exports = ( state, complete ) => {
           next => registrations( iterator, next ),
           next => reclaimables( iterator, next )
       ], result => {
-        // syncContractLog(iterator)
         if(iterator.finish)
           console.log('finished'),
           iterator.onComplete()
@@ -193,8 +194,8 @@ module.exports = ( state, complete ) => {
 
     const sync_options = {
       from: state.block_begin,
-      max: state.block_end, //Buys are considered valid not by block, but by transaction timestamp so we add a buffer. This solves final discrepancy
-      increment: 100,
+      max: state.block_end,
+      increment: 100, //only scan 100 blocks at a time, if there's too many transactions per block it will cause memory heap issues. Ethereum wasn't built to be queried, it was built to be synced (kind of)
       onComplete: (err, res) => {
         clearInterval(log_intval)
         log('green', true)
@@ -204,18 +205,10 @@ module.exports = ( state, complete ) => {
 
     iterator = new Iterator( sync_txs, sync_options )
 
-    console.log('Syncing Contracts, this will take a while.')
+    console.log(`Syncing Contracts between block #${state.block_begin} and #${state.block_end}, this may take a while.`)
     log_periodically()
 
     iterator.iterate()
-  }
-
-  state.sync_contracts = {
-    buys:0,
-    claims:0,
-    registrations:0,
-    transfers:0,
-    reclaimables:0
   }
 
   sync_contracts( () => {
