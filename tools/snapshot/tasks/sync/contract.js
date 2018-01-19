@@ -1,5 +1,11 @@
 module.exports = ( state, complete ) => {
 
+  if(config.recalculate_wallets === true) {
+    console.log('recalculate_wallets set to true, skipping contract sync')
+    complete(null, state)
+    return
+  }
+
   const async          = require('async'),
         db             = require('../../models'),
 
@@ -23,7 +29,6 @@ module.exports = ( state, complete ) => {
   }
 
   const transfers = (iterator, next) => {
-    let request = []
     scanCollection.transfers( iterator.from, iterator.to )
       .then( transfers => {
         let request = []
@@ -48,7 +53,6 @@ module.exports = ( state, complete ) => {
   }
 
   const buys = (iterator, next) => {
-    let request = []
     scanCollection.buys( iterator.from, iterator.to )
       .then( buys => {
         let request = []
@@ -73,7 +77,6 @@ module.exports = ( state, complete ) => {
   }
 
   const claims = (iterator, next) => {
-    let request = []
     scanCollection.claims( iterator.from, iterator.to )
       .then( claims => {
         let request = []
@@ -98,7 +101,6 @@ module.exports = ( state, complete ) => {
   }
 
   const registrations = (iterator, next) => {
-    let request = []
     scanCollection.registrations( iterator.from, iterator.to )
       .then( registrations => {
         let request = []
@@ -122,7 +124,6 @@ module.exports = ( state, complete ) => {
   }
 
   const reclaimables = (iterator, next) => {
-    let request = []
     scanCollection.reclaimables( iterator.from, iterator.to )
       .then( reclaimables => {
         let request = []

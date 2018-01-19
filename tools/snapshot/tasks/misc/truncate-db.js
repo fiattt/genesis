@@ -1,5 +1,11 @@
 module.exports = ( state, complete ) => {
 
+  if(config.recalculate_wallets === true) {
+    console.log('recalculate_wallets set to true, skipping truncation')
+    complete(null, state)
+    return
+  }
+
   const async = require('async')
   const db = require('../../models')
 
