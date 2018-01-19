@@ -1,10 +1,11 @@
 module.exports = {
-  
+
   period: 1,
   include_b1: true,
   cache: false,
   fallback: true,
   overwrite_snapshot: false,
+  recalculate_wallets: false,
   author: "Anonymous",
 
   //ETH node

@@ -103,7 +103,9 @@ class Wallet {
   validate(){
     let error = null
 
-    if( new bn(this.balance.total).lt( new bn(1) ) ) {
+    //Because we haven't toFormat(4) yet, there are some balances that may be wrongly attributed this error. We'll test against decimal precision 4.
+    //Consider toFixed() before validation!
+    if( parseFloat(this.balance.total.toFixed(4)) < parseFloat(1.0000) ) {
       error = 'balance_insufficient'
     }
 

@@ -13,7 +13,7 @@ module.exports = (state, complete) => {
         uniques
 
   const add_initial_distribution = () => {
-    return new bn(1000000000) //1 billion, initial balance of crowdsale contract.
+    return new bn(1000000000).times(WAD) //1 billion, initial balance of crowdsale contract.
   }
 
   const init = (address, finished) => {
@@ -44,16 +44,16 @@ module.exports = (state, complete) => {
     wallet.transfers = []
 
     const add = next => {
+      //Required for accurate contract wallet balance.
+      if(wallet.address.toLowerCase() == CS_ADDRESS_CROWDSALE.toLowerCase())
+        wallet.transfers.push(add_initial_distribution())
+
       query.address_transfers_in(wallet.address, state.block_begin, state.block_end)
         .then( results => {
           let _results = results.map( result => new bn(result.dataValues.eos_amount) )
           wallet.transfers = wallet.transfers.concat(_results)
           next()
         })
-
-      //Required for accurate contract wallet balance.
-      if(wallet.address == CS_ADDRESS_CROWDSALE)
-        wallet.transfers.push(add_initial_distribution())
     }
 
     const subtract = next => {

@@ -7,33 +7,33 @@ class WalletTestnet extends Wallet {
 
   process_key( complete = () => {} ){
     this.maybe_fix_key()
-    complete(null, this.eos_key)
+    complete()
   }
 
   process_balance_wallet( complete = () => {} ){
     util.balance.wallet_cumulative( this.address, this.transfers, balance => {
       this.balance.set( 'wallet', balance)
-      complete( null, balance )
+      complete()
     })
   }
 
   process_balance_unclaimed( complete = () => {} ){
     util.balance.unclaimed( this.address, this.buys, this.claims, this.config.period, balance => {
       this.balance.set( 'unclaimed', balance )
-      complete( null, balance )
+      complete()
     })
   }
 
   process_balance_reclaimed( complete = () => {} ){
     util.balance.reclaimed( this.address, this.reclaimables, balance => {
       this.balance.set( 'reclaimed', balance )
-      complete( null, balance )
+      complete()
     })
   }
 
   process_balance_sum( complete = () => {} ){
     this.balance.sum()
-    complete( null, this.balance.total )
+    complete()
   }
 
   process_balance_from_wei( complete = () => {} ){
@@ -43,9 +43,16 @@ class WalletTestnet extends Wallet {
 
   process_judgement( complete = () => {} ){
     this.valid() ? this.accept() : this.reject()
-    if(util.misc.is_eos_public_key(this.eos_key) && !this.registered)
-      console.log(this),
-      process.exit()
+
+    // if(util.misc.is_eos_public_key(this.eos_key) && !this.registered)
+    //   console.log(this),
+    //   process.exit()
+    //
+    // if(this.balance.total.gte(1) && this.register_error == "balance_insufficient")
+    //   console.log(this),
+    //   console.log(this.balance.total.toFixed(4), this.balance.total.lt(1)),
+    //   process.exit()
+
     complete()
   }
 
