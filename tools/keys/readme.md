@@ -21,15 +21,15 @@ This tool is experimental and downloadable executables are not yet available.
 
 ## Building Executables Yourself
 
-Install dependencies
-```bash
-npm install
-```
-
 Clone the repo
 
 ```bash
 git clone https://github.com/EOSIO/genesis.git
+```
+
+Install dependencies
+```bash
+npm install
 ```
 
 Navigate to keys directory
