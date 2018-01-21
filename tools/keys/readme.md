@@ -27,15 +27,15 @@ Clone the repo
 git clone https://github.com/EOSIO/genesis.git
 ```
 
-Install dependencies
-```bash
-npm install
-```
-
 Navigate to keys directory
 
 ```bash
 cd genesis/tools/keys
+```
+
+Install dependencies
+```bash
+npm install
 ```
 
 **Method one:** Launch project with Electron
