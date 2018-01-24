@@ -16,8 +16,6 @@ This tool is experimental and downloadable executables are not yet available.
 
 ## Dependencies
 - Nodejs & npm
-- electron (installed globally)
-- electron package manager (installed globally)
 
 ## Building Executables Yourself
 
