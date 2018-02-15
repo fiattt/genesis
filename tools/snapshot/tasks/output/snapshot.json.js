@@ -1,14 +1,13 @@
 module.exports = ( state, complete ) => {
 
-  let async     = require('async')
-  let fs        = require('fs')
-  let bn        = require('bignumber.js')
-  let checksum  = require('checksum')
-  let md5       = require('md5')
-  let Sequelize = require('sequelize')
-  let Op        = Sequelize.Op
-
-  let db        = require('../../models')
+  const async     = require('async'),
+        fs        = require('fs'),
+        bn        = require('bignumber.js'),
+        checksum  = require('checksum'),
+        md5       = require('md5'),
+        Sequelize = require('sequelize'),
+        Op        = Sequelize.Op,
+        db        = require('../../models')
 
   let data = {
     parameters : {},
@@ -80,11 +79,7 @@ module.exports = ( state, complete ) => {
   }
 
   let get_supply_total = callback => {
-<<<<<<< HEAD
     let query = `SELECT sum(balance_wallet) FROM wallets`
-=======
-    let query = `SELECT sum(balance_total) FROM wallets`
->>>>>>> master
     db.sequelize
       .query(query, {type: db.sequelize.QueryTypes.SELECT})
       .then( sum => {

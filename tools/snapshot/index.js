@@ -68,7 +68,6 @@ module.exports = () => {
 
         setTimeout( () => {
           let   state = {}
-<<<<<<< HEAD
                 state.started = (Date.now() / 1000 | 0)
 
           waterfall([
@@ -95,18 +94,6 @@ module.exports = () => {
             require('./tasks/sync/fallback'),
             //Generate output files.
             require('./tasks/output/snapshot')
-=======
-          waterfall([
-            next => next(null, state),
-            require('./tasks/misc/connections'),
-            require('./tasks/misc/truncate-db'),
-            require('./tasks/sync/periods'),
-            require('./tasks/sync/contract'),
-            require('./tasks/sync/wallets'),
-            require('./tasks/misc/tests'),
-            require('./tasks/sync/fallback'),
-            require('./tasks/output/snapshot'),
->>>>>>> master
           ], (error, result) => {
             console.log(`Snapshot for Period #${config.period} Completed.`)
             if(error)

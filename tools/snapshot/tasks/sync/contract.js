@@ -6,13 +6,8 @@ module.exports = ( state, complete ) => {
     return
   }
 
-<<<<<<< HEAD
-  const db             = require('../../models'),
-=======
-  const async          = require('async'),
-        db             = require('../../models'),
->>>>>>> master
 
+  const db             = require('../../models'),
         db_config    = {ignoreDuplicates: true}
 
   let   util           = require('../../utilities'),
@@ -33,13 +28,8 @@ module.exports = ( state, complete ) => {
     reclaimables:0
   }
 
-<<<<<<< HEAD
   const transfers = (settings, next) => {
     scanCollection.transfers( settings.begin, settings.end )
-=======
-  const transfers = (iterator, next) => {
-    scanCollection.transfers( iterator.from, iterator.to )
->>>>>>> master
       .then( transfers => {
         if(transfers.length) {
           let request = []
@@ -62,13 +52,8 @@ module.exports = ( state, complete ) => {
       })
   }
 
-<<<<<<< HEAD
   const buys = (settings, next) => {
     scanCollection.buys( settings.begin, settings.end )
-=======
-  const buys = (iterator, next) => {
-    scanCollection.buys( iterator.from, iterator.to )
->>>>>>> master
       .then( buys => {
         if(buys.length) {
           let request = []
@@ -91,13 +76,8 @@ module.exports = ( state, complete ) => {
       })
   }
 
-<<<<<<< HEAD
   const claims = (settings, next) => {
     scanCollection.claims( settings.begin, settings.end )
-=======
-  const claims = (iterator, next) => {
-    scanCollection.claims( iterator.from, iterator.to )
->>>>>>> master
       .then( claims => {
         if(claims.length) {
           let request = []
@@ -120,13 +100,9 @@ module.exports = ( state, complete ) => {
       })
   }
 
-<<<<<<< HEAD
+
   const registrations = (settings, next) => {
     scanCollection.registrations( settings.begin, settings.end )
-=======
-  const registrations = (iterator, next) => {
-    scanCollection.registrations( iterator.from, iterator.to )
->>>>>>> master
       .then( registrations => {
         if(registrations.length) {
           let request = []
@@ -148,13 +124,8 @@ module.exports = ( state, complete ) => {
       })
   }
 
-<<<<<<< HEAD
   const reclaimables = (settings, next) => {
     scanCollection.reclaimables( settings.begin, settings.end )
-=======
-  const reclaimables = (iterator, next) => {
-    scanCollection.reclaimables( iterator.from, iterator.to )
->>>>>>> master
       .then( reclaimables => {
         if(reclaimables.length) {
           let request = []
