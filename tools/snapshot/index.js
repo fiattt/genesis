@@ -4,7 +4,9 @@ module.exports = () => {
   const Table = require('ascii-table'),
         colors = require("colors/safe"),
         waterfall = require('async').waterfall,
+        async = require('async'),
         fs = require('fs')
+
 
   // require('shutdown-handler').on('exit', function(e) {
   //   e.preventDefault();
