@@ -15,21 +15,21 @@ class WalletSnapshot extends Wallet {
   }
 
   process_balance_wallet( complete = () => {} ){
-    util.balance.wallet_cumulative( this.address, this.transfers, balance => {
+    util.balance.wallet_cumulative( this.transfers, balance => {
       this.balance.set( 'wallet', balance)
       complete( null, balance )
     })
   }
 
   process_balance_unclaimed( complete = () => {} ){
-    util.balance.unclaimed( this.address, this.buys, this.claims, this.config.period, balance => {
+    util.balance.unclaimed( this.buys, this.claims, this.config.period, balance => {
       this.balance.set( 'unclaimed', balance )
       complete( null, balance )
     })
   }
 
   process_balance_reclaimed( complete = () => {} ){
-    util.balance.reclaimed( this.address, this.reclaimables, balance => {
+    util.balance.reclaimed( this.reclaimables, balance => {
       this.balance.set( 'reclaimed', balance )
       complete( null, balance )
     })

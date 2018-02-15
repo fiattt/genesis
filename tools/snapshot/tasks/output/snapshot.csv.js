@@ -1,4 +1,4 @@
-module.exports = ( config, callback ) => {
+module.exports = ( state, callback ) => {
 
   const async        = require('async')
   const json_to_csv  = require('json-to-csv');
@@ -14,10 +14,10 @@ module.exports = ( config, callback ) => {
           return {user: result.dataValues.user, key: result.dataValues.key, balance: result.dataValues.balance}
         })
         // TODO Move file/directory variables and functions somewhere else.
-        json_to_csv(_results, config.path_csv, false)
+        json_to_csv(_results, state.files.path_snapshot_csv, false)
           .then(() => {
             console.log(`${results.length} Records Saved to CSV`)
-            fs.createReadStream(config.path_csv).pipe(fs.createWriteStream(config.file_csv))
+            if(config.overwrite_snapshot) fs.createReadStream(state.files.path_snapshot_csv).pipe(fs.createWriteStream(state.files.file_snapshot_csv))
             callback()
           })
           .catch( error => { throw new Error(error) })

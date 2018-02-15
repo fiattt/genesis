@@ -1,2 +1,5 @@
 var redis = require("redis")
-module.exports = redis.createClient( { host:REDIS_HOST, port: REDIS_PORT } )
+
+module.exports = (host, port) => {
+  return redis.createClient( { host:host, port: port } )
+}

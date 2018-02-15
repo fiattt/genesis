@@ -42,16 +42,16 @@ let schema = {
       ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true
     },
 
-    fallback: {
+    registration_fallback: {
       type: 'boolean',
-      description: colors.magenta('Run registration fallback?'),
+      description: colors.magenta('Run experimental registration fallback? (will take days, not exagerating!)'),
       message: 'Must be boolean',
       default: true,
       ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true
     },
 
     //Meta
-    cache: {
+    cache_signatures: {
       type: 'boolean',
       description: colors.magenta('Cache Keys? (advanced)'),
       message: 'Must be true or false',
@@ -62,7 +62,7 @@ let schema = {
     //Meta
     author: {
       type: 'string',
-      description: colors.magenta('Author name? (optional)'),
+      description: colors.magenta('Author name? (optional, suggest using EOS public key)'),
       message: 'Author must be only letters, spaces, or dashes',
       default: "Anonymous",
       ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true
@@ -122,10 +122,11 @@ let schema = {
 
 prompt.override = optimist.argv
 
-process.on( 'SIGINT', () => process.exit() )
+// process.on( 'SIGINT', () => process.exit() )
 
 module.exports = {
   schema: schema,
   start: () => prompt.start({noHandleSIGINT: true}),
+  // start: () => prompt.start(),
   get: prompt.get
 }

@@ -73,7 +73,18 @@ module.exports = ( state, complete ) => {
       .query(query, {type: db.sequelize.QueryTypes.SELECT})
       .then( sum => {
         data.supply.liquid = parseFloat(sum[0]['sum(balance_total)'])
-        data.supply.margin_of_error = `${new bn(100).minus(new bn(data.supply.liquid).div(new bn(data.supply.expected)).times(100)).toFixed(8)}%`
+        data.supply.margin_of_error = `${new bn(100).minus(new bn(data.supply.liquid).div(new bn(data.supply.expected)).times(100)).toFixed(16)}%`
+        callback()
+      })
+      .catch( error => { throw new Error(error) })
+  }
+
+  let get_supply_total = callback => {
+    let query = `SELECT sum(balance_wallet) FROM wallets`
+    db.sequelize
+      .query(query, {type: db.sequelize.QueryTypes.SELECT})
+      .then( sum => {
+        data.supply.total = parseFloat(sum[0]['sum(balance_total)'])
         callback()
       })
       .catch( error => { throw new Error(error) })
@@ -129,7 +140,7 @@ module.exports = ( state, complete ) => {
   }
 
   let get_timestamp = callback => {
-    data.meta.timestamp_completed = (Date.now() / 1000 | 0)
+    data.meta.timestamp_completed = state.completed
     callback()
   }
 
@@ -145,9 +156,9 @@ module.exports = ( state, complete ) => {
   }
 
   let output = callback => {
-    fs.writeFile(state.files.path_json, JSON.stringify(data, null, "\t"), (err) => {
+    fs.writeFile(state.files.path_snapshot_json, JSON.stringify(data, null, "\t"), (err) => {
       console.log("Snapshot meta written to snapshot.json");
-      fs.createReadStream(state.files.path_json).pipe(fs.createWriteStream(state.files.file_json))
+      if(config.overwrite_snapshot) fs.createReadStream(state.files.path_snapshot_json).pipe(fs.createWriteStream(state.files.file_snapshot_json))
       callback()
     });
   }
