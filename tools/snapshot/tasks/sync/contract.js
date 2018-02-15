@@ -6,13 +6,17 @@ module.exports = ( state, complete ) => {
     return
   }
 
+<<<<<<< HEAD
   const db             = require('../../models'),
+=======
+  const async          = require('async'),
+        db             = require('../../models'),
+>>>>>>> master
 
         db_config    = {ignoreDuplicates: true}
 
   let   util           = require('../../utilities'),
-        web3           = require('../../services/web3').web3,
-        web3Query      = require('../../services/web3').query,
+        scanCollection = require('../../helpers/web3-collection'),
         bn             = require('bignumber.js'),
         Iterator       = require('../../classes/Iterator'),
 
@@ -21,9 +25,21 @@ module.exports = ( state, complete ) => {
         iterator,
         settings = {}
 
+  state.sync_contracts = {
+    buys:0,
+    claims:0,
+    registrations:0,
+    transfers:0,
+    reclaimables:0
+  }
 
+<<<<<<< HEAD
   const transfers = (settings, next) => {
     scanCollection.transfers( settings.begin, settings.end )
+=======
+  const transfers = (iterator, next) => {
+    scanCollection.transfers( iterator.from, iterator.to )
+>>>>>>> master
       .then( transfers => {
         if(transfers.length) {
           let request = []
@@ -36,7 +52,6 @@ module.exports = ( state, complete ) => {
               eos_amount:   new bn(transfer.returnValues.value).toFixed()
             })
           })
-          // iterator.args.table.addRow('Transfers', request.length)
           state.sync_contracts.transfers+=request.length
           db.Transfers.bulkCreate( request )
             .then( () => { next() })
@@ -47,8 +62,13 @@ module.exports = ( state, complete ) => {
       })
   }
 
+<<<<<<< HEAD
   const buys = (settings, next) => {
     scanCollection.buys( settings.begin, settings.end )
+=======
+  const buys = (iterator, next) => {
+    scanCollection.buys( iterator.from, iterator.to )
+>>>>>>> master
       .then( buys => {
         if(buys.length) {
           let request = []
@@ -61,7 +81,6 @@ module.exports = ( state, complete ) => {
               eth_amount:   new bn(buy.returnValues.amount).toFixed()
             })
           })
-          // iterator.args.table.addRow('Buys', request.length)
           state.sync_contracts.buys+=request.length
           db.Buys.bulkCreate( request )
             .then( () => { next() })
@@ -72,8 +91,13 @@ module.exports = ( state, complete ) => {
       })
   }
 
+<<<<<<< HEAD
   const claims = (settings, next) => {
     scanCollection.claims( settings.begin, settings.end )
+=======
+  const claims = (iterator, next) => {
+    scanCollection.claims( iterator.from, iterator.to )
+>>>>>>> master
       .then( claims => {
         if(claims.length) {
           let request = []
@@ -86,7 +110,6 @@ module.exports = ( state, complete ) => {
                 eos_amount:   new bn(claim.returnValues.amount).toFixed()
               })
           })
-          // iterator.args.table.addRow('Claims', request.length)
           state.sync_contracts.claims+=request.length
           db.Claims.bulkCreate( request )
             .then( () => { next() })
@@ -97,8 +120,13 @@ module.exports = ( state, complete ) => {
       })
   }
 
+<<<<<<< HEAD
   const registrations = (settings, next) => {
     scanCollection.registrations( settings.begin, settings.end )
+=======
+  const registrations = (iterator, next) => {
+    scanCollection.registrations( iterator.from, iterator.to )
+>>>>>>> master
       .then( registrations => {
         if(registrations.length) {
           let request = []
@@ -110,7 +138,6 @@ module.exports = ( state, complete ) => {
               eos_key:      registration.returnValues.key
             })
           })
-          // iterator.args.table.addRow('Registrations', request.length)
           state.sync_contracts.registrations+=request.length
           db.Registrations.bulkCreate( request, db_config )
             .then( () => { next() })
@@ -121,8 +148,13 @@ module.exports = ( state, complete ) => {
       })
   }
 
+<<<<<<< HEAD
   const reclaimables = (settings, next) => {
     scanCollection.reclaimables( settings.begin, settings.end )
+=======
+  const reclaimables = (iterator, next) => {
+    scanCollection.reclaimables( iterator.from, iterator.to )
+>>>>>>> master
       .then( reclaimables => {
         if(reclaimables.length) {
           let request = []
@@ -137,7 +169,6 @@ module.exports = ( state, complete ) => {
               })
             }
           });
-          // iterator.args.table.addRow('Reclaimables', request.length)
           state.sync_contracts.reclaimables+=request.length
           db.Reclaimables.bulkCreate( request, db_config )
             .then( () => { next() })
@@ -214,16 +245,8 @@ module.exports = ( state, complete ) => {
       setTimeout(synced, 5000)
     })
 
-    console.log('Syncing Contracts, this will take a while.')
+    console.log(`Syncing Contracts between block #${state.block_begin} and #${state.block_end}, this may take a while.`)
     log_periodically()
-  }
-
-  state.sync_contracts = {
-    buys:0,
-    claims:0,
-    registrations:0,
-    transfers:0,
-    reclaimables:0
   }
 
   sync_contracts( () => {

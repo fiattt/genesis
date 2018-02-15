@@ -2,11 +2,8 @@ module.exports = ( state, complete ) => {
 
   const async     = require('async'),
         db        = require('../../models'),
-        redis     = require('../../services/redis'),
         Table     = require('ascii-table'),
-
-        util        = require('../../utilities'),
-        web3        = require('../../services/web3').web3
+        util        = require('../../utilities')
 
   let   start_block = 46147,
         block_index = start_block, //first ethereum block with txs

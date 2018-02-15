@@ -4,7 +4,7 @@
 module.exports = (state, callback) => {
   const {series} = require('async')
 
-  let {contract} = require('../services/web3'),
+  let contract = require('../helpers/web3-contract'),
       db         = require('../models'),
       checksum   = require('checksum'),
 
@@ -15,7 +15,7 @@ module.exports = (state, callback) => {
       .dailyTotals()
       .call()
       .then( periods => {
-        periods.length = state.config.period+1
+        periods.length = config.period+1
         buys.contract = checksum(periods.toString())
         callback()
       })
@@ -23,10 +23,10 @@ module.exports = (state, callback) => {
 
   const buys_from_db = callback => {
     db.sequelize
-      .query(`SELECT sum(eth_amount) FROM buys WHERE period<=${state.config.period} GROUP BY period ORDER BY period ASC`, {type: db.sequelize.QueryTypes.SELECT})
+      .query(`SELECT sum(eth_amount) FROM buys WHERE period<=${config.period} GROUP BY period ORDER BY period ASC`, {type: db.sequelize.QueryTypes.SELECT})
       .then(periods => {
         periods = periods.map( period => period['sum(eth_amount)'] )
-        periods.length = state.config.period+1
+        periods.length = config.period+1
         buys.db = checksum(periods.toString())
         callback()
       })
@@ -42,9 +42,10 @@ module.exports = (state, callback) => {
     test
   ], (error) => {
     if(error)
-      callback('Fail: ${error}')
-    else {
-      callback(null, "Pass")
-    }
+      state.tests.daily_buys = error
+    else
+      state.tests.daily_buys = true
+
+    callback(null, state)
   })
 }

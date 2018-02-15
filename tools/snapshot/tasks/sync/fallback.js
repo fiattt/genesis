@@ -1,11 +1,10 @@
 module.exports = ( state, complete ) => {
 
   const async         = require('async'),
-        Sequelize     = require('Sequelize'),
+        Sequelize     = require('sequelize'),
         Op            = Sequelize.Op,
 
         db            = require('../../models'),
-        redis         = require('../../services/redis'),
         fallback_fast = require('./fallback.fast'),
         fallback_slow = require('./fallback.slow')
 

@@ -5,7 +5,7 @@ module.exports = ( state, complete ) => {
   let bn        = require('bignumber.js')
   let checksum  = require('checksum')
   let md5       = require('md5')
-  let Sequelize = require('Sequelize')
+  let Sequelize = require('sequelize')
   let Op        = Sequelize.Op
 
   let db        = require('../../models')
@@ -26,12 +26,12 @@ module.exports = ( state, complete ) => {
 
   let get_state_variables = callback => {
     data.parameters = {
-      period:                state.config.period,
+      period:                config.period,
       block_begin:           state.block_begin,
       block_end:             state.block_end,
-      b1_dist:               state.config.include_b1
+      b1_dist:               config.include_b1
     }
-    data.meta.author = state.config.author
+    data.meta.author = config.author
     data.meta.timestamp_started = state.started
     callback()
   }
@@ -47,8 +47,8 @@ module.exports = ( state, complete ) => {
   }
 
   let get_supply_expected = callback => {
-    data.supply.expected = 200000000+(state.config.period*2000000)
-    if(state.config.include_b1) data.supply.expected += 100000000
+    data.supply.expected = 200000000+(config.period*2000000)
+    if(config.include_b1) data.supply.expected += 100000000
     callback()
   }
 
@@ -66,7 +66,7 @@ module.exports = ( state, complete ) => {
   let get_supply_liquid = callback => {
     //Sequelize giving me trouble, reverted to raw queries.
     let query = `SELECT sum(balance_total) FROM wallets WHERE address!="${CS_ADDRESS_TOKEN}" AND address!="${CS_ADDRESS_CROWDSALE}"`
-    if(!state.config.include_b1)
+    if(!config.include_b1)
       query = `${query} AND address!="${CS_ADDRESS_B1}"`
 
     db.sequelize
@@ -80,7 +80,11 @@ module.exports = ( state, complete ) => {
   }
 
   let get_supply_total = callback => {
+<<<<<<< HEAD
     let query = `SELECT sum(balance_wallet) FROM wallets`
+=======
+    let query = `SELECT sum(balance_total) FROM wallets`
+>>>>>>> master
     db.sequelize
       .query(query, {type: db.sequelize.QueryTypes.SELECT})
       .then( sum => {
@@ -97,7 +101,7 @@ module.exports = ( state, complete ) => {
       })
       .then( count => {
         data.accounts.registered = count
-        data.accounts.registered_percent = new String(data.accounts.registered/data.accounts.valid*100)+"%"
+        data.accounts.registered_included_percent = new String(data.accounts.registered/data.accounts.valid*100)+"%"
         callback()
       })
       .catch( error => { throw new Error(error) })
@@ -110,7 +114,7 @@ module.exports = ( state, complete ) => {
       })
       .then( count => {
         data.accounts.fallback = count
-        data.accounts.fallback_percent = new String(data.accounts.fallback/data.accounts.valid*100)+"%"
+        data.accounts.fallback_included_percent = new String(data.accounts.fallback/data.accounts.valid*100)+"%"
         callback()
       })
       .catch( error => { throw new Error(error) })
@@ -169,6 +173,7 @@ module.exports = ( state, complete ) => {
     get_accounts_total,
     get_accounts_registered,
     get_accounts_fallback,
+    get_supply_total,
     get_supply_expected,
     get_supply_included,
     get_supply_liquid,

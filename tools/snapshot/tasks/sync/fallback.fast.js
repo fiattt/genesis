@@ -4,14 +4,12 @@ module.exports = ( state, complete ) => {
         Table     = require('ascii-table'),
 
         db        = require('../../models'),
-        redis     = require('../../services/redis'),
         fallback  = require('../../utilities/local-pubkey'),
-        util      = require('../../utilities'),
-        web3      = require('../../services/web3').web3
+        util      = require('../../utilities')
 
-  let intval,
-      pks_found   = 0,
-      count       = 0
+  let   intval,
+        pks_found   = 0,
+        count       = 0
 
   const get_uniques = ( next ) => {
     redis.keys('*', (err, addresses) => next( null, addresses ) )

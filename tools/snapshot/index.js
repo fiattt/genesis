@@ -24,7 +24,7 @@ module.exports = () => {
   // });
 
   const boot = () => {
-    async.waterfall([
+    waterfall([
       next => {
         prompt = require('./prompt')
         prompt.start()
@@ -51,15 +51,7 @@ module.exports = () => {
         }
 
         config = Object.assign( require('../../config.default'), config )
-        global.REDIS_HOST             = config.redis_host
-        global.REDIS_PORT             = config.redis_port
-        global.SS_CONFIG_MYSQL_DB     = config.mysql_db
-        global.SS_CONFIG_MYSQL_USER   = config.mysql_user
-        global.SS_CONFIG_MYSQL_PASS   = config.mysql_pass
-        global.SS_CONFIG_MYSQL_HOST   = config.mysql_host
-        global.SS_CONFIG_MYSQL_PORT   = config.mysql_port
-        global.SS_CONFIG_ETHAPI_TYPE  = config.eth_node_type
-        global.SS_CONFIG_ETHAPI_PATH  = config.eth_node_path
+
         next(null, config)
       }],
       //complete
@@ -76,6 +68,7 @@ module.exports = () => {
 
         setTimeout( () => {
           let   state = {}
+<<<<<<< HEAD
                 state.started = (Date.now() / 1000 | 0)
 
           waterfall([
@@ -102,6 +95,18 @@ module.exports = () => {
             require('./tasks/sync/fallback'),
             //Generate output files.
             require('./tasks/output/snapshot')
+=======
+          waterfall([
+            next => next(null, state),
+            require('./tasks/misc/connections'),
+            require('./tasks/misc/truncate-db'),
+            require('./tasks/sync/periods'),
+            require('./tasks/sync/contract'),
+            require('./tasks/sync/wallets'),
+            require('./tasks/misc/tests'),
+            require('./tasks/sync/fallback'),
+            require('./tasks/output/snapshot'),
+>>>>>>> master
           ], (error, result) => {
             console.log(`Snapshot for Period #${config.period} Completed.`)
             if(error)

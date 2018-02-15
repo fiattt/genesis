@@ -1,11 +1,8 @@
-const async     = require('async')
+const async     = require('async'),
+      db        = require('../models')
 
-const db        = require('../models')
-
-let util        = require('../utilities')
-let web3        = require('../services/web3').web3
-let web3query   = require('../services/web3').query
-let Iterator    = require('../classes/Iterator')
+let util        = require('../utilities'),
+    Iterator    = require('../classes/Iterator')
 
 const pubkey_from_transfer = ( address, callback ) => query_address_tx_hash('Transfers',     'from',     address, callback)
 const pubkey_from_buy = ( address, callback)       => query_address_tx_hash('Buys',          'address',  address, callback)
