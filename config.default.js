@@ -16,6 +16,10 @@ module.exports = {
   //Include block.one distribution in snapshot
   include_b1: true,
 
+  //Minimum balance required for snapshot inclusion.
+  //Note: 1 EOS is recommended, as there will be a minimum balance required to have the bandwidth required for a functional account. Additionally, this prevents dust from appearing as an initial accounts, and cleans up the chain.
+  snapshot_minimum_balance: 1,
+
   //ETH node Connection Details
   eth_node_type: '',
   eth_node_path: '',
