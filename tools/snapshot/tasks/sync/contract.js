@@ -37,7 +37,7 @@ module.exports = ( state, complete ) => {
             request.push({
               tx_hash:      transfer.transactionHash,
               block_number: transfer.blockNumber,
-              from:         transfer.returnValues.from,
+              from:         transfer.returnValues.from.toLowerCase(),
               to:           transfer.returnValues.to,
               eos_amount:   new bn(transfer.returnValues.value).toFixed()
             })
@@ -61,7 +61,7 @@ module.exports = ( state, complete ) => {
             request.push({
               tx_hash:      buy.transactionHash,
               block_number: buy.blockNumber,
-              address:      buy.returnValues.user,
+              address:      buy.returnValues.user.toLowerCase(),
               period:       buy.returnValues.window,
               eth_amount:   new bn(buy.returnValues.amount).toFixed()
             })
@@ -110,7 +110,7 @@ module.exports = ( state, complete ) => {
             request.push({
               tx_hash:      registration.transactionHash,
               block_number: registration.blockNumber,
-              address:      registration.returnValues.user,
+              address:      registration.returnValues.user.toLowerCase(),
               eos_key:      registration.returnValues.key
             })
           })
@@ -135,7 +135,7 @@ module.exports = ( state, complete ) => {
               request.push({
                 tx_hash:      reclaimable.transactionHash,
                 block_number: reclaimable.blockNumber,
-                address:      reclaimable.returnValues.from,
+                address:      reclaimable.returnValues.from.toLowerCase(),
                 eos_amount:   eos_amount.toFixed()
               })
             }
