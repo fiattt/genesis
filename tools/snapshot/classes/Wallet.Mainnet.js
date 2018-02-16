@@ -12,7 +12,7 @@ class WalletMainnet extends Wallet {
 
   process_balance_wallet( complete ){
     util.balance.wallet_token_state( this.address, balance => {
-      this.balance.set( 'wallet', balance)
+      this.balance.set( 'wallet', balance )
       complete()
     })
   }
