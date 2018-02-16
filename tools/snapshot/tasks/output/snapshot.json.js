@@ -150,7 +150,7 @@ module.exports = ( state, complete ) => {
   }
 
   let get_state_stats = callback => {
-    data.stats.contracts = state.sync_contracts
+    data.stats.contract = state.sync_contract
     callback()
   }
 
