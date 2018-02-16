@@ -20,7 +20,7 @@ module.exports = ( state, complete ) => {
         iterator,
         settings = {}
 
-  state.sync_contracts = {
+  state.sync_contract = {
     buys:0,
     claims:0,
     registrations:0,
@@ -42,7 +42,7 @@ module.exports = ( state, complete ) => {
               eos_amount:   new bn(transfer.returnValues.value).toFixed()
             })
           })
-          state.sync_contracts.transfers+=request.length
+          state.sync_contract.transfers+=request.length
           db.Transfers.bulkCreate( request )
             .then( () => { next() })
             .catch(console.log)
@@ -66,7 +66,7 @@ module.exports = ( state, complete ) => {
               eth_amount:   new bn(buy.returnValues.amount).toFixed()
             })
           })
-          state.sync_contracts.buys+=request.length
+          state.sync_contract.buys+=request.length
           db.Buys.bulkCreate( request )
             .then( () => { next() })
             .catch(console.log)
@@ -90,7 +90,7 @@ module.exports = ( state, complete ) => {
                 eos_amount:   new bn(claim.returnValues.amount).toFixed()
               })
           })
-          state.sync_contracts.claims+=request.length
+          state.sync_contract.claims+=request.length
           db.Claims.bulkCreate( request )
             .then( () => { next() })
             .catch(console.log)
@@ -114,7 +114,7 @@ module.exports = ( state, complete ) => {
               eos_key:      registration.returnValues.key
             })
           })
-          state.sync_contracts.registrations+=request.length
+          state.sync_contract.registrations+=request.length
           db.Registrations.bulkCreate( request, db_config )
             .then( () => { next() })
             .catch(console.log)
@@ -140,7 +140,7 @@ module.exports = ( state, complete ) => {
               })
             }
           });
-          state.sync_contracts.reclaimables+=request.length
+          state.sync_contract.reclaimables+=request.length
           db.Reclaimables.bulkCreate( request, db_config )
             .then( () => { next() })
             .catch(console.log)
@@ -161,11 +161,11 @@ module.exports = ( state, complete ) => {
     else
       table = new Table(`${Math.round(settings.index/settings.total*100)}%: ${state.block_begin}~>${settings.end}`)
 
-    table.addRow('Transfers', state.sync_contracts.transfers)
-    table.addRow('Buys', state.sync_contracts.buys)
-    table.addRow('Claims', state.sync_contracts.claims)
-    table.addRow('Registrations', state.sync_contracts.registrations)
-    table.addRow('Reclaimables', state.sync_contracts.reclaimables)
+    table.addRow('Transfers', state.sync_contract.transfers)
+    table.addRow('Buys', state.sync_contract.buys)
+    table.addRow('Claims', state.sync_contract.claims)
+    table.addRow('Registrations', state.sync_contract.registrations)
+    table.addRow('Reclaimables', state.sync_contract.reclaimables)
     console.log(colors[color](table.setAlign(0, Table.RIGHT).setAlign(1, Table.LEFT).render()))
     // console.log(colors.gray.italic(`Started: ${settings.time_formatted().elapsed}, Average: ${iterator.time_formatted().average}`))
   }
@@ -174,7 +174,7 @@ module.exports = ( state, complete ) => {
     log_intval = setInterval( () => log('gray'), 10*1000 )
   }
 
-  const sync_contracts = synced => {
+  const sync_contract = synced => {
     console.log(`Syncing Contract State between block #${state.block_begin} & ${state.block_end}`)
 
     const _for = require('async-for')
@@ -212,7 +212,7 @@ module.exports = ( state, complete ) => {
     loop(() => {
       clearInterval(log_intval)
       log('green', true)
-      console.log('finished')
+      console.log(color.green('Contract Syncing Complete'))
       setTimeout(synced, 5000)
     })
 
@@ -220,7 +220,7 @@ module.exports = ( state, complete ) => {
     log_periodically()
   }
 
-  sync_contracts( () => {
+  sync_contract( () => {
     complete( null, state )
   })
 
