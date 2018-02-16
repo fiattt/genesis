@@ -7,7 +7,7 @@ module.exports = ( state, complete ) => {
   const is_distribution_over = next => {
     state.crowdsale_over = typeof state.period_map[350] != 'undefined' && typeof state.period_map[350].end != 'undefined'
     if(state.crowdsale_over)
-      console.log(colors.red(`Distribution has ended`))
+      console.log(colors.yellow(`Distribution has ended`))
     else
       console.log(colors.green(`Distribution is active`))
     next()
@@ -32,7 +32,7 @@ module.exports = ( state, complete ) => {
       .then( logs => {
         if(logs.length)
           state.frozen = logs[0].blockNumber,
-          console.log(colors.red(`Tokens were frozen at block ${state.frozen}`))
+          console.log(colors.yellow(`Tokens were frozen at block ${state.frozen}`))
         next()
       })
   }
