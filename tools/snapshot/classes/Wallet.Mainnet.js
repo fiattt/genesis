@@ -41,18 +41,20 @@ class WalletMainnet extends Wallet {
     complete()
   }
 
+  process_balance_format( complete ){
+    this.balance.format()
+    complete()
+  }
+
   process_judgement( complete ){
     this.valid() ? this.accept() : this.reject()
-    if(util.misc.is_eos_public_key(this.eos_key) && !this.registered)
-      console.log(this),
-      process.exit()
     complete()
   }
 
   process_exclude(complete){
     const exclude = [CS_ADDRESS_CROWDSALE, CS_ADDRESS_TOKEN]
     if(!this.config.include_b1) exclude.push(CS_ADDRESS_B1)
-    if(exclude.indexOf(this.address.toLowerCase()) > -1)
+    if(exclude.indexOf(this.address) > -1)
       this.accepted           = false,
       this.register_error     = 'exclude'
     complete()
@@ -66,10 +68,10 @@ class WalletMainnet extends Wallet {
       ( complete ) => this.process_balance_reclaimed( complete ),
       ( complete ) => this.process_balance_sum( complete ),
       ( complete ) => this.process_balance_from_wei( complete ),
+      ( complete ) => this.process_balance_format( complete ),
       ( complete ) => this.process_judgement( complete ),
       ( complete ) => this.process_exclude( complete )
     ],(err, result) => {
-      this.balance.format()
       callback( this.json() )
     })
   }
