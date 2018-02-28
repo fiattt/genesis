@@ -1,3 +1,5 @@
+**IMPORTANT: Genesis block generation that includes initial accounts and block producers is deprecated in DAWN 3.X and higher. This is only relevant if using DAWN 2.X public testnet!!!!**
+
 ## Genesis Block Configurator
 
 Simple interface to generate a _genesis block_ from the committed snapshot to this repository. Can be used to configure and generate a genesis block from any properly formatted snapshot.csv.
