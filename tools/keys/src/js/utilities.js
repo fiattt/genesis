@@ -1,16 +1,13 @@
 // This file is required by the index.html file and will
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
-const ecc         = require('eosjs-ecc')
-
+const ecc         = require('eosjs-ecc'),
       util        = {}
 
 let   errors      = [],
       tries       = 0
 
-
 util.genKeyPair = () => {
-
   return ecc.randomKey().then( wif => {
     let privkey = wif
     let pubkey = ecc.privateToPublic(wif)
@@ -42,25 +39,6 @@ util.genKeyPair = () => {
 
     return { public: pubkey, private: privkey }
   })
-
-}
-
-util.keygenFailure = (Pk, pk, pubkeyError, privkeyError) => {
-  //show error
-  //show this information tell them to share {Pk, pk, pubkeyError, privkeyError}
-}
-
-util.validateKeypair = (pub, priv) => {
-  // console.log(pub, priv)
-  let valid = false
-
-  try {
-    valid = (pub == util.publicKeyFromPrivateKey(priv))
-  } catch(e) {
-    console.log(e)
-  }
-
-  return valid;
 }
 
 util.isPublicKey = publicKey => {
@@ -69,6 +47,21 @@ util.isPublicKey = publicKey => {
 
 util.publicKeyFromPrivateKey = privateKey => {
   return ecc.PrivateKey.fromWif(privateKey).toPublic().toString()
+}
+
+util.keygenFailure = (Pk, pk, pubkeyError, privkeyError) => {
+  //show error
+  //show this information tell them to share {Pk, pk, pubkeyError, privkeyError}
+}
+
+util.validateKeypair = (pub, priv) => {
+  let valid = false
+  try {
+    valid = (pub == util.publicKeyFromPrivateKey(priv))
+  } catch(e) {
+    console.log(e)
+  }
+  return valid;
 }
 
 module.exports = util
