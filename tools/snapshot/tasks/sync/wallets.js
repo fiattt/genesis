@@ -5,7 +5,10 @@ module.exports = (state, complete) => {
         bn           = require('bignumber.js'),
 
         util         = require('../../utilities'),
-        query        = require('../../queries')
+        query        = require('../../queries'),
+        Wallet       = ( typeof config.mode != undefined && config.mode == 'mainnet'
+                          ? require('../../classes/Wallet.Mainnet')
+                          : require('../../classes/Wallet.Testnet') )
 
   let   index        = 0,
         cache        = [],
@@ -17,10 +20,6 @@ module.exports = (state, complete) => {
   }
 
   const init = (address, finished) => {
-
-    let Wallet = (typeof config.mode != undefined && config.mode == 'mainnet')
-                  ? require('../../classes/Wallet.Mainnet')
-                  : require('../../classes/Wallet.Testnet')
     let wallet = new Wallet( address, config )
     finished( null, wallet )
   }
@@ -50,8 +49,8 @@ module.exports = (state, complete) => {
 
       query.address_transfers_in(wallet.address, state.block_begin, state.block_end)
         .then( results => {
-          let _results = results.map( result => new bn(result.dataValues.eos_amount) )
-          wallet.transfers = wallet.transfers.concat(_results)
+          results = results.map( result => new bn(result.dataValues.eos_amount) )
+          wallet.transfers = wallet.transfers.concat(results)
           next()
         })
     }
@@ -59,8 +58,8 @@ module.exports = (state, complete) => {
     const subtract = next => {
       query.address_transfers_out(wallet.address, state.block_begin, state.block_end)
         .then( results => {
-          let _results = results.map( result => new bn(result.dataValues.eos_amount).times(-1) )
-          wallet.transfers = wallet.transfers.concat(_results)
+          results = results.map( result => new bn(result.dataValues.eos_amount).times(-1) )
+          wallet.transfers = wallet.transfers.concat(results)
           next()
         })
     }
