@@ -53,12 +53,10 @@ class PeriodMap {
           //First run won't have a cache, set cache to previously defined index.
           if(period_cache === null) period_cache = period_index
 
-          //The period has changed
+          //The period has changed save the previously cached block number to the previous period "end"
           if(period_index != period_cache)
-
-            //Save the previously cached block number to the previous period "end"
             map[period_cache].end = block_cache,
-            console.log(colors.green(`Added period ${map.length-1} to the Period Map :)`)),
+            console.log(colors.green(`Added period ${period_cache} to the Period Map :)`)),
             console.log(map[map.length-1])
 
           //IF the period index does not yet exist in the map
