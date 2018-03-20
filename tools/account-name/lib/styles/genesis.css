@@ -38,7 +38,8 @@ body#result form, body#result em.note { display:none }
 body#error-not-found .error, body#error-invalid .error { display:block; }
 body#error-not-found .error > div { display:none }
 body#error-not-found .error div.error-not-found, body#error-invalid .error div.error-invalid { display:block; color:777 }
-body  .error.wrapper { background:rgba(255,0,0,0.2) }
+body .error.wrapper { background:rgba(255,0,0,0.2) }
+body .attention.wrapper { background:rgb(250,250,210,0.2) }
 
 body#error-not-found .error > div span, body#error-invalid .error > div span { color:white }
 
