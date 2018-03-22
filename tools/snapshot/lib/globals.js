@@ -16,6 +16,10 @@ global.CS_ADDRESS_B1                      = "0x000000000000000000000000000000000
 
 global.CS_OPEN_TIME                       = 1498482000
 global.CS_START_TIME                      = 1498914000
+global.CS_END_TIME                        = 1527893999
+
+global.CS_HOURS_PER_PERIOD                = 23
+
 global.CS_BLOCK_FIRST                     = 3904416
 
 global.CS_CREATE_FIRST_PERIOD             = new bn(200000000).times(WAD)

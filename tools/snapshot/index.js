@@ -7,22 +7,6 @@ module.exports = () => {
         async = require('async'),
         fs = require('fs')
 
-
-  // require('shutdown-handler').on('exit', function(e) {
-  //   e.preventDefault();
-  //   console.log(colors.bold.red("Caught interrupt signal"));
-  //   prompt_exit = require('./prompt-exit')
-  //   prompt_exit.start()
-  //   prompt_exit.get( prompt_exit.schema, (error, _exit) => {
-  //     console.log(_exit)
-  //     if(_exit == "y") {
-  //       process.exit()
-  //     }
-  //   })
-  //   var waitTill = new Date(new Date().getTime() + 1 * 1000);
-  //   while(waitTill > new Date()){}
-  // });
-
   const boot = () => {
     waterfall([
       next => {

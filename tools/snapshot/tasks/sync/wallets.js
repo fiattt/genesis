@@ -155,10 +155,11 @@ module.exports = (state, complete) => {
     )
   }
 
-  console.log('Syncing Wallets')
   query.address_uniques( state.block_begin, state.block_end, _uniques => {
       uniques     = new Set(_uniques)
       state.total = uniques.size
+
+      console.log(`Syncing ${state.total} Wallets`)
 
       log_table_reset()
 

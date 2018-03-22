@@ -83,7 +83,7 @@ module.exports = ( state, complete ) => {
     db.sequelize
       .query(query, {type: db.sequelize.QueryTypes.SELECT})
       .then( sum => {
-        data.supply.total = parseFloat(sum[0]['sum(balance_total)'])
+        data.supply.total = parseFloat(sum[0]['sum(balance_wallet)'])
         callback()
       })
       .catch( error => { throw new Error(error) })
@@ -162,6 +162,30 @@ module.exports = ( state, complete ) => {
     });
   }
 
+  let get_config = callback => {
+    data.config = config
+    callback()
+  }
+
+  let get_block_range = callback => {
+    data.block_range = {
+      begin: state.block_begin,
+      end: state.block_end
+    }
+    callback()
+  }
+
+  let get_dist_status = callback => {
+    data.distribution_status = {
+      crowdsale_over: state.crowdsale_over,
+      tokens_frozen: state.frozen > 0
+    }
+    if(data.distribution_status.tokens_frozen)
+      data.distribution_status.tokens_frozen_block = state.frozen
+    callback()
+  }
+
+
   console.log('Generating snapshot.json')
   async.series([
     get_state_variables,
@@ -177,6 +201,9 @@ module.exports = ( state, complete ) => {
     get_timestamp,
     get_time_elapsed,
     get_state_stats,
+    get_config,
+    get_block_range,
+    get_dist_status,
     output,
   ], () => complete(null, state) )
 

@@ -8,7 +8,8 @@ module.exports = ( state, complete ) => {
 
 
   const db             = require('../../models'),
-        db_config    = {ignoreDuplicates: true}
+        db_config      = {ignoreDuplicates: true},
+        colors         = require('colors/safe')
 
   let   util           = require('../../utilities'),
         scanCollection = require('../../helpers/web3-collection'),
@@ -151,8 +152,7 @@ module.exports = ( state, complete ) => {
   }
 
   const log = (color, complete) => {
-    const Table  = require('ascii-table'),
-          colors = require('colors/safe')
+    const Table  = require('ascii-table')
 
     let   table
 
@@ -185,7 +185,7 @@ module.exports = ( state, complete ) => {
 
     console.log(per_iteration,iterations,offset)
 
-    var loop = _for(0, function (i) { return i <= iterations }, function (i) { return i + 1; },
+    let loop = _for(0, function (i) { return i <= iterations }, function (i) { return i + 1; },
       function loopBody(i, _break, _continue) {
         settings.begin = (i*per_iteration)+offset
         settings.end = settings.begin+per_iteration-1
@@ -212,7 +212,7 @@ module.exports = ( state, complete ) => {
     loop(() => {
       clearInterval(log_intval)
       log('green', true)
-      console.log(color.green('Contract Syncing Complete'))
+      console.log(colors.green('Contract Syncing Complete'))
       setTimeout(synced, 5000)
     })
 

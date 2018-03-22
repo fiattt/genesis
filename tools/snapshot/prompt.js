@@ -73,7 +73,7 @@ let schema = {
       type: 'string',
       description: colors.magenta('Overwrite snapshot in project root? (optional)'),
       message: 'Must be true or false',
-      default: true,
+      default: false,
       ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true
     }
 
