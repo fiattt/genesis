@@ -85,7 +85,7 @@ module.exports = ( state, complete ) => {
     snapshot_csv,  //dumps snapshot table into csv
     snapshot_json, //outputs some metadata about the snapshot
     distribution_csv, //Output of entire distribution
-    // db_sql            // database ouput
+    db_sql            // database ouput
   // ], () => complete( null, state ) )
 ])
 

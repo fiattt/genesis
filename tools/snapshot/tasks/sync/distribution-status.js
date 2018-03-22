@@ -72,12 +72,13 @@ module.exports = ( state, complete ) => {
       is_token_frozen,
       when_tokens_froze,
     ], () => {
-      //Tokens are frozen, and the crowdsale is over. Let's go!
+      //The crowdsale is over, and tokens are frozen.
       if(state.frozen > 0 && state.crowdsale_over) {
-        if(config.mode != "mainnet") {
+        // if(config.mode != "mainnet") {
           //prompt "Would you like to generate a mainnet snapshot"
-        }
-        complete(null, state)
+          complete(null, state)
+        // }
+        
       }
       //Tokens aren't frozen, but the mode is set for mainnet. Keep checking until tokens are frozen.
       else if(state.frozen == 0 && state.crowdsale_over && config.mode == "mainnet") {

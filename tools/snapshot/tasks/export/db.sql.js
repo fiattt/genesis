@@ -2,7 +2,7 @@
 
 module.exports = ( state, callback ) => {
 
-  const mysqlDump = require('mysqldump');
+  const mysqlDump = require('node-mysql-dump');
 
   mysqlDump({
       host: config.mysql_host,

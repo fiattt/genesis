@@ -77,7 +77,7 @@ module.exports = () => {
             //Maybe run native registration fallback (v0.1) NOT RECOMMENDED.
             require('./tasks/sync/fallback'),
             //Generate output files.
-            require('./tasks/output/snapshot')
+            require('./tasks/export')
           ], (error, result) => {
             console.log(`Snapshot for Period #${config.period} Completed.`)
             if(error)

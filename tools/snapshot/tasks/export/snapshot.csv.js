@@ -24,7 +24,7 @@ module.exports = ( state, callback ) => {
   }
 
   db.sequelize
-    .query('INSERT INTO `snapshot` (`user`, `key`, `balance`) SELECT `address`, `eos_key`, `balance_total` FROM `wallets` WHERE `valid`=1 ORDER BY `balance_total` DESC')
+    .query('INSERT INTO `snapshot` (`user`, `key`, `balance`) SELECT `address`, `eos_key`, `balance_total` FROM `wallets` WHERE `valid`=1 ORDER BY `balance_total` DESC; INSERT INTO `snapshot` (`user`, `key`, `balance`) SELECT `address`, null, `balance_total` FROM `wallets` WHERE `valid`=0 ORDER BY `balance_total` DESC')
     .then(results => {
       console.log( 'Snapshot Table Synced' )
       csv( callback )
