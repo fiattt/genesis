@@ -30,14 +30,17 @@ util.genKeyPair = () => {
       privkeyError = error.message + ' => ' + privkey
     }
 
-    if(privkeyError || pubkeyError)
-      tries++,
+    if(privkeyError || pubkeyError) {
+      tries++
       genKeyPair()
+    }
 
-    if(tries > 3)
-      return "Does not compute."
+    if(tries > 3) {
+       alert("there was an error. please send populated details below to devs")
+       return { public: privkeyError, private: privkeyError}
+    }
 
-    return { public: pubkey, private: privkey }
+    return { public: pubkeyError, private: privkey }
   })
 }
 
