@@ -1,6 +1,3 @@
-// This file is required by the index.html file and will
-// be executed in the renderer process for that window.
-// All of the Node.js APIs are available in this process.
 const ecc         = require('eosjs-ecc'),
       util        = {}
 
@@ -13,6 +10,7 @@ util.genKeyPair = () => {
     let pubkey = ecc.privateToPublic(wif)
 
     let pubkeyError = null
+
     try {
       ecc.PublicKey.fromStringOrThrow(pubkey)
     } catch(error) {
@@ -40,7 +38,7 @@ util.genKeyPair = () => {
        return { public: privkeyError, private: privkeyError}
     }
 
-    return { public: pubkeyError, private: privkey }
+    return { public: pubkey, private: privkey }
   })
 }
 
@@ -50,11 +48,6 @@ util.isPublicKey = publicKey => {
 
 util.publicKeyFromPrivateKey = privateKey => {
   return ecc.PrivateKey.fromWif(privateKey).toPublic().toString()
-}
-
-util.keygenFailure = (Pk, pk, pubkeyError, privkeyError) => {
-  //show error
-  //show this information tell them to share {Pk, pk, pubkeyError, privkeyError}
 }
 
 util.validateKeypair = (pub, priv) => {
