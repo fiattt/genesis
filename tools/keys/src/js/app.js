@@ -103,16 +103,5 @@ const initApp = (tabs, toggle) => {
   if(typeof app[id] === 'function')
     gui.bodyID(id),
     app[id](`#${id}`)
-    // typography(`#${id}`)
   return true
-}
-
-const typography = (sel) => {
-  flowtype(document.querySelector(sel), {
-    minimum   : 500,
-    maximum   : 1200,
-    minFont   : 12,
-    maxFont   : 40,
-    fontRatio : 30
-  });
 }
