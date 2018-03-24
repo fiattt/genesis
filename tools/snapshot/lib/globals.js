@@ -1,5 +1,7 @@
 const bn = require('bignumber.js')
 
+global.VERSION                            = "0.3.0"
+
 //Snapshot specific globals.
 global.SS_STARTED_TIMESTAMP               = Date.now()/1000 | 0
 global.SS_MAINNET_TIMESTAMP_END           = 0 //A cutoff timestamp should be provided so snapshot audits are not impossible. Mainnet snapshot would only account for registrations/claims up to the last block with a timestamp lte this timestamp.
@@ -17,8 +19,6 @@ global.CS_ADDRESS_B1                      = "0x000000000000000000000000000000000
 global.CS_OPEN_TIME                       = 1498482000
 global.CS_START_TIME                      = 1498914000
 global.CS_END_TIME                        = 1527893999
-
-global.CS_HOURS_PER_PERIOD                = 23
 
 global.CS_BLOCK_FIRST                     = 3904416
 

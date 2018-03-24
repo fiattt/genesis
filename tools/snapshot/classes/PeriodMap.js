@@ -33,6 +33,12 @@ class PeriodMap {
         period_index    = null,
         period_cache    = null
 
+    if(typeof this.map[CS_NUMBER_OF_PERIODS-1] !== 'undefined' && typeof this.map[CS_NUMBER_OF_PERIODS-1].end === "number") {
+      onComplete(this)
+      return
+    }
+
+
     if(period_max > CS_NUMBER_OF_PERIODS-1) {
       period_max = CS_NUMBER_OF_PERIODS-1
     }

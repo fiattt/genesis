@@ -116,11 +116,31 @@ module.exports = ( state, complete ) => {
   }
 
   let get_snapshot_checksum = callback => {
-    checksum.file('./snapshot.csv', (err, sum) => {
+    checksum.file(state.files.path_snapshot_csv , (err, sum) => {
       if(err)
         throw new Error(err)
       else
         data.checksum.output.snapshot = sum
+      callback()
+    })
+  }
+
+  let get_snapshot_unregistered_checksum = callback => {
+    checksum.file(state.files.path_snapshot_unregistered_csv , (err, sum) => {
+      if(err)
+        throw new Error(err)
+      else
+        data.checksum.output.snapshot_unregistered = sum
+      callback()
+    })
+  }
+
+  let get_distribution_checksum = callback => {
+    checksum.file(state.files.path_distribution_csv , (err, sum) => {
+      if(err)
+        throw new Error(err)
+      else
+        data.checksum.output.distribution = sum
       callback()
     })
   }
@@ -164,6 +184,17 @@ module.exports = ( state, complete ) => {
 
   let get_config = callback => {
     data.config = config
+
+    delete config.eth_node_type
+    delete config.eth_node_path
+    delete config.redis_host
+    delete config.redis_port
+    delete config.mysql_db
+    delete config.mysql_user
+    delete config.mysql_pass
+    delete config.mysql_host
+    delete config.mysql_port
+
     callback()
   }
 
@@ -197,6 +228,8 @@ module.exports = ( state, complete ) => {
     get_supply_included,
     get_supply_liquid,
     get_snapshot_checksum,
+    get_snapshot_unregistered_checksum,
+    get_distribution_checksum,
     get_table_checksum,
     get_timestamp,
     get_time_elapsed,

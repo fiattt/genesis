@@ -43,6 +43,7 @@ module.exports = (state, complete) => {
     wallet.transfers = []
 
     const add = next => {
+
       //Required for accurate contract wallet balance.
       if(wallet.address.toLowerCase() == CS_ADDRESS_CROWDSALE.toLowerCase())
         wallet.transfers.push(add_initial_distribution())

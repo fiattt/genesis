@@ -65,13 +65,13 @@ module.exports = () => {
             //Check if the crowdsale is ongoing and the token is stopped, "frozen"
             require('./tasks/sync/distribution-status'),
             //truncate all databases (except state) if config permits
-            require('./tasks/misc/truncate-db'),
+            // require('./tasks/misc/truncate-db'),
             //Set the block range of the snapshot.
             require('./tasks/sync/block-range'),
             //Sync events from the crowdsale contract
-            require('./tasks/sync/contract'),
+            // require('./tasks/sync/contract'),
             //Calculate and validate each wallet.
-            require('./tasks/sync/wallets'),
+            // require('./tasks/sync/wallets'),
             //Run tests against data to spot any issues with integrity
             require('./tasks/misc/tests'),
             //Maybe run native registration fallback (v0.1) NOT RECOMMENDED.

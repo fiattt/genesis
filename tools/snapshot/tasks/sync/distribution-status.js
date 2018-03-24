@@ -4,7 +4,7 @@ module.exports = ( state, complete ) => {
         contract = require('../../helpers/web3-contract.js')
 
   const is_distribution_over = next => {
-    state.crowdsale_over = ((new Date() / 1000 | 0) > CS_END_TIME)
+    state.crowdsale_over = (state.timestamp_started > CS_END_TIME)
     if(state.crowdsale_over)
       console.log(colors.yellow(`Distribution has ended`))
     else
@@ -22,7 +22,7 @@ module.exports = ( state, complete ) => {
 
   const when_tokens_froze = next => {
     if(!state.frozen) {
-
+      console.log(colors.green("Tokens are liquid"))
       next()
       return
     }
@@ -59,8 +59,6 @@ module.exports = ( state, complete ) => {
       // console.log(color.green(``))
       if(tokens.frozen > 0)
         console.log(colors.yellow(`Tokens were frozen at block ${state.frozen}`))
-      else
-        console.log(colors.green("Tokens are liquid"))
       setTimeout(() => next, 5000)
     })
 
@@ -78,7 +76,7 @@ module.exports = ( state, complete ) => {
           //prompt "Would you like to generate a mainnet snapshot"
           complete(null, state)
         // }
-        
+
       }
       //Tokens aren't frozen, but the mode is set for mainnet. Keep checking until tokens are frozen.
       else if(state.frozen == 0 && state.crowdsale_over && config.mode == "mainnet") {

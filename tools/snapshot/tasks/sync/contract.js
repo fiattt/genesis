@@ -39,7 +39,7 @@ module.exports = ( state, complete ) => {
               tx_hash:      transfer.transactionHash,
               block_number: transfer.blockNumber,
               from:         transfer.returnValues.from.toLowerCase(),
-              to:           transfer.returnValues.to,
+              to:           transfer.returnValues.to.toLowerCase(),
               eos_amount:   new bn(transfer.returnValues.value).toFixed()
             })
           })
@@ -86,7 +86,7 @@ module.exports = ( state, complete ) => {
             request.push({
                 tx_hash:      claim.transactionHash,
                 block_number: claim.blockNumber,
-                address:      claim.returnValues.user,
+                address:      claim.returnValues.user.toLowerCase(),
                 period:       claim.returnValues.window,
                 eos_amount:   new bn(claim.returnValues.amount).toFixed()
               })
