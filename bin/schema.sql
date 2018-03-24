@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.6.37)
 # Database: eos_snapshot
-# Generation Time: 2017-11-07 16:47:34 +0000
+# Generation Time: 2018-03-24 17:45:34 +0000
 # ************************************************************
 
 
@@ -22,6 +22,8 @@
 
 # Dump of table buys
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `buys`;
 
 CREATE TABLE `buys` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -40,6 +42,8 @@ CREATE TABLE `buys` (
 # Dump of table claims
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `claims`;
+
 CREATE TABLE `claims` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `tx_hash` varchar(256) NOT NULL DEFAULT '',
@@ -57,6 +61,8 @@ CREATE TABLE `claims` (
 # Dump of table keys
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `keys`;
+
 CREATE TABLE `keys` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `address` varchar(256) NOT NULL DEFAULT '',
@@ -71,6 +77,8 @@ CREATE TABLE `keys` (
 
 # Dump of table reclaimables
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `reclaimables`;
 
 CREATE TABLE `reclaimables` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -88,6 +96,8 @@ CREATE TABLE `reclaimables` (
 # Dump of table registrations
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `registrations`;
+
 CREATE TABLE `registrations` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `tx_hash` varchar(256) NOT NULL DEFAULT '',
@@ -104,10 +114,27 @@ CREATE TABLE `registrations` (
 # Dump of table snapshot
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `snapshot`;
+
 CREATE TABLE `snapshot` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user` varchar(256) NOT NULL DEFAULT '',
   `key` varchar(256) NOT NULL DEFAULT '',
+  `balance` decimal(15,4) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user` (`user`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+# Dump of table snapshot_unregistered
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `snapshot_unregistered`;
+
+CREATE TABLE `snapshot_unregistered` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user` varchar(256) NOT NULL DEFAULT '',
   `balance` decimal(15,4) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -116,6 +143,8 @@ CREATE TABLE `snapshot` (
 
 # Dump of table state
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `state`;
 
 CREATE TABLE `state` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -129,6 +158,8 @@ CREATE TABLE `state` (
 
 # Dump of table transfers
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `transfers`;
 
 CREATE TABLE `transfers` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -147,6 +178,8 @@ CREATE TABLE `transfers` (
 
 # Dump of table wallets
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `wallets`;
 
 CREATE TABLE `wallets` (
   `address` varchar(256) NOT NULL,
