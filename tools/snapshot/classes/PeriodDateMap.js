@@ -23,7 +23,6 @@ class PeriodDateMap {
   }
 
   generate( onComplete = () => {} ){
-    let periodLength = 60*60*23
 
     this.map = new Array(351).fill({})
     this.map.forEach( (value, index) => {
@@ -36,7 +35,7 @@ class PeriodDateMap {
         begin = CS_START_TIME
       }
       else {
-        begin = CS_START_TIME + periodLength * (index-1)
+        begin = CS_START_TIME + CS_PERIOD_LENGTH_SECONDS * (index-1)
       }
       end = begin + periodLength - 1
 

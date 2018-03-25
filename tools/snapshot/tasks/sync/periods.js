@@ -32,16 +32,16 @@ module.exports = ( state, complete )  => {
           .upsert({meta_key: 'period_block_map', meta_value: JSON.stringify(periods.map)})
           .then( () => {
             state.period_map          = periods.map
-            state.block_begin         = periods.map[0].begin
-            state.block_end           = periods.map[config.period].end
+            // state.block_begin         = periods.map[0].begin
+            // state.block_end           = periods.map[config.period].end
             complete( null, state )
           })
       })
     }
     else {
       state.period_map          = periods.map
-      state.block_begin         = periods.map[0].begin
-      state.block_end           = periods.map[config.period].end
+      // state.block_begin         = periods.map[0].begin
+      // state.block_end           = periods.map[config.period].end
       complete( null, state  )
     }
   })

@@ -4,17 +4,14 @@ html { background: url(../images/bg.jpg) no-repeat center center fixed; -webkit-
 * { font-family: 'Open Sans', sans-serif; }
 
 #wrapper { position:fixed; left:40px; right:40px; bottom:40px; top:40px; border-radius: 4px; text-align:center; z-index: 2; }
-/* body#keyGen-active #wrapper, body#validator-active #wrapper { border:1px solid rgba(255,255,255,0.3); background:rgba(0,0,0,0.8); } */
 #logo { margin:0 auto; max-height:300px; width:auto; display:block; }
 
 #entropy { text-align:center; position:absolute; z-index:3; top:0px; right:0px; bottom:0px; left: 0px; background:rgba(255,255,255,0.8) url(../images/loading.gif) center center no-repeat;}
-
 #entropy span { display:inline-block; margin:200px auto 0; text-align:center;  }
 
 body #entropy { display:none }
 body.entropy #entropy { display:block;  }
 
-/* #indicator { position:absolute; z-index:1; top:0px; right:0px; bottom:-100px; left: 0px; } */
 body #indicator {display:none; }
 body.valid, body.error {display:block}
 
@@ -39,9 +36,6 @@ body#validator-active .message { font-size: 30pt; color:white; }
 body#validator-active .message span { display:none; opacity:0; }
 body#validator-active.valid .message .valid { display:block;opacity:1; }
 body#validator-active.error .message .invalid { display:block;opacity:1; }
-
-/* body.valid {background:green;}
-body.error {background:red;} */
 
 a, input[type=submit], button { margin-top:15px; border:0; font-size:15pt; cursor:pointer; display:inline-block; margin-right:10px; padding:10px 15px; font-weight:bold; letter-spacing:1px; text-decoration: none; border-radius: 5px; }
 a { color: black; background:rgba(248,214,155,0.7);}

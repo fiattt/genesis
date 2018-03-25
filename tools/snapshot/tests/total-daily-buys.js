@@ -10,30 +10,42 @@ module.exports = (state, callback) => {
 
       buys = {}
 
-  const buys_from_contract = callback => {
+  const buys_from_contract = next => {
     contract.$utility.methods
       .dailyTotals()
       .call()
       .then( periods => {
+
+        //Prune the result
         periods.length = config.period+1
+
+        //Get a sha1 hash of the result.
         buys.contract = checksum(periods.toString())
-        callback()
+
+        next()
       })
   }
 
-  const buys_from_db = callback => {
+  const buys_from_db = next => {
     db.sequelize
       .query(`SELECT sum(eth_amount) FROM buys WHERE period<=${config.period} GROUP BY period ORDER BY period ASC`, {type: db.sequelize.QueryTypes.SELECT})
       .then(periods => {
+
+        //transform results
         periods = periods.map( period => period['sum(eth_amount)'] )
+
+        //Prune the result
         periods.length = config.period+1
+
+        //Get a sha1 hash of the result.
         buys.db = checksum(periods.toString())
-        callback()
+
+        next()
       })
   }
 
-  const test = callback => {
-    buys.contract === buys.db ? callback() : callback(`${buys.contract} != ${buys.db}`)
+  const test = finish => {
+    buys.contract === buys.db ? finish() : finish(`${buys.contract} != ${buys.db}`)
   }
 
   series([
