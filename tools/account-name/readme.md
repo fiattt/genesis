@@ -4,4 +4,4 @@
 
 Looks up your account on Testnet if you're in the Genesis file, located [here](https://eosio.github.io/genesis/tools/account-name/index.html)
 
-**Note about Genesis File:** You will only be in the testnet Genesis file if you had an EOS ERC20 balance up to and including period 162
+**Note about Genesis File:** You will only have an account in the testnet Genesis file if you had an EOS ERC20 balance up to and including period 162
