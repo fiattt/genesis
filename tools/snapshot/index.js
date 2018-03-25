@@ -47,8 +47,22 @@ module.exports = () => {
             require('./tasks/misc/connections'),
             require('./tasks/misc/truncate-db'),
             require('./tasks/sync/periods'),
+<<<<<<< Updated upstream
             require('./tasks/sync/contract'),
             require('./tasks/sync/wallets'),
+=======
+            //Check if the crowdsale is ongoing and the token is stopped, "frozen"
+            require('./tasks/sync/distribution-status'),
+            //truncate all databases (except state) if config permits
+            require('./tasks/misc/truncate-db'),
+            //Set the block range of the snapshot.
+            require('./tasks/sync/block-range'),
+            //Sync events from the crowdsale contract
+            require('./tasks/sync/contract'),
+            //Calculate and validate each wallet.
+            require('./tasks/sync/wallets'),
+            //Run tests against data to spot any issues with integrity
+>>>>>>> Stashed changes
             require('./tasks/misc/tests'),
             require('./tasks/sync/fallback'),
             require('./tasks/output/snapshot'),
