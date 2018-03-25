@@ -1,14 +1,13 @@
 module.exports = ( state, complete ) => {
 
-  let async     = require('async')
-  let fs        = require('fs')
-  let bn        = require('bignumber.js')
-  let checksum  = require('checksum')
-  let md5       = require('md5')
-  let Sequelize = require('sequelize')
-  let Op        = Sequelize.Op
-
-  let db        = require('../../models')
+  const async     = require('async'),
+        fs        = require('fs'),
+        bn        = require('bignumber.js'),
+        checksum  = require('checksum'),
+        md5       = require('md5'),
+        Sequelize = require('sequelize'),
+        Op        = Sequelize.Op,
+        db        = require('../../models')
 
   let data = {
     parameters : {},
@@ -80,11 +79,11 @@ module.exports = ( state, complete ) => {
   }
 
   let get_supply_total = callback => {
-    let query = `SELECT sum(balance_total) FROM wallets`
+    let query = `SELECT sum(balance_wallet) FROM wallets`
     db.sequelize
       .query(query, {type: db.sequelize.QueryTypes.SELECT})
       .then( sum => {
-        data.supply.total = parseFloat(sum[0]['sum(balance_total)'])
+        data.supply.total = parseFloat(sum[0]['sum(balance_wallet)'])
         callback()
       })
       .catch( error => { throw new Error(error) })
@@ -117,11 +116,31 @@ module.exports = ( state, complete ) => {
   }
 
   let get_snapshot_checksum = callback => {
-    checksum.file('./snapshot.csv', (err, sum) => {
+    checksum.file(state.files.path_snapshot_csv , (err, sum) => {
       if(err)
         throw new Error(err)
       else
         data.checksum.output.snapshot = sum
+      callback()
+    })
+  }
+
+  let get_snapshot_unregistered_checksum = callback => {
+    checksum.file(state.files.path_snapshot_unregistered_csv , (err, sum) => {
+      if(err)
+        throw new Error(err)
+      else
+        data.checksum.output.snapshot_unregistered = sum
+      callback()
+    })
+  }
+
+  let get_distribution_checksum = callback => {
+    checksum.file(state.files.path_distribution_csv , (err, sum) => {
+      if(err)
+        throw new Error(err)
+      else
+        data.checksum.output.distribution = sum
       callback()
     })
   }
@@ -140,7 +159,7 @@ module.exports = ( state, complete ) => {
   }
 
   let get_timestamp = callback => {
-    data.meta.timestamp_completed = (Date.now() / 1000 | 0)
+    data.meta.timestamp_completed = state.completed
     callback()
   }
 
@@ -151,17 +170,52 @@ module.exports = ( state, complete ) => {
   }
 
   let get_state_stats = callback => {
-    data.stats.contracts = state.sync_contracts
+    data.stats.contract = state.sync_contract
     callback()
   }
 
   let output = callback => {
-    fs.writeFile(state.files.path_json, JSON.stringify(data, null, "\t"), (err) => {
+    fs.writeFile(state.files.path_snapshot_json, JSON.stringify(data, null, "\t"), (err) => {
       console.log("Snapshot meta written to snapshot.json");
-      if(config.overwrite_snapshot) fs.createReadStream(state.files.path_json).pipe(fs.createWriteStream(state.files.file_json))
+      if(config.overwrite_snapshot) fs.createReadStream(state.files.path_snapshot_json).pipe(fs.createWriteStream(state.files.file_snapshot_json))
       callback()
     });
   }
+
+  let get_config = callback => {
+    data.config = config
+
+    delete config.eth_node_type
+    delete config.eth_node_path
+    delete config.redis_host
+    delete config.redis_port
+    delete config.mysql_db
+    delete config.mysql_user
+    delete config.mysql_pass
+    delete config.mysql_host
+    delete config.mysql_port
+
+    callback()
+  }
+
+  let get_block_range = callback => {
+    data.block_range = {
+      begin: state.block_begin,
+      end: state.block_end
+    }
+    callback()
+  }
+
+  let get_dist_status = callback => {
+    data.distribution_status = {
+      crowdsale_over: state.crowdsale_over,
+      tokens_frozen: state.frozen > 0
+    }
+    if(data.distribution_status.tokens_frozen)
+      data.distribution_status.tokens_frozen_block = state.frozen
+    callback()
+  }
+
 
   console.log('Generating snapshot.json')
   async.series([
@@ -174,10 +228,15 @@ module.exports = ( state, complete ) => {
     get_supply_included,
     get_supply_liquid,
     get_snapshot_checksum,
+    get_snapshot_unregistered_checksum,
+    get_distribution_checksum,
     get_table_checksum,
     get_timestamp,
     get_time_elapsed,
     get_state_stats,
+    get_config,
+    get_block_range,
+    get_dist_status,
     output,
   ], () => complete(null, state) )
 

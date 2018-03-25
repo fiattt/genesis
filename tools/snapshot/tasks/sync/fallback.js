@@ -27,10 +27,10 @@ module.exports = ( state, complete ) => {
       })
   }
 
-  if(config.fallback)
+  if(config.registration_fallback)
     async.series([
         populate_index,
-        next => fallback_fast(state, next),
+        // next => fallback_fast(state, next),
         next => fallback_slow(state, next),
       ],
       () => complete( null, state )

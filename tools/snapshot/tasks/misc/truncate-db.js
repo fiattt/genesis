@@ -1,13 +1,15 @@
 module.exports = ( state, complete ) => {
 
+  const async = require('async'),
+        db = require('../../models')
+
   if(config.recalculate_wallets === true) {
     console.log('recalculate_wallets set to true, skipping truncation')
-    complete(null, state)
+    db.Wallets.destroy({ truncate : true, cascade: false }).then(() => {
+      complete(null, state)
+    })
     return
   }
-
-  const async = require('async')
-  const db = require('../../models')
 
   console.log('Truncating tables, starting clean')
   async.series([

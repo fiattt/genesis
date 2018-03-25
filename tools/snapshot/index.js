@@ -4,13 +4,14 @@ module.exports = () => {
   const Table = require('ascii-table'),
         colors = require("colors/safe"),
         waterfall = require('async').waterfall,
-        prompt = require('./prompt'),
+        async = require('async'),
         fs = require('fs')
 
   const boot = () => {
     waterfall([
       next => {
-        prompt.start(),
+        prompt = require('./prompt')
+        prompt.start()
         prompt.get( prompt.schema, (error, config) => {
           if(error)
             throw new Error(error)
@@ -19,9 +20,18 @@ module.exports = () => {
         })
       },
       (config, next) => {
+
         if(config.load_config) {
           try { config = require('../../config') }
-          catch(e) {}
+          catch(e) {
+            console.log("It appears you've set load_config somehow without having a config file you rascal. Set to false.")
+            throw new Error(e)
+          }
+        }
+
+        if(typeof config.period === "undefined") {
+          let period  = require('./utilities/periods')
+          config.period = period.last_closed()
         }
 
         config = Object.assign( require('../../config.default'), config )
@@ -34,7 +44,7 @@ module.exports = () => {
         Object.keys(config).forEach((key,index) => {
           table.addRow([key, config[key]])
         })
-        console.log(colors.green(table.setAlign(0, Table.RIGHT).setAlign(1, Table.LEFT).render()))
+        console.log(colors.bold.white(table.setAlign(0, Table.RIGHT).setAlign(1, Table.LEFT).render()))
         console.log(colors.white('Starting in 5 seconds.'))
 
         //Save config globally
@@ -42,15 +52,16 @@ module.exports = () => {
 
         setTimeout( () => {
           let   state = {}
+                state.started = (Date.now() / 1000 | 0)
+
           waterfall([
             next => next(null, state),
+            //Connect and check connections before starting
             require('./tasks/misc/connections'),
-            require('./tasks/misc/truncate-db'),
+            //Dynamically set globals
+            require('./tasks/misc/preload'),
+            //Set the period map
             require('./tasks/sync/periods'),
-<<<<<<< Updated upstream
-            require('./tasks/sync/contract'),
-            require('./tasks/sync/wallets'),
-=======
             //Check if the crowdsale is ongoing and the token is stopped, "frozen"
             require('./tasks/sync/distribution-status'),
             //truncate all databases (except state) if config permits
@@ -62,10 +73,11 @@ module.exports = () => {
             //Calculate and validate each wallet.
             require('./tasks/sync/wallets'),
             //Run tests against data to spot any issues with integrity
->>>>>>> Stashed changes
             require('./tasks/misc/tests'),
+            //Maybe run native registration fallback (v0.1) NOT RECOMMENDED.
             require('./tasks/sync/fallback'),
-            require('./tasks/output/snapshot'),
+            //Generate output files.
+            require('./tasks/export')
           ], (error, result) => {
             console.log(`Snapshot for Period #${config.period} Completed.`)
             if(error)

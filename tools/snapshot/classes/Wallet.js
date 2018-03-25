@@ -1,7 +1,7 @@
 // TEMP:
-const bn                = require('bignumber.js')
-const Balance           = require('./Balance')
-const util              = require('../utilities')
+const bn                = require('bignumber.js'),
+      Balance           = require('./Balance'),
+      util              = require('../utilities')
 
 class Wallet {
 
@@ -63,12 +63,13 @@ class Wallet {
       eos_key = this.eos_key.trim()
 
       //Might be hex, try to convert it.
-      if( eos_key.length == 106 ){ //TODO use web3.isHex()
+      if( eos_key.length == 106 ){
         let eos_key_from_hex = util.misc.hex_to_ascii( "0x"+eos_key )
         if ( util.misc.is_eos_public_key(eos_key_from_hex) ) {
           eos_key = eos_key_from_hex
         }
       }
+
       //Might be user error
       else if(eos_key.startsWith('key')){
         let eos_key_mod = eos_key.substring(3)
@@ -76,11 +77,28 @@ class Wallet {
           eos_key = eos_key_mod
         }
       }
+
       //Convert something that looks like a key to EOS key (STM, BTS, ETC)
-      else if(!eos_key.startsWith('EOS') && !/[^a-zA-Z0-9]/.test(eos_key)) {
+      // else if(!eos_key.startsWith('EOS') && !/[^a-zA-Z0-9]/.test(eos_key)) {
+      //   let eos_key_test = `EOS${eos_key.slice(3, eos_key.length)}`
+      //   eos_key = util.misc.is_eos_public_key(eos_key_test) ? eos_key_test : eos_key
+      // }
+
+      else if(eos_key.startsWith('BTS')) {
         let eos_key_test = `EOS${eos_key.slice(3, eos_key.length)}`
         eos_key = util.misc.is_eos_public_key(eos_key_test) ? eos_key_test : eos_key
       }
+
+      else if(eos_key.startsWith('STM')) {
+        let eos_key_test = `EOS${eos_key.slice(3, eos_key.length)}`
+        eos_key = util.misc.is_eos_public_key(eos_key_test) ? eos_key_test : eos_key
+      }
+
+      else if(eos_key.startsWith('MUSE')) {
+        let eos_key_test = `EOS${eos_key.slice(4, eos_key.length)}`
+        eos_key = util.misc.is_eos_public_key(eos_key_test) ? eos_key_test : eos_key
+      }
+
     }
 
     // this.eos_key = eos_key ? (this.registered=true, eos_key) : (this.registered=false, null)
@@ -105,11 +123,11 @@ class Wallet {
 
     //Because we haven't toFormat(4) yet, there will be some balances that may be wrongly attributed this error. We'll test against decimal precision 4.
     //Consider toFixed() before validation!
-    if( parseFloat(this.balance.total.toFixed(4)) < parseFloat(1.0000) ) {
+    if( this.balance.total < this.config.snapshot_minimum_balance ) {
       error = 'balance_insufficient'
     }
 
-    else if (this.eos_key===null) {
+    else if (this.eos_key === null) {
       error = 'not_registered'
     }
 

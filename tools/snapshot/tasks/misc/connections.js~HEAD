@@ -42,9 +42,10 @@ module.exports = (state, all_systems_go) => {
   }
 
   const connect_mysql = connected => {
-    const mysql = require('../../services/mysql')
+
 
     const check = () => {
+      const mysql = require('../../services/mysql')
       global.mysql = mysql(config.mysql_db, config.mysql_user, config.mysql_pass, config.mysql_host, config.mysql_port)
       return global.mysql.authenticate()
     }

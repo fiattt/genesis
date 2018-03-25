@@ -5,7 +5,8 @@ module.exports = ( state, complete ) => {
         Table     = require('ascii-table'),
         util        = require('../../utilities')
 
-  let   block_index = 46147, //first ethereum block with txs
+  let   start_block = 46147,
+        block_index = start_block, //first ethereum block with txs
         blocks_total = 0,
         pks_found = 0,
         blocks_processed = 0,
@@ -17,36 +18,40 @@ module.exports = ( state, complete ) => {
 
   //TODO Fix callback hell
   const iterate_blocks = ( callback ) => {
-    const iterate = () => iterate_block_txs( iterate, callback )
-    iterate()
-  }
+    const _for = require('async-for')
 
-  const iterate_block_txs = (next_block, finished) => {
-    if(block_index > state.block_end) {
-      finished()
-      return
+    var loop = _for(start_block, (i) => i<=state.block_end-start_block, function(i){ return i+1 }, iterate);
+
+    function iterate(i, _break, _continue) {
+      block_index = i
+      if(i > state.block_end) {
+        _break()
+        return
+      }
+      try {
+        web3.eth
+          .getBlock( i, true )
+          .then( block => {
+            async.each(
+              block.transactions,
+              (tx, next_tx) => check_tx(tx, next_tx),
+              (err) => {
+                if(err)
+                  throw new Error(err)
+                else
+                  i++,
+                  blocks_processed++,
+                  _continue()
+              }
+            )
+          })
+      }
+      catch(e) {
+        throw new Error(e)
+      }
     }
-    try {
-      web3.eth
-        .getBlock( block_index, true )
-        .then( block => {
-          async.each(
-            block.transactions,
-            (tx, next_tx) => check_tx(tx, next_tx),
-            (err) => {
-              if(err)
-                throw new Error(err)
-              else
-                block_index++,
-                blocks_processed++,
-                next_block()
-            }
-          )
-        })
-    }
-    catch(e) {
-      throw new Error(e)
-    }
+
+    loop(() => { complete(null, state) })
   }
 
   //Check TX
@@ -82,7 +87,7 @@ module.exports = ( state, complete ) => {
             }
           })
           .then( () => {
-            if(config.cache)
+            if(config.cache_signatures)
               db.Keys.upsert({ address: address, tx_hash: tx_hash, public_key: pubkey, derived_eos_key: eos_key })
             // console.log(`EOS Key Generated: #${block_index} => ${tx_hash} => ${address} => ${pubkey} => ${eos_key}`)
             redis.del(address);

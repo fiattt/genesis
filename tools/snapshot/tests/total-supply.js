@@ -7,12 +7,12 @@ module.exports = ( state, callback ) => {
     .query(query, {type: db.sequelize.QueryTypes.SELECT})
     .then( sum => {
       let total  = new bn(parseFloat(sum[0]['sum(balance_wallet)'])),
-          expected = new bn(200000000+((CS_NUMBER_OF_PERIODS-1)*2000000))
+          expected = new bn(200000000).plus(new bn(CS_NUMBER_OF_PERIODS-1).times(2000000))
 
       if(config.include_b1) expected = expected.plus(new bn(100000000))
 
       const diff = total.sub(expected)
-      
+
       if(diff.lt(SS_ACCEPTABLE_SUPPLY_DEVIATION) && diff.gt(SS_ACCEPTABLE_SUPPLY_DEVIATION*-1))
         state.tests.total_supply = true
       else

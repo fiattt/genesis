@@ -1,6 +1,6 @@
 let bn = require('bignumber.js')
 
-Number.prototype.between = function (min, max) {
+const between = function (block, min, max) {
   return this >= min && this <= max;
 }
 
@@ -9,11 +9,12 @@ const changed = (compare_period) => {
 }
 
 const from_date = timestamp  => {
-  return timestamp < CS_START_TIME ? 0 : Math.min(Math.floor((timestamp - CS_START_TIME) / 23 / 60 / 60) + 1, 350)
+  return timestamp < CS_START_TIME ? 0 : Math.min(Math.floor((timestamp - CS_START_TIME) / CS_PERIOD_LENGTH_SECONDS ) + 1, 350)
 }
 
+//TODO: Deprecate
 const from_block = ( period_map, block ) => {
-  let period = period_map.map( (range, index) => ( block.between(range.begin, range.end) ? index : null ) ).filter( period => period != null )
+  let period = period_map.map( (range, index) => ( between(block, range.begin, range.end) ? index : null ) ).filter( period => period != null )
   return period.length && period!=null ? period[0] : false
 }
 
