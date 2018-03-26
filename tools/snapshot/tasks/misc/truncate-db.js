@@ -18,8 +18,7 @@ module.exports = ( state, complete ) => {
     next => db.Claims.destroy({ truncate : true, cascade: false }).then(next),
     next => db.Buys.destroy({ truncate : true, cascade: false }).then(next),
     next => db.Reclaimables.destroy({ truncate : true, cascade: false }).then(next),
-    next => db.Registrations.destroy({ truncate : true, cascade: false }).then(next),
-    next => db.Snapshot.destroy({ truncate : true, cascade: false }).then(next)
+    next => db.Registrations.destroy({ truncate : true, cascade: false }).then(next)
   ], () => complete( null, state ) )
 
 }

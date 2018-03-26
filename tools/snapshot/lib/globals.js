@@ -28,6 +28,7 @@ global.CS_NUMBER_OF_PERIODS               = 351
 global.CS_PERIOD_LENGTH_SECONDS           = 23 * 60 * 60 //in seconds
 global.CS_PERIOD_ETH                      = []
 
+//Services are global to help avoid extraneous connection bottlenecks.
 global.web3
 global.mysql
 global.redis

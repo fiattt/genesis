@@ -1,12 +1,5 @@
 module.exports = ( state, complete ) => {
 
-  if(config.recalculate_wallets === true) {
-    console.log('recalculate_wallets set to true, skipping contract sync')
-    complete(null, state)
-    return
-  }
-
-
   const db             = require('../../models'),
         db_config      = {ignoreDuplicates: true},
         colors         = require('colors/safe')
@@ -20,6 +13,13 @@ module.exports = ( state, complete ) => {
         log_intval,
         iterator,
         settings = {}
+
+
+  if(config.recalculate_wallets === true) {
+    console.log('recalculate_wallets set to true, skipping contract sync')
+    complete(null, state)
+    return
+  }
 
   state.sync_contract = {
     buys:0,
@@ -151,7 +151,7 @@ module.exports = ( state, complete ) => {
       })
   }
 
-  const log = (color, complete) => {
+  const log = (color) => {
     const Table  = require('ascii-table')
 
     let   table
@@ -167,7 +167,6 @@ module.exports = ( state, complete ) => {
     table.addRow('Registrations', state.sync_contract.registrations)
     table.addRow('Reclaimables', state.sync_contract.reclaimables)
     console.log(colors[color](table.setAlign(0, Table.RIGHT).setAlign(1, Table.LEFT).render()))
-    // console.log(colors.gray.italic(`Started: ${settings.time_formatted().elapsed}, Average: ${iterator.time_formatted().average}`))
   }
 
   const log_periodically = () => {
@@ -218,6 +217,13 @@ module.exports = ( state, complete ) => {
 
     console.log(`Syncing Contracts between block #${state.block_begin} and #${state.block_end}, this may take a while.`)
     log_periodically()
+  }
+
+  const resume = ( next ) => {
+    if(config.resume) {
+      const destroy_above_block = require('../../queries').destroy_above_block
+      destroy_above_block(state.block_start, next)
+    }
   }
 
   sync_contract( () => {
