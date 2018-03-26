@@ -116,7 +116,7 @@ module.exports = ( state, complete ) => {
             })
           })
           state.sync_contract.registrations+=request.length
-          db.Registrations.bulkCreate( request, db_config )
+          db.Registrations.bulkCreate( request )
             .then( () => { next() })
             .catch(console.log)
         } else {
@@ -142,7 +142,7 @@ module.exports = ( state, complete ) => {
             }
           });
           state.sync_contract.reclaimables+=request.length
-          db.Reclaimables.bulkCreate( request, db_config )
+          db.Reclaimables.bulkCreate( request )
             .then( () => { next() })
             .catch(console.log)
         } else {
@@ -159,7 +159,7 @@ module.exports = ( state, complete ) => {
     if(complete)
       table = new Table(`100%: ${state.block_begin} ~> ${state.block_end}`)
     else
-      table = new Table(`${Math.round(settings.index/settings.total*100)}%: ${state.block_begin}~>${settings.end}`)
+      table = new Table(`${Math.floor(settings.index/settings.total*100)}%: ${state.block_begin}~>${settings.end}`)
 
     table.addRow('Transfers', state.sync_contract.transfers)
     table.addRow('Buys', state.sync_contract.buys)
