@@ -20,7 +20,7 @@ global.CS_OPEN_TIME                       = 1521919656
 global.CS_START_TIME                      = 1521962856
 global.CS_END_TIME                        = 1527893999
 
-global.CS_BLOCK_FIRST                     = 3904416
+global.CS_BLOCK_FIRST                     = 2896773
 
 global.CS_CREATE_FIRST_PERIOD             = new bn(200000000).times(WAD)
 global.CS_CREATE_PER_PERIOD               = new bn(2000000).times(WAD)
