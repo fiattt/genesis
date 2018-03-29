@@ -6,7 +6,7 @@ module.exports = (state, complete) => {
 
         util         = require('../../utilities'),
         query        = require('../../queries'),
-        Wallet       = ( typeof config.mode != undefined && config.mode == 'mainnet'
+        Wallet       = ( typeof config.mode != undefined && config.mode == 'final' && state.frozen == true
                           ? require('../../classes/Wallet.Mainnet')
                           : require('../../classes/Wallet.Testnet') )
 
@@ -35,7 +35,7 @@ module.exports = (state, complete) => {
 
     //Cumulative balance calculations are not required for mainnet because tokens will be frozen
     //mainnet balance calculation uses EOS ERC20 token's balanceOf() method.
-    if( typeof config.mode !== 'undefined' && config.mode == 'mainnet') {
+    if( typeof config.mode !== 'undefined' && config.mode == 'final' && state.frozen ) {
       finished(null, wallet)
       return
     }
