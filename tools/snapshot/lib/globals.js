@@ -25,7 +25,7 @@ global.CS_PERIOD_ETH                      = []
 
 global.CS_OPEN_TIME                       = 1521919656
 global.CS_START_TIME                      = 1521962856
-global.CS_END_TIME                        = CS_OPEN_TIME + (CS_NUMBER_OF_PERIODS*CS_PERIOD_LENGTH_SECONDS)
+global.CS_END_TIME                        = CS_START_TIME + (CS_NUMBER_OF_PERIODS-1) * CS_PERIOD_LENGTH_SECONDS
 
 //Services are global to help avoid extraneous connection bottlenecks.
 global.web3
