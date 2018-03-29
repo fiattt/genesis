@@ -34,7 +34,10 @@ const end_to_block = ( period_map, period ) => {
 
 const daily_totals = ( callback ) => {
   let contract  = require('../helpers/web3-contract')
-  contract.$utility.methods.dailyTotals().call().then( totals => { let t = totals.map( total => new bn(total) ); callback(t) } )
+  contract.$utility.methods.dailyTotals().call().then( totals => {
+    let t = totals.map( total => new bn(total) );
+    callback(t)
+  })
 }
 
 module.exports = {
