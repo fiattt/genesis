@@ -88,10 +88,9 @@ class PeriodMap {
           //Still have more ranges to discover
           else
             ( period_cache <= period_max ) ? setTimeout(iterate, 0) : (this.map = map, onComplete( this ))
-
         })
     }
-
+    
     message()
     iterate()
   }
