@@ -209,10 +209,10 @@ module.exports = ( state, complete ) => {
   let get_dist_status = callback => {
     data.distribution_status = {
       crowdsale_over: state.crowdsale_over,
-      tokens_frozen: state.frozen > 0
+      tokens_frozen: state.frozen
     }
     if(data.distribution_status.tokens_frozen)
-      data.distribution_status.tokens_frozen_block = state.frozen
+      data.distribution_status.tokens_freeze_block = state.freeze_block
     callback()
   }
 
