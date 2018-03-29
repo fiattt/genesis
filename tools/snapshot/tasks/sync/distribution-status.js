@@ -27,26 +27,24 @@ module.exports = ( state, complete ) => {
       return
     }
 
+    const _for = require('async-for')
+
     const settings = {}
     const blocks_per_iteration = 100
-    const block_iterations = Math.ceil((state.frozen - state.period_map[CS_NUMBER_OF_PERIODS-1].end)/per_iteration)
+    const block_iterations = Math.ceil((state.frozen - state.period_map[CS_NUMBER_OF_PERIODS-1].end)/blocks_per_iteration)
     const block_offset = state.period_map[CS_NUMBER_OF_PERIODS-1].end
-    //To prevent possible memory heap issues, we'll iterate through 100 blocks at a time
-    //Requires a little trickery (web3js does not provide a method for this)
-    let loop = _for(0, function (i) { return i <= block_iterations }, function (i) { return i + 1; },
+    let loop = _for(0, function (i) { return true }, function (i) { return i + 1; },
       function loopBody(i, _break, _continue) {
 
         //Calculate block ranges to run for each pass
         settings.begin = (i*blocks_per_iteration)+block_offset
         settings.end = settings.begin+blocks_per_iteration-1
-        settings.index = i
-        settings.total = block_iterations
 
-        contract.$token
+        contract.$crowdsale
           .getPastEvents('LogFreeze', { fromBlock : settings.begin, toBlock: settings.end })
           .then( logs => {
-            if(logs.length && state.frozen == 0)
-              state.frozen = logs[0].blockNumber,
+            if(logs.length && state.frozen)
+              state.freeze_block = logs[0].blockNumber,
               _break()
             else
               _continue()
@@ -54,12 +52,9 @@ module.exports = ( state, complete ) => {
       });
 
     loop(() => {
-      clearInterval(log_intval)
-      log('green', true)
-      // console.log(color.green(``))
-      if(tokens.frozen > 0)
-        console.log(colors.yellow(`Tokens were frozen at block ${state.frozen}`))
-      setTimeout(() => next, 5000)
+      if(state.freeze_block)
+        console.log(colors.yellow(`Tokens were frozen at block ${state.freeze_block}`))
+      setTimeout(next, 5000)
     })
 
   }
