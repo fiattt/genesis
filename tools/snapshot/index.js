@@ -52,7 +52,7 @@ module.exports = () => {
 
         setTimeout( () => {
           let   state = {}
-                state.started = (Date.now() / 1000 | 0)
+                state.timestamp_started = (Date.now() / 1000 | 0)
 
           waterfall([
             next => next(null, state),
@@ -65,10 +65,10 @@ module.exports = () => {
             //Check if the crowdsale is ongoing and the token is stopped, "frozen"
             require('./tasks/sync/distribution-status'),
             //truncate all databases (except state) if config permits
-            require('./tasks/misc/truncate-db'),
-            //Set the block range of the snapshot.
             require('./tasks/sync/block-range'),
             //Sync events from the crowdsale contract
+            require('./tasks/misc/truncate-db'),
+            //Set the block range of the snapshot.
             require('./tasks/sync/contract'),
             //Calculate and validate each wallet.
             require('./tasks/sync/wallets'),
