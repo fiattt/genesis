@@ -79,7 +79,7 @@ module.exports = () => {
             //Generate output files.
             require('./tasks/export')
           ], (error, result) => {
-            console.log(`Snapshot for Period #${config.period} Completed.`)
+              console.log(`Snapshot for Period #${config.period} Completed.`)
             if(error)
               console.log('Error:', error)
           })

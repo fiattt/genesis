@@ -10,7 +10,6 @@ module.exports = ( state, complete ) => {
   const set_period_subdir = callback => {
     const fs = require('fs'), util = require('util')
     fs.readdir(state.files.period_dir, (err, files) => {
-      // console.log(inspect(files))
       files = files.filter( r => !r.includes('.') )
       callback(files.length)
     });
