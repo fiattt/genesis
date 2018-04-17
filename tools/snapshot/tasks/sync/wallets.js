@@ -15,9 +15,6 @@ module.exports = (state, complete) => {
         table,
         uniques
 
-  const add_initial_distribution = () => {
-    return new bn(1000000000).times(WAD) //1 billion, initial balance of crowdsale contract.
-  }
 
   const init = (address, finished) => {
     let wallet = new Wallet( address, config )
@@ -33,8 +30,8 @@ module.exports = (state, complete) => {
 
   const transfers = (wallet, finished) => {
 
-    //Cumulative balance calculations are not required for mainnet because tokens will be frozen
-    //mainnet balance calculation uses EOS ERC20 token's balanceOf() method.
+    //Cumulative balance calculations are not required for final snapshot because tokens will be frozen
+    //final balance calculation uses EOS ERC20 token's balanceOf() method.
     if( typeof config.mode !== 'undefined' && config.mode == 'final' && state.frozen ) {
       finished(null, wallet)
       return
@@ -46,7 +43,7 @@ module.exports = (state, complete) => {
 
       //Required for accurate contract wallet balance.
       if(wallet.address.toLowerCase() == CS_ADDRESS_CROWDSALE.toLowerCase())
-        wallet.transfers.push(add_initial_distribution())
+        wallet.transfers.push(CS_TOTAL_SUPPLY)
 
       query.address_transfers_in(wallet.address, state.block_begin, state.block_end)
         .then( results => {
