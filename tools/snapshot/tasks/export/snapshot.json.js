@@ -222,7 +222,7 @@ module.exports = ( state, complete ) => {
     get_state_variables,
     get_accounts_total,
     get_accounts_registered,
-    get_accounts_fallback,
+    // get_accounts_fallback,
     get_supply_total,
     get_supply_expected,
     get_supply_included,
