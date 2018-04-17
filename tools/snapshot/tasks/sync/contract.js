@@ -151,7 +151,7 @@ module.exports = ( state, complete ) => {
       })
   }
 
-  const log = (color) => {
+  const log = (color, complete) => {
     const Table  = require('ascii-table')
 
     let   table
@@ -178,18 +178,16 @@ module.exports = ( state, complete ) => {
 
     const _for = require('async-for')
 
-    const per_iteration = 100
-    const iterations = Math.ceil((state.block_end - state.block_begin)/per_iteration)
-    const offset = state.block_begin
+    settings.per_iteration = 100
+    settings.iterations = Math.ceil((state.block_end - state.block_begin)/settings.per_iteration)
+    settings.offset = state.block_begin
 
-    console.log(per_iteration,iterations,offset)
-
-    let loop = _for(0, function (i) { return i <= iterations }, function (i) { return i + 1; },
+    let loop = _for(0, function (i) { return i <= settings.iterations }, function (i) { return i + 1; },
       function loopBody(i, _break, _continue) {
-        settings.begin = (i*per_iteration)+offset
-        settings.end = settings.begin+per_iteration-1
+        settings.begin = (i*settings.per_iteration)+settings.offset
+        settings.end = settings.begin+settings.per_iteration-1
         settings.index = i
-        settings.total = iterations
+        settings.total = settings.iterations
 
         if(settings.end > state.block_end) settings.end = state.block_end
 
