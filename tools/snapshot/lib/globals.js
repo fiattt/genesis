@@ -13,7 +13,7 @@ global.CS_BLOCK_FIRST                     = 3904416
 global.CS_OPEN_TIME                       = 1498482000
 global.CS_START_TIME                      = 1498914000
 
-global.CS_NUMBER_OF_PERIODS               = 7
+global.CS_NUMBER_OF_PERIODS               = 351
 global.CS_PERIOD_LENGTH_SECONDS           = 23 * 60 * 60 //in seconds
 global.CS_PERIOD_ETH                      = []
 
@@ -26,9 +26,8 @@ global.WAD                                = new bn(1000000000000000000)
 global.CS_CREATE_FIRST_PERIOD             = new bn(200000000).times(WAD)
 global.CS_CREATE_PER_PERIOD               = new bn(2000000).times(WAD)
 
-global.CS_END_TIME                        = CS_START_TIME + (CS_NUMBER_OF_PERIODS-1) * CS_PERIOD_LENGTH_SECONDS
+global.CS_END_TIME                        = CS_START_TIME + ((CS_NUMBER_OF_PERIODS-1) * CS_PERIOD_LENGTH_SECONDS)
 // global.CS_END_TIME                        = 1527893999
-1527984000
 
 //Services are global to help avoid extraneous connection bottlenecks.
 global.web3
