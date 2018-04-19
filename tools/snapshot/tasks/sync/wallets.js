@@ -6,9 +6,9 @@ module.exports = (state, complete) => {
 
         util         = require('../../utilities'),
         query        = require('../../queries'),
-        Wallet       = ( typeof config.mode != undefined && config.mode == 'final' && state.frozen == true
-                          ? require('../../classes/Wallet.Mainnet')
-                          : require('../../classes/Wallet.Testnet') )
+        Wallet       = ( typeof config.mode != 'undefined' && config.mode == 'final' && state.frozen == true
+                          ? require('../../classes/Wallet.Final')
+                          : require('../../classes/Wallet.Ongoing') )
 
   let   index        = 0,
         cache        = [],

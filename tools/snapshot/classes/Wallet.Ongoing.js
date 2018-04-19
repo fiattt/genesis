@@ -1,7 +1,7 @@
-const async  = require('async')
-const bn     = require('bignumber.js')
-const Wallet = require('./Wallet')
-const util = require('../utilities')
+const async  = require('async'),
+      bn     = require('bignumber.js'),
+      Wallet = require('./Wallet'),
+      util = require('../utilities')
 
 class WalletTestnet extends Wallet {
 
