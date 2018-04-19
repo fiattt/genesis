@@ -76,13 +76,12 @@ module.exports = (state, all_systems_go) => {
       setTimeout( retry, 1000*5 )
     }
 
-    check().then( ready => {
-      if(ready)
-        console.log(colors.green.bold('Web3: Connected')),
-        connected()
-      else
-        not_connected( () => connect_web3_connected(connected) )
-    })
+    check()
+      .then( () => {
+          console.log(colors.green.bold('Web3: Connected')),
+          connected()
+      })
+      .catch( () => { not_connected( () => connect_web3_connected(connected) ) })
 
   }
 
