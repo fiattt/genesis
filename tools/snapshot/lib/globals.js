@@ -17,16 +17,16 @@ global.CS_NUMBER_OF_PERIODS               = 351
 global.CS_PERIOD_LENGTH_SECONDS           = 23 * 60 * 60 //in seconds
 global.CS_PERIOD_ETH                      = []
 
-//Snapshot specific globals.
-global.SS_STARTED_TIMESTAMP               = Date.now()/1000 | 0
-global.SS_ACCEPTABLE_SUPPLY_DEVIATION     = 5 //total number of EOS deviation allowed to be considered an "accurate" snapshot, usually less than 1/-1. 5 is generous.
-
 //Token Globals
 global.WAD                                = new bn(1000000000000000000)
 global.CS_CREATE_FIRST_PERIOD             = new bn(200000000).times(WAD)
 global.CS_CREATE_PER_PERIOD               = new bn(2000000).times(WAD)
+global.CS_B1_DISTRIBUTION                 = new bn(100000000).times(WAD)
 
 global.CS_TOTAL_SUPPLY                    = new bn(1000000000).times(WAD)
+
+global.SS_STARTED_TIMESTAMP               = Date.now()/1000 | 0
+global.SS_ACCEPTABLE_SUPPLY_DEVIATION     = 5 //total number of EOS deviation allowed to be considered an "accurate" snapshot, usually less than 1/-1. 5 is generous.
 
 global.CS_END_TIME                        = CS_START_TIME + ((CS_NUMBER_OF_PERIODS-1) * CS_PERIOD_LENGTH_SECONDS)
 // global.CS_END_TIME                        = 1527893999
