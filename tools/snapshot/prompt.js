@@ -5,6 +5,8 @@ let prompt = require('prompt'),
 
 let period  = require('./utilities/periods')
 
+prompt.override = optimist.argv
+
 let schema = {
 
   properties: {
@@ -30,7 +32,7 @@ let schema = {
         return true
       },
       default: period.last_closed(),
-      ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true
+      ask: () => prompt.history('load_config')===false
     },
 
     //Options
@@ -39,7 +41,7 @@ let schema = {
       description: colors.magenta('Include B1 Distribution in Snapshot?'),
       message: 'Must be boolean',
       default: true,
-      ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true
+      ask: () => prompt.history('load_config')===false
     },
 
     registration_fallback: {
@@ -47,7 +49,7 @@ let schema = {
       description: colors.magenta('Run experimental registration fallback? (will take days, not exagerating!)'),
       message: 'Must be boolean',
       default: false,
-      ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true
+      ask: () => prompt.history('load_config')===false
     },
 
     //Meta
@@ -56,7 +58,7 @@ let schema = {
       description: colors.magenta('Cache Keys? (advanced)'),
       message: 'Must be true or false',
       default: false,
-      ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true
+      ask: () => prompt.history('load_config')===false
     },
 
     //Meta
@@ -65,7 +67,7 @@ let schema = {
       description: colors.magenta('Author name? (optional, suggest using EOS public key)'),
       message: 'Author must be only letters, spaces, or dashes',
       default: "Anonymous",
-      ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true
+      ask: () => prompt.history('load_config')===false
     },
 
     //Meta
@@ -74,7 +76,7 @@ let schema = {
       description: colors.magenta('Overwrite snapshot in project root? (optional)'),
       message: 'Must be true or false',
       default: false,
-      ask: () => prompt.history('load_config') ? prompt.history('load_config').value===false : true
+      ask: () => prompt.history('load_config')===false
     }
 
     // //Custom Configuration?
@@ -128,8 +130,6 @@ let schema = {
 
   }
 };
-
-prompt.override = optimist.argv
 
 // process.on( 'SIGINT', () => process.exit() )
 
