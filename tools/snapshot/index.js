@@ -80,6 +80,8 @@ module.exports = () => {
             require('./tasks/export')
           ], (error, result) => {
               console.log(`Snapshot for Period #${config.period} Completed.`)
+              console.log(`Exiting in 10 seconds.`)
+              setTimeout( () => process.exit(), 10*1000 )
             if(error)
               console.log('Error:', error)
           })
