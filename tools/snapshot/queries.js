@@ -256,4 +256,18 @@ query.destroy_above_block = (block_number, callback) => {
   })
 }
 
+query.supply_liquid = () => {
+  let query = `SELECT sum(balance_total) FROM wallets WHERE address!="${CS_ADDRESS_TOKEN}" AND address!="${CS_ADDRESS_CROWDSALE}"`
+  if(!config.include_b1)
+    query = `${query} AND address!="${CS_ADDRESS_B1}"`
+  return db.sequelize.query(query, {type: db.sequelize.QueryTypes.SELECT})
+}
+
+query.count_accounts_registered = () => {
+  return db.Wallets
+    .count({
+      where: { registered: true, valid: true  }
+    })
+}
+
 module.exports = query

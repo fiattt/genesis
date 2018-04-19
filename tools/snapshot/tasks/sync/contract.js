@@ -75,6 +75,7 @@ module.exports = ( state, complete ) => {
           next()
         }
       })
+      .catch( e => { throw new Error(e)} )
   }
 
   const claims = (settings, next) => {
@@ -99,6 +100,7 @@ module.exports = ( state, complete ) => {
           next()
         }
       })
+      .catch( e => { throw new Error(e)} )
   }
 
 
@@ -123,6 +125,7 @@ module.exports = ( state, complete ) => {
           next()
         }
       })
+      .catch( e => { throw new Error(e)} )
   }
 
   const reclaimables = (settings, next) => {
@@ -149,6 +152,7 @@ module.exports = ( state, complete ) => {
           next()
         }
       })
+      .catch( e => { throw new Error(e)} )
   }
 
   const log = (color, complete) => {
