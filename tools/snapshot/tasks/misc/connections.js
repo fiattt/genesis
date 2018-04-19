@@ -81,7 +81,6 @@ module.exports = (state, all_systems_go) => {
           connected()
       })
       .catch( () => { not_connected( () => connect_web3_connected(connected) ) })
-
   }
 
   const connect_web3_synced = synced => {
