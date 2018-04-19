@@ -89,10 +89,10 @@ module.exports = (state, all_systems_go) => {
     const check = () => {
       global.web3.eth.isSyncing().then( syncing => {
         if(!syncing || config.skip_web3_sync)
-          console.log(`Web3: Synced`),
+          console.log(colors.green.bold(`Web3: Synced`)),
           synced()
         else
-          console.log(`Web3 is Still Syncing (At Block #${syncing.currentBlock}). trying again in 30 seconds`),
+          console.log(colors.red.bold(`Web3 is Still Syncing (At Block #${syncing.currentBlock}). trying again in 30 seconds`)),
           setTimeout( check, 1000*30)
       })
     }
