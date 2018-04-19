@@ -54,13 +54,12 @@ module.exports = (state, all_systems_go) => {
       setTimeout( retry, 1000*5 )
     }
 
-    check().then( errors => {
-      if(!errors)
-        console.log(colors.green.bold('MySQL: Connected')),
-        connected()
-      else
-        not_connected( () => connect_mysql(connected) )
-    })
+    check()
+      .then( () => {
+          console.log(colors.green.bold('MySQL: Connected')),
+          connected()
+      })
+      .catch( e => not_connected( () => connect_mysql(connected) ) )
   }
 
   const connect_web3_connected = connected => {
