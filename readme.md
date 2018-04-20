@@ -32,7 +32,7 @@ Start parity, **it's imperitive that you start parity with --no-warp**. If you h
 
 *Sample Config:*
 
-`parity --mode active --tracing off --pruning fast --db-compaction ssd --jsonrpc-apis rpc --chain mainnet --no-warp`
+`parity --mode active --tracing off --pruning fast --db-compaction ssd --jsonrpc-apis all --chain mainnet --no-warp`
 
 **Important:** Since Parity v1.7.8 `--warp` is enabled by default. **If you fail to configure with `no-warp` you will have issues.**
 
