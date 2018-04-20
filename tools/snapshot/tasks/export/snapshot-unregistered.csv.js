@@ -5,7 +5,7 @@ module.exports = ( state, callback ) => {
         fs           = require('fs'),
         db           = require('../../models')
 
-  const csv = callback => {
+  const csv = () => {
     db.SnapshotUnregistered
       .findAll({ order: [ ['balance', 'DESC'] ] })
       .then( results => {
