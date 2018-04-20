@@ -1,6 +1,6 @@
 ## EOS Snapshot Generator
 
-This tool was created to aggregate the EOS ERC20 token in it's entirety, run validation on inputted information and provide files representing balances in various states. 
+This tool was created to aggregate the EOS ERC20 token distribution in it's entirety, acknowledge various scenarios, run validation on data and provide files representing balances in various states. 
 
 ## Installation
 
