@@ -9,7 +9,7 @@ const changed = (compare_period) => {
 }
 
 const from_date = timestamp  => {
-  return timestamp < CS_START_TIME ? 0 : Math.min(Math.floor((timestamp - CS_START_TIME) / CS_PERIOD_LENGTH_SECONDS ) + 1, 350)
+  return timestamp < CS_START_TIME ? 0 : Math.min(Math.floor((timestamp - CS_START_TIME) / CS_PERIOD_LENGTH_SECONDS ) + 1, CS_NUMBER_OF_PERIODS-1)
 }
 
 //TODO: Deprecate
@@ -34,7 +34,18 @@ const end_to_block = ( period_map, period ) => {
 
 const daily_totals = ( callback ) => {
   let contract  = require('../helpers/web3-contract')
-  contract.$utility.methods.dailyTotals().call().then( totals => { let t = totals.map( total => new bn(total) ); callback(t) } )
+  contract.$utility.methods.dailyTotals().call()
+    .then( totals => {
+      let t = totals.map( total => new bn(total) );
+      callback(t)
+    })
+    .catch( e => { throw new Error(e)} )
+}
+
+const expected_supply = (period, include_b1) => {
+  let result = new bn(CS_CREATE_FIRST_PERIOD).div(WAD).plus( new bn(CS_CREATE_PER_PERIOD).div(WAD).times(new bn(period)) )
+  if(include_b1) result.plus(new bn(CS_B1_DISTRIBUTION).div(WAD))
+  return result.toFixed(4)
 }
 
 module.exports = {
@@ -43,5 +54,6 @@ module.exports = {
   last_closed: last_closed,
   begin_to_block: begin_to_block,
   end_to_block: end_to_block,
-  daily_totals: daily_totals
+  daily_totals: daily_totals,
+  expected_supply: expected_supply
 }

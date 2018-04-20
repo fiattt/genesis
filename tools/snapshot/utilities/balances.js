@@ -1,6 +1,5 @@
 const async             = require('async'),
-      bn                = require('bignumber.js'),
-      contract          = require('../helpers/web3-contract')
+      bn                = require('bignumber.js')
 
 const util = {
   block: require('./blocks'),
@@ -12,10 +11,14 @@ let balances = {}
 
 //Best for polling (fast)
 balances.wallet_token_state = (address, callback) => {
-  contract.$token.methods.balanceOf( address ).call().then( balance => {
-    balance = new bn( balance )
-    callback( balance )
-  })
+  const contract = require('../helpers/web3-contract')
+
+  contract.$token.methods.balanceOf( address ).call()
+    .then( balance => {
+      balance = new bn( balance )
+      callback( balance )
+    })
+    .catch( e => { throw new Error(e)} )
 }
 
 //Required for snapshots (slow)

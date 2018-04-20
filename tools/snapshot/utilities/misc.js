@@ -20,7 +20,9 @@ const is_eos_public_key = eos_key => {
 }
 
 const get_pubkey_from_tx = ( tx_hash, callback ) =>{
-  web3.eth.getTransaction(txhash).then( tx => callback(tx.publicKey) )
+  web3.eth.getTransaction(txhash)
+    .then( tx => callback(tx.publicKey) )
+    .catch( e => { throw new Error(e)} )
 }
 
 const get_tx = (tx_hash) => {
@@ -28,22 +30,30 @@ const get_tx = (tx_hash) => {
 }
 
 const get_user_key = (address, callback) => {
-  contract.$crowdsale.methods.keys( address ).call().then( callback )
+  contract.$crowdsale.methods.keys( address ).call()
+    .then( callback )
+    .catch( e => { throw new Error(e)} )
 }
 
 const is_tx_confirmed = ( txhash, callback ) => {
   web3.eth.getTransactionReceipt(txhash)
     .then( tx => ( typeof tx === 'object' ? callback(true) : callback(false) ) )
+    .catch( e => { throw new Error(e)} )
 }
 
 const address_is_contract = ( address, callback ) => {
   web3.eth.getCode(address)
     .then( result => callback(result=='0x' ? false : true) )
+    .catch( e => { throw new Error(e)} )
 }
 
 const tx_hash_from_query_results = ( results, callback ) => (results.length) ? callback( results[0].dataValues.tx_hash ) : callback( false )
 
-const pubkey_from_tx_hash = ( tx_hash, callback ) => get_tx(tx_hash).then( result => { callback( result.publicKey ) })
+const pubkey_from_tx_hash = ( tx_hash, callback ) => {
+  get_tx(tx_hash)
+    .then( result => { callback( result.publicKey ) })
+    .catch( e => { throw new Error(e)} )
+}
 
 const convert_ethpk_to_eospk = ( pubkey ) => {
   let buffer    = Buffer.from(pubkey.slice(2), 'hex'),

@@ -7,7 +7,9 @@ module.exports = ( state, complete ) => {
         md5       = require('md5'),
         Sequelize = require('sequelize'),
         Op        = Sequelize.Op,
-        db        = require('../../models')
+        db        = require('../../models'),
+        util      = require('../../utilities'),
+        query      = require('../../queries')
 
   let data = {
     parameters : {},
@@ -20,8 +22,6 @@ module.exports = ( state, complete ) => {
     },
     stats: {}
   }
-
-  //TODO move analytics functions to own module for reuse in tests.
 
   let get_state_variables = callback => {
     data.parameters = {
@@ -36,8 +36,7 @@ module.exports = ( state, complete ) => {
   }
 
   let get_accounts_total = callback => {
-    db.Snapshot
-      .count()
+    db.Snapshot.count()
       .then( total => {
         data.accounts.valid = total
         callback()
@@ -52,10 +51,9 @@ module.exports = ( state, complete ) => {
   }
 
   let get_supply_included = callback => {
-    db.Snapshot
-      .sum('balance')
-      .then( fdsfdfs => {
-        data.supply.included = fdsfdfs
+    db.Snapshot.sum('balance')
+      .then( included => {
+        data.supply.included = included
         data.supply.percent_included = `${data.supply.included/data.supply.expected*100 | 0}%`
         callback()
       })
@@ -63,15 +61,10 @@ module.exports = ( state, complete ) => {
   }
 
   let get_supply_liquid = callback => {
-    //Sequelize giving me trouble, reverted to raw queries.
-    let query = `SELECT sum(balance_total) FROM wallets WHERE address!="${CS_ADDRESS_TOKEN}" AND address!="${CS_ADDRESS_CROWDSALE}"`
-    if(!config.include_b1)
-      query = `${query} AND address!="${CS_ADDRESS_B1}"`
-
-    db.sequelize
-      .query(query, {type: db.sequelize.QueryTypes.SELECT})
+    query.supply_liquid()
       .then( sum => {
         data.supply.liquid = parseFloat(sum[0]['sum(balance_total)'])
+        console.log(data.supply.liquid)
         data.supply.margin_of_error = `${new bn(100).minus(new bn(data.supply.liquid).div(new bn(data.supply.expected)).times(100)).toFixed(16)}%`
         callback()
       })
@@ -90,10 +83,7 @@ module.exports = ( state, complete ) => {
   }
 
   let get_accounts_registered = callback => {
-    db.Wallets
-      .count({
-        where: { registered: true, valid: true  }
-      })
+    query.count_accounts_registered()
       .then( count => {
         data.accounts.registered = count
         data.accounts.registered_included_percent = new String(data.accounts.registered/data.accounts.valid*100)+"%"
@@ -102,18 +92,18 @@ module.exports = ( state, complete ) => {
       .catch( error => { throw new Error(error) })
   }
 
-  let get_accounts_fallback = (callback) => {
-    db.Wallets
-      .count({
-        where: { fallback: true, valid: true }
-      })
-      .then( count => {
-        data.accounts.fallback = count
-        data.accounts.fallback_included_percent = new String(data.accounts.fallback/data.accounts.valid*100)+"%"
-        callback()
-      })
-      .catch( error => { throw new Error(error) })
-  }
+  // let get_accounts_fallback = (callback) => {
+  //   db.Wallets
+  //     .count({
+  //       where: { fallback: true, valid: true }
+  //     })
+  //     .then( count => {
+  //       data.accounts.fallback = count
+  //       data.accounts.fallback_included_percent = new String(data.accounts.fallback/data.accounts.valid*100)+"%"
+  //       callback()
+  //     })
+  //     .catch( error => { throw new Error(error) })
+  // }
 
   let get_snapshot_checksum = callback => {
     checksum.file(state.files.path_snapshot_csv , (err, sum) => {
@@ -209,10 +199,10 @@ module.exports = ( state, complete ) => {
   let get_dist_status = callback => {
     data.distribution_status = {
       crowdsale_over: state.crowdsale_over,
-      tokens_frozen: state.frozen > 0
+      tokens_frozen: state.frozen
     }
     if(data.distribution_status.tokens_frozen)
-      data.distribution_status.tokens_frozen_block = state.frozen
+      data.distribution_status.tokens_freeze_block = state.freeze_block
     callback()
   }
 
@@ -222,7 +212,7 @@ module.exports = ( state, complete ) => {
     get_state_variables,
     get_accounts_total,
     get_accounts_registered,
-    get_accounts_fallback,
+    // get_accounts_fallback,
     get_supply_total,
     get_supply_expected,
     get_supply_included,

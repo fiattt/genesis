@@ -12,8 +12,13 @@ query.wallets_bulk_upsert = ( wallets ) => {
 }
 
 query.address_uniques = ( block_begin, block_end, callback ) => {
+  let query = `SELECT \`from\` FROM transfers WHERE block_number>=${block_begin} AND block_number<=${block_end}
+  UNION SELECT \`to\` FROM transfers WHERE block_number>=${block_begin} AND block_number<=${block_end}
+  UNION SELECT address FROM claims WHERE block_number>=${block_begin} AND block_number<=${block_end}
+  UNION SELECT address FROM buys WHERE block_number>=${block_begin} AND block_number<=${block_end};`
+  console.log(query)
   db.sequelize
-    .query('SELECT `from` FROM `transfers` WHERE block_number>='+block_begin+' AND block_number<='+block_end+' UNION SELECT `to` FROM `transfers` WHERE block_number>='+block_begin+' AND block_number<='+block_end+' UNION SELECT `address` FROM `claims` WHERE block_number>='+block_begin+' AND block_number<='+block_end+' UNION SELECT `address` FROM `buys` WHERE block_number>='+block_begin+' AND block_number<='+block_end+' ', {type: db.sequelize.QueryTypes.SELECT})
+    .query(query, {type: db.sequelize.QueryTypes.SELECT})
     .then( results => {
       addresses = results.map( result => result.address || result.from || result.to  )
       callback( addresses )
@@ -111,7 +116,6 @@ query.address_transfers_in = (address, begin, end) => {
 }
 
 query.address_transfers_out = (address, begin, end) => {
-  let db = require('./models')
   return db.Transfers
     .findAll({
       attributes: ['eos_amount'],
@@ -237,6 +241,32 @@ query.claims_in_range = (begin, end) => {
           }
         ]
       }
+    })
+}
+
+query.destroy_above_block = (block_number, callback) => {
+  async.series([
+    next => db.Buys.destroy({ where : { block_number: { [Op.gte] : block_number } } }).then(next),
+    next => db.Claims.destroy({ where : { block_number: { [Op.gte] : block_number } } }).then(next),
+    next => db.Transfers.destroy({ where : { block_number: { [Op.gte] : block_number } } }).then(next),
+    next => db.Registrations.destroy({ where : { block_number: { [Op.gte] : block_number } } }).then(next),
+    next => db.Unclaimables.destroy({ where : { block_number: { [Op.gte] : block_number } } }).then(next)
+  ], () => {
+    callback()
+  })
+}
+
+query.supply_liquid = () => {
+  let query = `SELECT sum(balance_total) FROM wallets WHERE address!="${CS_ADDRESS_TOKEN}" AND address!="${CS_ADDRESS_CROWDSALE}"`
+  if(!config.include_b1)
+    query = `${query} AND address!="${CS_ADDRESS_B1}"`
+  return db.sequelize.query(query, {type: db.sequelize.QueryTypes.SELECT})
+}
+
+query.count_accounts_registered = () => {
+  return db.Wallets
+    .count({
+      where: { registered: true, valid: true  }
     })
 }
 

@@ -1,12 +1,5 @@
 module.exports = ( state, complete ) => {
 
-  if(config.recalculate_wallets === true) {
-    console.log('recalculate_wallets set to true, skipping contract sync')
-    complete(null, state)
-    return
-  }
-
-
   const db             = require('../../models'),
         db_config      = {ignoreDuplicates: true},
         colors         = require('colors/safe')
@@ -20,6 +13,13 @@ module.exports = ( state, complete ) => {
         log_intval,
         iterator,
         settings = {}
+
+
+  if(config.recalculate_wallets === true) {
+    console.log('recalculate_wallets set to true, skipping contract sync')
+    complete(null, state)
+    return
+  }
 
   state.sync_contract = {
     buys:0,
@@ -75,6 +75,7 @@ module.exports = ( state, complete ) => {
           next()
         }
       })
+      .catch( e => { throw new Error(e)} )
   }
 
   const claims = (settings, next) => {
@@ -99,6 +100,7 @@ module.exports = ( state, complete ) => {
           next()
         }
       })
+      .catch( e => { throw new Error(e)} )
   }
 
 
@@ -116,13 +118,14 @@ module.exports = ( state, complete ) => {
             })
           })
           state.sync_contract.registrations+=request.length
-          db.Registrations.bulkCreate( request, db_config )
+          db.Registrations.bulkCreate( request )
             .then( () => { next() })
             .catch(console.log)
         } else {
           next()
         }
       })
+      .catch( e => { throw new Error(e)} )
   }
 
   const reclaimables = (settings, next) => {
@@ -142,13 +145,14 @@ module.exports = ( state, complete ) => {
             }
           });
           state.sync_contract.reclaimables+=request.length
-          db.Reclaimables.bulkCreate( request, db_config )
+          db.Reclaimables.bulkCreate( request )
             .then( () => { next() })
             .catch(console.log)
         } else {
           next()
         }
       })
+      .catch( e => { throw new Error(e)} )
   }
 
   const log = (color, complete) => {
@@ -159,7 +163,7 @@ module.exports = ( state, complete ) => {
     if(complete)
       table = new Table(`100%: ${state.block_begin} ~> ${state.block_end}`)
     else
-      table = new Table(`${Math.round(settings.index/settings.total*100)}%: ${state.block_begin}~>${settings.end}`)
+      table = new Table(`${Math.floor(settings.index/settings.total*100)}%: ${state.block_begin}~>${settings.end}`)
 
     table.addRow('Transfers', state.sync_contract.transfers)
     table.addRow('Buys', state.sync_contract.buys)
@@ -167,7 +171,6 @@ module.exports = ( state, complete ) => {
     table.addRow('Registrations', state.sync_contract.registrations)
     table.addRow('Reclaimables', state.sync_contract.reclaimables)
     console.log(colors[color](table.setAlign(0, Table.RIGHT).setAlign(1, Table.LEFT).render()))
-    // console.log(colors.gray.italic(`Started: ${settings.time_formatted().elapsed}, Average: ${iterator.time_formatted().average}`))
   }
 
   const log_periodically = () => {
@@ -179,18 +182,16 @@ module.exports = ( state, complete ) => {
 
     const _for = require('async-for')
 
-    const per_iteration = 100
-    const iterations = Math.ceil((state.block_end - state.block_begin)/per_iteration)
-    const offset = state.block_begin
+    settings.per_iteration = 100
+    settings.iterations = Math.ceil((state.block_end - state.block_begin)/settings.per_iteration)
+    settings.offset = state.block_begin
 
-    console.log(per_iteration,iterations,offset)
-
-    let loop = _for(0, function (i) { return i <= iterations }, function (i) { return i + 1; },
+    let loop = _for(0, function (i) { return i <= settings.iterations }, function (i) { return i + 1; },
       function loopBody(i, _break, _continue) {
-        settings.begin = (i*per_iteration)+offset
-        settings.end = settings.begin+per_iteration-1
+        settings.begin = (i*settings.per_iteration)+settings.offset
+        settings.end = settings.begin+settings.per_iteration-1
         settings.index = i
-        settings.total = iterations
+        settings.total = settings.iterations
 
         if(settings.end > state.block_end) settings.end = state.block_end
 
@@ -218,6 +219,13 @@ module.exports = ( state, complete ) => {
 
     console.log(`Syncing Contracts between block #${state.block_begin} and #${state.block_end}, this may take a while.`)
     log_periodically()
+  }
+
+  const resume = ( next ) => {
+    if(config.resume) {
+      const destroy_above_block = require('../../queries').destroy_above_block
+      destroy_above_block(state.block_start, next)
+    }
   }
 
   sync_contract( () => {
