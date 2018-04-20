@@ -121,8 +121,6 @@ class Wallet {
   validate(){
     let error = null
 
-    //Because we haven't toFormat(4) yet, there will be some balances that may be wrongly attributed this error. We'll test against decimal precision 4.
-    //Consider toFixed() before validation!
     if( this.balance.total < this.config.snapshot_minimum_balance ) {
       error = 'balance_insufficient'
     }
