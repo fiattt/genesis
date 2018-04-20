@@ -44,7 +44,7 @@ module.exports = {
   cache_signatures: true,
 
   //Overwrite the snapshot.json in root directory.
-  overwrite_snapshot: false,
+  overwrite_snapshot: true,
 
   //Recalculate wallets table based on already synced
   recalculate_wallets: false,
