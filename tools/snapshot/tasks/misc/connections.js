@@ -78,7 +78,8 @@ module.exports = (state, all_systems_go) => {
     check()
       .then( () => {
           console.log(colors.green.bold('Web3: Connected')),
-          connected()
+          console.log(colors.gray.italic('Waiting 30 seconds before checking sync, parity/web3 can throw false positive.')),
+          setTimeout( connected, 1000*30 )
       })
       .catch( () => { not_connected( () => connect_web3_connected(connected) ) })
   }
@@ -86,13 +87,17 @@ module.exports = (state, all_systems_go) => {
   const connect_web3_synced = synced => {
     const check = () => {
       global.web3.eth.isSyncing().then( syncing => {
-        if(!syncing || config.skip_web3_sync)
+        if(!syncing)
           console.log(colors.green.bold(`Web3: Synced`)),
+          synced()
+        else if (config.skip_web3_sync)
+          console.log(colors.yellow.bold(`Web3: Skipping Sync`)),
           synced()
         else
           console.log(colors.red.bold(`Web3 is Still Syncing (At Block #${syncing.currentBlock}). trying again in 30 seconds`)),
           setTimeout( check, 1000*30)
       })
+      .catch( e => setTimeout( check, 1000*30 ) )
     }
     check()
   }
