@@ -78,7 +78,8 @@ module.exports = (state, all_systems_go) => {
     check()
       .then( () => {
           console.log(colors.green.bold('Web3: Connected')),
-          connected()
+          console.log(colors.gray.italic('Waiting 30 seconds before checking sync, parity/web3 can throw false positive.')),
+          setTimeout( connected, 1000*30 )
       })
       .catch( () => { not_connected( () => connect_web3_connected(connected) ) })
   }
