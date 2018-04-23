@@ -8,7 +8,7 @@ This tool was created to aggregate the EOS ERC20 token distribution in it's enti
 
 1. MySQL (local or remote) 
 2. Parity 1.7.8+
-3. Node
+3. [Node 8+](https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions) 
 
 ### System requirements
 
@@ -46,8 +46,8 @@ Start parity, **it's imperitive that you start parity with --no-warp**. If you h
 ### 4. Run the Snapshot
 
 From the *root directory of this project directory*, run the following: 
-
-`node snapshot.js --load_config` 
+- initial runing, `npm install` should be called
+-`node snapshot.js --load_config` 
 
 ### 5. Connections
 
