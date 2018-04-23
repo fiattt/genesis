@@ -38,7 +38,7 @@ Start parity, **it's imperitive that you start parity with --no-warp**. If you h
 
 ### 3. Configure The Snapshot Parameters
 
-**If you're taking a "final" snapshot**, you really don't need to change much. Explore the options as defined [here]()
+**If you're taking a "final" snapshot**, you really don't need to change much. Explore the options as defined [here](https://github.com/EOSIO/genesis/wiki/Advanced-Configuration-Options)
 
 **If you're taking an "ongoing" snapshot,** change "period" to the period for which you would like to generate a snapshot. 
 **Note** If you put in a period that hasn't yet completed, the "last closed period" will override your choice. 
@@ -59,9 +59,10 @@ From the *root directory of this project directory*, run the following:
 ### 6. Output
 
 #### 6a. Directory Structure
-- When complete, the script will output several files into the "./data" directory. 
+- When complete, the script will output several files into the `./data` directory. 
 - Inside the `data` directory, will be a directory named after the period number you generated, for example: `./data/123.` If it's a final snapshot, into the `./data/final` directory. 
-- Inside that directory, is directory named after an "index." This is so that if you run it multiple times, you don't overwrite another snapshot. This functionality is intended for verification of determinism and for development purposes. 
+- Inside that directory, is directory named after a numerical index. This is so that if you run it multiple times, you don't overwrite another snapshot. 
+- This functionality helps with verification of determinism and for development purposes. 
 
 #### 6b. Files
 - `snapshot.csv` - This file contains the Ethereum Address, EOS Key and EOS Balance of every address that registered correctly with the contract, and has a balance greater than the value set by `snapshot_minimum_balance` (default:1) 
