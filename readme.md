@@ -46,8 +46,8 @@ Start parity, **it's imperitive that you start parity with --no-warp**. If you h
 ### 4. Run the Snapshot
 
 From the *root directory of this project directory*, run the following: 
-- initial runing, `npm install` should be called
--`node snapshot.js --load_config` 
+- `npm install` (first time)
+- `node snapshot.js --load_config`
 
 ### 5. Connections
 
