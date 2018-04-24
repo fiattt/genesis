@@ -39,7 +39,7 @@ module.exports = {
   recalculate_wallets: false,
 
   //For if parity is syncing but you're testing for a period that you know is already synced.
-  skip_web3_sync: false,
+  skip_web3_sync: false
 
   //Enable fallback 1.0? (deprecated) 
   //registration_fallback: false,
