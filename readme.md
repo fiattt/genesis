@@ -2,6 +2,16 @@
 
 This tool was created to aggregate the EOS ERC20 token distribution in it's entirety, acknowledge various scenarios, run validation on data and provide files representing balances in various states. 
 
+## Glossary
+
+`wallet balance` - The wallet balance is refers to an address's EOS ERC20 token balance
+`unclaimed balance` - An unclaimed balance refers to tokens that were never claimed by an address. Despite being unclaimed, these still belong to the contributing address.
+`reclaimed balance` - A reclaimed balance refers to EOS ERC20 tokens accidentally sent to the EOSCrowdsale or EOSToken contract. The balances of these contracts are not included in distribution calculations, so it's imperitive these balances are calculated to minimize the number of inaccessible tokens on an EOSIO blockchain. 
+`registered address` - A registered address is an address with a balance greater than or equal to the `minimum_snapshot_balance` that has correctly registered their ethereum address with the EOSCrowdsale contract using a valid EOS Public Key.
+`unregistered address` - An unregistered address is an address with a balance greater than or equal to the `minimum_snapshot_balance` that has either incorrectly registered  or failed to register their address with an EOS Public Key.
+`snapshot` - A file containing EOS public keys and balances that can be imported during the EOSIO boot sequence.
+`snapshot-unregistered` - A file containing Ethereum addressees and balances. This file could potentially be imported during the EOSIO boot sequence into the table of a contract that enables Ethereum based claiming.
+
 ## Installation
 
 ### Prerequisites
