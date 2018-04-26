@@ -29,6 +29,7 @@ This tool was created to aggregate the EOS ERC20 token distribution in it's enti
 
 1. 8GB Ram Recommended, can make due with 4gb
 2. SSD recommended, NVME to win the race. HDD read/write speeds are intolerably slow with parity. It can increase your parity sync time by 3-4x, and will increase the amount of time for snapshot to process by 2-3x. If you must use HDD, be sure to change the `--db-compaction` parameter for parity to `hdd`, like so: `--db-compaction hdd` 
+3. Around 110GB of storage space, required for full parity chain. 
 
 ### 1. Create Config File
 
