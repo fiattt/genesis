@@ -28,7 +28,7 @@ This tool was created to aggregate the EOS ERC20 token distribution in it's enti
 ### System requirements
 
 1. 8GB Ram Recommended, can make due with 4gb
-2. SSD recommended, NVME to win the race. HDD read/write speeds are intolerably slow with parity. It can increase your parity sync time by 3-4x, and will increase the amount of time for snapshot to process by 2-3x. If you must use HDD, be sure to change the `--db-compaction` parameter for parity to `hdd`, like so: `--db-compaction hdd` 
+2. SSD recommended, NVME to win the race. HDD read/write speeds are intolerably slow with parity. It can increase your parity sync time by 3-4x, and will increase the amount of time for snapshot to process by 2-3x. 
 3. Around 110GB of storage space, required for full parity chain. 
 
 ### 1. Create Config File
@@ -51,6 +51,8 @@ Start parity, **it's imperitive that you start parity with --no-warp**. If you h
 `parity --mode active --tracing off --pruning fast --db-compaction ssd --jsonrpc-apis all --chain mainnet --no-warp`
 
 **Important:** Since Parity v1.7.8 `--warp` is enabled by default. **If you fail to configure with `no-warp` you will have issues.**
+
+**Note** If you must use an HDD, be sure to change the `--db-compaction` parameter for parity to `hdd`, like so: `--db-compaction hdd` 
 
 ### 3. Configure The Snapshot Parameters
 
