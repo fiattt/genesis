@@ -13,6 +13,8 @@ This tool was created to aggregate the EOS ERC20 token distribution in it's enti
 - **freeze block** - The freeze block is a deterministic value represented by the block number representing the period that tokens were frozen. This block will mark the last block for which actions sent to the crowdsale contract will be honored (such as registrations) 
 - **snapshot** - A file containing EOS public keys and balances that can be imported during the EOSIO boot sequence.
 - **snapshot-unregistered** - A file containing Ethereum addressees and balances. This file could potentially be imported during the EOSIO boot sequence into the table of a contract that enables Ethereum based claiming.
+- **liquid supply** - The liquid supply represents total aggregate EOS ERC20 tokens that are presently in circulation and detected by snapshot script, after the crowdsale ends, the liquid supply should equal the total supply.
+- **expected supply** - Expected supply is a mathematically determined value representing what the script expects the liquid supply to equal. Liquid Supply is generally within 0.00000001% of expected supply due to dust acquired by precision reduction.
 
 ## Installation
 
