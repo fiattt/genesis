@@ -49,10 +49,13 @@ Start parity, **it's imperitive that you start parity with --no-warp**. If you h
 
 ### 3. Configure The Snapshot Parameters
 
-**If you're taking a "final" snapshot**, you really don't need to change much. Explore the options as defined [here](https://github.com/EOSIO/genesis/wiki/Advanced-Configuration-Options)
+**If you're taking a "final" snapshot**, much of the configuration is automatic. 
+- A final snapshot will be taken automatically if the **crowdsale has ended** and the **tokens are frozen**, and will  override configured `period`. Block ranges for the snapshot will be determined by the opening block (first transaction from crowdsale contract) and the *deterministic freeze block*. This is to prevent user error. 
 
 **If you're taking an "ongoing" snapshot,** change "period" to the period for which you would like to generate a snapshot. 
 **Note** If you put in a period that hasn't yet completed, the "last closed period" will override your choice. 
+
+Explore the options as defined [here](https://github.com/EOSIO/genesis/wiki/Advanced-Configuration-Options)
 
 ### 4. Run the Snapshot
 
