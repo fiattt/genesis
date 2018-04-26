@@ -4,6 +4,8 @@
 
 This tool was created to aggregate the EOS ERC20 token distribution in it's entirety, acknowledge various scenarios, run validation on data and provide files representing balances in various states. 
 
+This tool can be used to generate snapshots for **any period** in a **deterministic** fashion until the **EOS ERC20** token has been frozen. 
+
 ## Table of Contents
 - [Installation](#installation)
 - [Glossary](#glossary)
