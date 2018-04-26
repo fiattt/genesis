@@ -10,6 +10,7 @@ This tool was created to aggregate the EOS ERC20 token distribution in it's enti
 - `total balance` - The sum of **wallet** + **unclaimed** + **reclaimed** balances. The total balance is what is included as a user's balance in snapshots. 
 - `registered address` - A registered address is an address with a balance greater than or equal to the `minimum_snapshot_balance` that has correctly registered their ethereum address with the EOSCrowdsale contract using a valid EOS Public Key.
 - `unregistered address` - An unregistered address is an address with a balance greater than or equal to the - `minimum_snapshot_balance` that has either incorrectly registered  or failed to register their address with an EOS Public Key.
+- `freeze block` - The freeze block is a deterministic value represented by the block number representing the period that tokens were frozen. This block will mark the last block for which actions sent to the crowdsale contract will be honored (such as registrations) 
 - `snapshot` - A file containing EOS public keys and balances that can be imported during the EOSIO boot sequence.
 - `snapshot-unregistered` - A file containing Ethereum addressees and balances. This file could potentially be imported during the EOSIO boot sequence into the table of a contract that enables Ethereum based claiming.
 
