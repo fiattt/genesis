@@ -50,11 +50,13 @@ Start parity, **it's imperitive that you start parity with --no-warp**. If you h
 
 *Sample Config:*
 
-`parity --mode active --tracing off --pruning fast --db-compaction ssd --jsonrpc-apis all --chain mainnet --no-warp`
+`parity --mode active --tracing off --pruning fast --db-compaction ssd --jsonrpc-apis all --chain mainnet --no-warp --cache-size 2048`
 
 **Important:** Since Parity v1.7.8 `--warp` is enabled by default. **If you fail to configure with `no-warp` you will have issues.**
 
-**Note** If you must use an HDD, be sure to change the `--db-compaction` parameter for parity to `hdd`, like so: `--db-compaction hdd` 
+**Notes** 
+- If you must use an HDD, be sure to change the `--db-compaction` parameter for parity to `hdd`, like so: `--db-compaction hdd` 
+- You can adjust `--cache-size` as needed, this could provide some sync-speed improvements. 
 
 ### 3. Configure The Snapshot Parameters
 
