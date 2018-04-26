@@ -1,20 +1,19 @@
-## EOS Snapshot Generator
+
+
+# EOS Snapshot Generator
 
 This tool was created to aggregate the EOS ERC20 token distribution in it's entirety, acknowledge various scenarios, run validation on data and provide files representing balances in various states. 
 
-## Glossary
+## Table of Contents
+- [Installation](#installation)
+- [Glossary](#glossary)
 
-- **wallet balance** - The wallet balance is refers to an address's EOS ERC20 token balance
-- **unclaimed balance** - An unclaimed balance refers to tokens that were never claimed by an address. Despite being unclaimed, these still belong to the contributing address.
-- **reclaimed balance** - A reclaimed balance refers to EOS ERC20 tokens accidentally sent to the EOSCrowdsale or EOSToken contract. The balances of these contracts are not included in distribution calculations, so it's imperitive these balances are calculated to have accurate supply values.  
-- **total balance** - The sum of **wallet** + **unclaimed** + **reclaimed** balances. The total balance is what is included as a user's balance in snapshots. 
-- **registered address** - A registered address is an address with a balance greater than or equal to the `minimum_snapshot_balance** that has correctly registered their ethereum address with the EOSCrowdsale contract using a valid EOS Public Key.
-- **unregistered address** - An unregistered address is an address with a balance greater than or equal to the - `minimum_snapshot_balance` that has either incorrectly registered  or failed to register their address with an EOS Public Key.
-- **freeze block** - The freeze block is a deterministic value represented by the block number representing the period that tokens were frozen. This block will mark the last block for which actions sent to the crowdsale contract will be honored (such as registrations) 
-- **snapshot** - A file containing EOS public keys and balances that can be imported during the EOSIO boot sequence.
-- **snapshot-unregistered** - A file containing Ethereum addressees and balances. This file could potentially be imported during the EOSIO boot sequence into the table of a contract that enables Ethereum based claiming.
-- **liquid supply** - The liquid supply represents total aggregate EOS ERC20 tokens that are presently in circulation and detected by snapshot script, after the crowdsale ends, the liquid supply should equal the total supply.
-- **expected supply** - Expected supply is a mathematically determined value representing what the script expects the liquid supply to equal. Liquid Supply should be within 0.00000001% of expected supply as a result of dust acquired by precision reduction.
+## Wiki
+- [How it works](https://github.com/EOSIO/genesis/wiki/How-it-Works)
+- [Differences between Ongoing and Final snapshot](https://github.com/EOSIO/genesis/wiki/%22Ongoing%22-vs-%22Final%22-Snapshot)
+- [Configuration Options](https://github.com/EOSIO/genesis/wiki/Advanced-Configuration-Options)
+- [Contribute](https://github.com/EOSIO/genesis/wiki/Contribute)
+
 
 ## Installation
 
@@ -89,3 +88,17 @@ From the *root directory of this project directory*, run the following:
 
 #### 6c. Snapshot in Root Directory
 If `overwrite_snapshot` is set to true, all the above files will be put into the root directory of the project. If you are doing any development on this project, it's suggested that you change this to `false` (it's enabled by default in the `config.default.js` file.) 
+
+## Glossary
+
+- **wallet balance** - The wallet balance is refers to an address's EOS ERC20 token balance
+- **unclaimed balance** - An unclaimed balance refers to tokens that were never claimed by an address. Despite being unclaimed, these still belong to the contributing address.
+- **reclaimed balance** - A reclaimed balance refers to EOS ERC20 tokens accidentally sent to the EOSCrowdsale or EOSToken contract. The balances of these contracts are not included in distribution calculations, so it's imperitive these balances are calculated to have accurate supply values.  
+- **total balance** - The sum of **wallet** + **unclaimed** + **reclaimed** balances. The total balance is what is included as a user's balance in snapshots. 
+- **registered address** - A registered address is an address with a balance greater than or equal to the `minimum_snapshot_balance** that has correctly registered their ethereum address with the EOSCrowdsale contract using a valid EOS Public Key.
+- **unregistered address** - An unregistered address is an address with a balance greater than or equal to the - `minimum_snapshot_balance` that has either incorrectly registered  or failed to register their address with an EOS Public Key.
+- **freeze block** - The freeze block is a deterministic value represented by the block number representing the period that tokens were frozen. This block will mark the last block for which actions sent to the crowdsale contract will be honored (such as registrations) 
+- **snapshot** - A file containing EOS public keys and balances that can be imported during the EOSIO boot sequence.
+- **snapshot-unregistered** - A file containing Ethereum addressees and balances. This file could potentially be imported during the EOSIO boot sequence into the table of a contract that enables Ethereum based claiming.
+- **liquid supply** - The liquid supply represents total aggregate EOS ERC20 tokens that are presently in circulation and detected by snapshot script, after the crowdsale ends, the liquid supply should equal the total supply.
+- **expected supply** - Expected supply is a mathematically determined value representing what the script expects the liquid supply to equal. Liquid Supply should be within 0.00000001% of expected supply as a result of dust acquired by precision reduction.
