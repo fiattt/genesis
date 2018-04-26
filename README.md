@@ -14,6 +14,8 @@ This tool was created to aggregate the EOS ERC20 token distribution in it's enti
 - [Configuration Options](https://github.com/EOSIO/genesis/wiki/Advanced-Configuration-Options)
 - [Contribute](https://github.com/EOSIO/genesis/wiki/Contribute)
 
+## External links
+- [Telegram Channel](https://t.me/joinchat/GgxZkRDT3PF5tVFm9m06gw)
 
 ## Installation
 
