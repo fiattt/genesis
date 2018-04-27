@@ -16,6 +16,9 @@ This tool can be used to generate snapshots for **any period** in a **determinis
 - [Configuration Options](https://github.com/EOSIO/genesis/wiki/Advanced-Configuration-Options)
 - [Contribute](https://github.com/EOSIO/genesis/wiki/Contribute)
 
+## Utilities
+- [Offline Key Generator and Validator](https://github.com/EOSIO/genesis/tree/master/tools/keys)
+
 ## External links
 - [Telegram Channel](https://t.me/joinchat/GgxZkRDT3PF5tVFm9m06gw)
 
