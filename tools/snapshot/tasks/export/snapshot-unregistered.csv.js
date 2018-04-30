@@ -15,7 +15,7 @@ module.exports = ( state, callback ) => {
         json_to_csv(_results, state.files.path_snapshot_unregistered_csv, false)
           .then(() => {
             console.log(`${results.length} Records Saved to CSV`)
-            if(config.overwrite_snapshot) fs.createReadStream(state.files.path_snapshot_unregistered_csv).pipe( fs.createWriteStream(state.files.file_snapshot_unregistered_csv).catch() )
+            if(config.overwrite_snapshot) fs.createReadStream(state.files.path_snapshot_unregistered_csv).pipe( fs.createWriteStream(state.files.file_snapshot_unregistered_csv) )
             callback(null, state)
           })
           .catch( error => { throw new Error(error) })
