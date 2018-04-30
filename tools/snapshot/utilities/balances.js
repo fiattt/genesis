@@ -44,7 +44,7 @@ balances.unclaimed = ( buys, claims, period_max, callback) => {
   unclaimed = new bn(
     periods
       //Get periods by unclaimed and lte last block
-      .filter( (period, i) => { return i <= (period_max || CS_NUMBER_OF_PERIODS-1) && !period.claimed && period.buys.gt(0) })
+      .filter( (period, i) => { return i <= (period_max || CS_MAX_PERIOD_INDEX) && !period.claimed && period.buys.gt(0) })
       //Sum the pre-calculated EOS balance of each resulting period
       .reduce( (sum, period) => period.share.plus(sum), new bn(0) )
   )

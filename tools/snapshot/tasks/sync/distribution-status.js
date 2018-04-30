@@ -31,8 +31,8 @@ module.exports = ( state, complete ) => {
 
     const settings = {}
     const blocks_per_iteration = 100
-    const block_iterations = Math.ceil((state.frozen - state.period_map[CS_NUMBER_OF_PERIODS-1].end)/blocks_per_iteration)
-    const block_offset = state.period_map[CS_NUMBER_OF_PERIODS-1].end
+    const block_iterations = Math.ceil((state.frozen - state.period_map[CS_MAX_PERIOD_INDEX].end)/blocks_per_iteration)
+    const block_offset = state.period_map[CS_MAX_PERIOD_INDEX].end
     let loop = _for(0, function (i) { return true }, function (i) { return i + 1; },
       function loopBody(i, _break, _continue) {
 

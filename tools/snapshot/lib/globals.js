@@ -1,6 +1,6 @@
 const bn = require('bignumber.js')
 
-global.VERSION                            = "0.3.1"
+global.VERSION                            = "0.3.0-rc2"
 
 //Crowdsale Globals
 global.CS_ADDRESS_CROWDSALE               = "0xd0a6e6c54dbc68db5db3a091b171a77407ff7ccf"
@@ -14,6 +14,7 @@ global.CS_OPEN_TIME                       = 1498482000
 global.CS_START_TIME                      = 1498914000
 
 global.CS_NUMBER_OF_PERIODS               = 351
+global.CS_MAX_PERIOD_INDEX                = CS_NUMBER_OF_PERIODS-1
 global.CS_PERIOD_LENGTH_SECONDS           = 23 * 60 * 60 //in seconds
 global.CS_PERIOD_ETH                      = []
 
@@ -28,7 +29,7 @@ global.CS_TOTAL_SUPPLY                    = new bn(1000000000).times(WAD)
 global.SS_STARTED_TIMESTAMP               = Date.now()/1000 | 0
 global.SS_ACCEPTABLE_SUPPLY_DEVIATION     = 5 //total number of EOS deviation allowed to be considered an "accurate" snapshot, usually less than 1/-1. 5 is generous.
 
-global.CS_END_TIME                        = CS_START_TIME + ((CS_NUMBER_OF_PERIODS-1) * CS_PERIOD_LENGTH_SECONDS)
+global.CS_END_TIME                        = CS_START_TIME + ((CS_MAX_PERIOD_INDEX) * CS_PERIOD_LENGTH_SECONDS)
 // global.CS_END_TIME                        = 1527893999
 
 //Services are global to help avoid extraneous connection bottlenecks.

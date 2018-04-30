@@ -33,14 +33,14 @@ class PeriodMap {
         period_index    = null,
         period_cache    = null
 
-    if(typeof this.map[CS_NUMBER_OF_PERIODS-1] !== 'undefined' && typeof this.map[CS_NUMBER_OF_PERIODS-1].end === "number") {
+    if(typeof this.map[CS_MAX_PERIOD_INDEX] !== 'undefined' && typeof this.map[CS_MAX_PERIOD_INDEX].end === "number") {
       onComplete(this)
       return
     }
 
 
-    if(period_max > CS_NUMBER_OF_PERIODS-1) {
-      period_max = CS_NUMBER_OF_PERIODS-1
+    if(period_max > CS_MAX_PERIOD_INDEX) {
+      period_max = CS_MAX_PERIOD_INDEX
     }
 
     const message = () => {
@@ -82,7 +82,7 @@ class PeriodMap {
           block_index++
 
           //All period block ranges have been discovered
-          if(map.length == CS_NUMBER_OF_PERIODS && map[CS_NUMBER_OF_PERIODS-1].end != null)
+          if(map.length == CS_NUMBER_OF_PERIODS && map[CS_MAX_PERIOD_INDEX].end != null)
             this.map = map,
             onComplete( this )
           //Still have more ranges to discover
@@ -90,7 +90,7 @@ class PeriodMap {
             ( period_cache <= period_max ) ? setTimeout(iterate, 0) : (this.map = map, onComplete( this ))
         })
     }
-    
+
     message()
     iterate()
   }

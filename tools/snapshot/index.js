@@ -24,14 +24,21 @@ module.exports = () => {
         if(config.load_config) {
           try { config = require('../../config') }
           catch(e) {
-            console.log("It appears you've set load_config somehow without having a config file you rascal. Set to false.")
+            console.log("It appears you've set load_config somehow without having a config file you rascal. Duplicate the default config file and edit or set to false.")
             throw new Error(e)
           }
         }
 
         if(typeof config.period === "undefined") {
           let period  = require('./utilities/periods')
+          let cache_period = config.period
           config.period = period.last_closed()
+          console.log(colors.italic.red(`It appears you've set your period to ${cache_period}, which hasn't yet finished. Period has been changed to ${$config.period}`))
+        }
+        else if(config.period > CS_MAX_PERIOD_INDEX) {
+          let cache_period = config.period
+          config.period = CS_MAX_PERIOD_INDEX
+          console.log(colors.italic.red(`It appears you've set your period to ${cache_period}, which doesn't exist. Period has been reset to ${config.period}`))
         }
 
         config = Object.assign( require('../../config.default'), config )

@@ -3,6 +3,7 @@ module.exports = ( state, complete )  => {
     state.block_begin         = CS_BLOCK_FIRST
     state.block_end           = state.freeze_block
     global.config.mode        = "final"
+    config.period             = CS_MAX_PERIOD_INDEX
   } else {
     state.block_begin         = state.period_map[0].begin
     state.block_end           = state.period_map[config.period].end

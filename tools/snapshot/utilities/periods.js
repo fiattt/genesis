@@ -9,7 +9,7 @@ const changed = (compare_period) => {
 }
 
 const from_date = timestamp  => {
-  return timestamp < CS_START_TIME ? 0 : Math.min(Math.floor((timestamp - CS_START_TIME) / CS_PERIOD_LENGTH_SECONDS ) + 1, CS_NUMBER_OF_PERIODS-1)
+  return timestamp < CS_START_TIME ? 0 : Math.min(Math.floor((timestamp - CS_START_TIME) / CS_PERIOD_LENGTH_SECONDS ) + 1, CS_MAX_PERIOD_INDEX)
 }
 
 //TODO: Deprecate

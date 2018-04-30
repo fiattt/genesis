@@ -38,14 +38,13 @@ module.exports = ( state, complete ) => {
     require('../../tests/total-daily-buys.js'),
     require('../../tests/negative-balances.js'),
     require('../../tests/validation-balance.js')
-  ], (error, results) => {
-    console.log(results)
+  ], (error, state) => {
     if(error) {
       throw new Error(error)
       process.exit()
     } else {
-      passed(results.tests)
-      failed(results.tests)
+      passed(state.tests)
+      failed(state.tests)
       setTimeout( () => complete( null, state ), 5000 )
     }
   })
