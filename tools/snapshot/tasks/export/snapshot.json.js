@@ -12,6 +12,7 @@ module.exports = ( state, complete ) => {
         query      = require('../../queries')
 
   let data = {
+    version: "",
     parameters : {},
     accounts: {},
     supply: {},
@@ -23,7 +24,12 @@ module.exports = ( state, complete ) => {
     stats: {}
   }
 
-  let get_state_variables = callback => {
+  const get_version = callback => {
+    data.version = VERSION
+    callback()
+  }
+
+  const get_state_variables = callback => {
     data.parameters = {
       period:                config.period,
       block_begin:           state.block_begin,
@@ -35,7 +41,7 @@ module.exports = ( state, complete ) => {
     callback()
   }
 
-  let get_accounts_total = callback => {
+  const get_accounts_total = callback => {
     db.Snapshot.count()
       .then( total => {
         data.accounts.valid = total
@@ -44,13 +50,13 @@ module.exports = ( state, complete ) => {
       .catch( error => { throw new Error(error) })
   }
 
-  let get_supply_expected = callback => {
+  const get_supply_expected = callback => {
     data.supply.expected = 200000000+(config.period*2000000)
     if(config.include_b1) data.supply.expected += 100000000
     callback()
   }
 
-  let get_supply_included = callback => {
+  const get_supply_included = callback => {
     db.Snapshot.sum('balance')
       .then( included => {
         data.supply.included = included
@@ -60,7 +66,7 @@ module.exports = ( state, complete ) => {
       .catch( error => { throw new Error(error) })
   }
 
-  let get_supply_liquid = callback => {
+  const get_supply_liquid = callback => {
     query.supply_liquid()
       .then( sum => {
         data.supply.liquid = parseFloat(sum[0]['sum(balance_total)'])
@@ -71,7 +77,7 @@ module.exports = ( state, complete ) => {
       .catch( error => { throw new Error(error) })
   }
 
-  let get_supply_total = callback => {
+  const get_supply_total = callback => {
     let query = `SELECT sum(balance_wallet) FROM wallets`
     db.sequelize
       .query(query, {type: db.sequelize.QueryTypes.SELECT})
@@ -82,7 +88,7 @@ module.exports = ( state, complete ) => {
       .catch( error => { throw new Error(error) })
   }
 
-  let get_accounts_registered = callback => {
+  const get_accounts_registered = callback => {
     query.count_accounts_registered()
       .then( count => {
         data.accounts.registered = count
@@ -92,7 +98,7 @@ module.exports = ( state, complete ) => {
       .catch( error => { throw new Error(error) })
   }
 
-  // let get_accounts_fallback = (callback) => {
+  // const get_accounts_fallback = (callback) => {
   //   db.Wallets
   //     .count({
   //       where: { fallback: true, valid: true }
@@ -105,7 +111,7 @@ module.exports = ( state, complete ) => {
   //     .catch( error => { throw new Error(error) })
   // }
 
-  let get_snapshot_checksum = callback => {
+  const get_snapshot_checksum = callback => {
     checksum.file(state.files.path_snapshot_csv , (err, sum) => {
       if(err)
         throw new Error(err)
@@ -115,7 +121,7 @@ module.exports = ( state, complete ) => {
     })
   }
 
-  let get_snapshot_unregistered_checksum = callback => {
+  const get_snapshot_unregistered_checksum = callback => {
     checksum.file(state.files.path_snapshot_unregistered_csv , (err, sum) => {
       if(err)
         throw new Error(err)
@@ -125,7 +131,7 @@ module.exports = ( state, complete ) => {
     })
   }
 
-  let get_distribution_checksum = callback => {
+  const get_distribution_checksum = callback => {
     checksum.file(state.files.path_distribution_csv , (err, sum) => {
       if(err)
         throw new Error(err)
@@ -135,7 +141,7 @@ module.exports = ( state, complete ) => {
     })
   }
 
-  let get_table_checksum = callback => {
+  const get_table_checksum = callback => {
     console.log(`Generating DB Table Checksums`)
     db.sequelize
       .query('CHECKSUM TABLE wallets, buys, claims, registrations, transfers, snapshot')
@@ -148,23 +154,23 @@ module.exports = ( state, complete ) => {
       })
   }
 
-  let get_timestamp = callback => {
+  const get_timestamp = callback => {
     data.meta.timestamp_completed = state.completed
     callback()
   }
 
-  let get_time_elapsed = callback => {
+  const get_time_elapsed = callback => {
     let prettyMs = require('pretty-ms');
     if(data.meta.timestamp_started && data.meta.timestamp_completed) data.meta.total_time = prettyMs( (data.meta.timestamp_completed-data.meta.timestamp_started)*1000 )
     callback()
   }
 
-  let get_state_stats = callback => {
+  const get_state_stats = callback => {
     data.stats.contract = state.sync_contract
     callback()
   }
 
-  let output = callback => {
+  const output = callback => {
     fs.writeFile(state.files.path_snapshot_json, JSON.stringify(data, null, "\t"), (err) => {
       console.log("Snapshot meta written to snapshot.json");
       if(config.overwrite_snapshot) fs.createReadStream(state.files.path_snapshot_json).pipe(fs.createWriteStream(state.files.file_snapshot_json))
@@ -172,7 +178,7 @@ module.exports = ( state, complete ) => {
     });
   }
 
-  let get_config = callback => {
+  const get_config = callback => {
     data.config = config
 
     delete config.eth_node_type
@@ -188,7 +194,7 @@ module.exports = ( state, complete ) => {
     callback()
   }
 
-  let get_block_range = callback => {
+  const get_block_range = callback => {
     data.block_range = {
       begin: state.block_begin,
       end: state.block_end
@@ -196,7 +202,7 @@ module.exports = ( state, complete ) => {
     callback()
   }
 
-  let get_dist_status = callback => {
+  const get_dist_status = callback => {
     data.distribution_status = {
       crowdsale_over: state.crowdsale_over,
       tokens_frozen: state.frozen
@@ -209,6 +215,7 @@ module.exports = ( state, complete ) => {
 
   console.log('Generating snapshot.json')
   async.series([
+    get_version,
     get_state_variables,
     get_accounts_total,
     get_accounts_registered,
