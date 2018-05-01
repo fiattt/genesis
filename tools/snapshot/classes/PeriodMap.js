@@ -45,7 +45,7 @@ class PeriodMap {
 
     const message = () => {
       console.log(`---------------------`)
-      console.log(`INFO: Period Map needs to be Updated - ${this.map.length > 0 ? this.map.length-1 : 'not synced'}, syncing to Period  (Today is Period ${period_today})`)
+      console.log(`INFO: Period Map needs to be Updated - ${this.map.length > 0 ? this.map.length-1 : 'No period map found'}, syncing to Period #${this.periodMax}  (Today is Period ${period_today})`)
       console.log(`Generating new row(s) for Period Block Map (Up to Period ${period_max})`)
       console.log(`This will take a little while`)
       console.log(`---------------------`)
