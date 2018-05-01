@@ -30,6 +30,7 @@ module.exports = ( state, complete ) => {
   }
 
   const transfers = (settings, next) => {
+
     scanCollection.transfers( settings.begin, settings.end )
       .then( transfers => {
         if(transfers.length) {
@@ -110,11 +111,13 @@ module.exports = ( state, complete ) => {
         if(registrations.length) {
           let request = []
           registrations.forEach( registration => {
+            let eos_key_data_bytes = unescape(encodeURIComponent(registration.returnValues.key)),
+                eos_key_data_string = decodeURIComponent(escape(eos_key_data_bytes))
             request.push({
               tx_hash:      registration.transactionHash,
               block_number: registration.blockNumber,
               address:      registration.returnValues.user.toLowerCase(),
-              eos_key:      registration.returnValues.key
+              eos_key:      eos_key_data_string.replace(/[\x00-\x09\x0B-\x0C\x0E-\x1F\x7F-\x9F]/g, '')
             })
           })
           state.sync_contract.registrations+=request.length
