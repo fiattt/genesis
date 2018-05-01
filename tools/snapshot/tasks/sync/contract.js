@@ -110,8 +110,6 @@ module.exports = ( state, complete ) => {
         if(registrations.length) {
           let request = []
           registrations.forEach( registration => {
-            let eos_key_data_bytes = unescape(encodeURIComponent(registration.returnValues.key)),
-                eos_key_data_string = decodeURIComponent(escape(eos_key_data_bytes))
             request.push({
               tx_hash:      registration.transactionHash,
               block_number: registration.blockNumber,
