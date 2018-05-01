@@ -104,7 +104,6 @@ module.exports = ( state, complete ) => {
       .catch( e => { throw new Error(e)} )
   }
 
-
   const registrations = (settings, next) => {
     scanCollection.registrations( settings.begin, settings.end )
       .then( registrations => {
