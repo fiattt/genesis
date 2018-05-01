@@ -20,6 +20,7 @@
     "optimist": "0.6.1",
     "pretty-ms": "3.0.1",
     "prompt": "1.0.0",
+    "redis": "2.8.0",
     "require-injector": "3.1.6",
     "sequelize": "4.37.6",
     "shutdown-handler": "1.0.1",
