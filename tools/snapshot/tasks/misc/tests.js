@@ -39,7 +39,6 @@ module.exports = ( state, complete ) => {
     require('../../tests/negative-balances.js'),
     require('../../tests/validation-balance.js')
   ], (error, results) => {
-    console.log(results)
     if(error) {
       throw new Error(error)
       process.exit()
