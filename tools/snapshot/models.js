@@ -18,6 +18,8 @@ db.Wallets = mysql.define("wallet", {
   register_error:     Sequelize.STRING(256),
   fallback_error:     Sequelize.STRING(256),
   valid:              Sequelize.BOOLEAN,
+  first_seen:         Sequelize.INTEGER,
+  deterministic_index:Sequelize.INTEGER
 }, {updateOnDuplicate: true, timestamps: false})
 
 db.Transfers = mysql.define('transfer', {
@@ -109,7 +111,7 @@ db.SnapshotUnregistered = mysql.define('snapshot_unregistered', {
 db.Keys = mysql.define('keys', {
   address:            Sequelize.STRING(256),
   public_key:         Sequelize.STRING(256),
-}, {timestamps: false, ignoreDuplicates: true})
+}, {timestamps: false, ignoreDuplicates : true})
 
 db.sequelize = mysql
 

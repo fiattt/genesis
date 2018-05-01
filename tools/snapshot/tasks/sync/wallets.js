@@ -101,6 +101,17 @@ module.exports = (state, complete) => {
       })
   }
 
+  const first_seen = ( wallet, finished ) => {
+    query.address_first_seen( wallet.address )
+      .then( results => {
+        if(results.length)
+          wallet.first_seen = results[0].block_number
+        else
+          wallet.first_seen = 0
+        finished(null, wallet)
+      })
+  }
+
   const processing = ( wallet, finished ) => {
     wallet.process( json => {
       log_table_row( wallet )
@@ -169,6 +180,7 @@ module.exports = (state, complete) => {
           (wallet, next) => claims(wallet, next),
           (wallet, next) => transfers(wallet, next),
           (wallet, next) => reclaimables(wallet, next),
+          (wallet, next) => first_seen(wallet, next),
           (wallet, next) => processing(wallet, next)
         ],
         (error, wallet) => save_or_continue(next_address))

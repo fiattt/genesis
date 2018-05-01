@@ -303,4 +303,31 @@ query.count_reclaimables = () => {
   return db.Reclaimables.count()
 }
 
+query.set_deterministic_indices = () => {
+  query = `update wallets target join
+  (
+       select address, (@rownumber := @rownumber + 1) as rownum
+       from wallets
+       cross join (select @rownumber := 0) r
+       order by first_seen asc, address asc
+  ) source on target.address = source.address
+  set deterministic_index = rownum`
+  return db.sequelize.query(query)
+}
+
+query.address_first_seen = address => {
+  const query = `SELECT bn.block_number from (
+  	(SELECT tf.block_number FROM transfers AS tf WHERE \`from\`="${address}" ORDER BY tf.block_number ASC LIMIT 1)
+  	UNION
+  	(SELECT tt.block_number FROM transfers AS tt WHERE \`to\`="${address}" ORDER BY tt.block_number ASC LIMIT 1)
+  	UNION
+  	(SELECT b.block_number FROM buys AS b WHERE address="${address}" ORDER BY b.block_number ASC LIMIT 1)
+  	UNION
+  	(SELECT c.block_number FROM claims AS c WHERE address="${address}" ORDER BY c.block_number ASC LIMIT 1)
+  	UNION
+  	(SELECT r.block_number FROM registrations AS r WHERE address="${address}"  ORDER BY r.block_number ASC LIMIT 1)
+    ) AS bn ORDER BY bn.block_number ASC LIMIT 1`
+  return db.sequelize.query(query, {type: db.sequelize.QueryTypes.SELECT})
+}
+
 module.exports = query

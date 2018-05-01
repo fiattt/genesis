@@ -24,6 +24,9 @@ class Wallet {
     this.reclaimables         = []
     this.transfers            = []
 
+    this.first_seen           = 0
+    this.deterministic_index  = 0
+
     this.config = config
   }
 
@@ -40,6 +43,7 @@ class Wallet {
       ,fallback_error:      this.fallback_error
       ,fallback:            this.fallback
       ,valid:               this.accepted
+      ,first_seen:          this.first_seen
     }
   }
 
