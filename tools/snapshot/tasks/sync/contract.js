@@ -30,6 +30,7 @@ module.exports = ( state, complete ) => {
   }
 
   const transfers = (settings, next) => {
+
     scanCollection.transfers( settings.begin, settings.end )
       .then( transfers => {
         if(transfers.length) {
@@ -103,7 +104,6 @@ module.exports = ( state, complete ) => {
       .catch( e => { throw new Error(e)} )
   }
 
-
   const registrations = (settings, next) => {
     scanCollection.registrations( settings.begin, settings.end )
       .then( registrations => {
@@ -114,7 +114,7 @@ module.exports = ( state, complete ) => {
               tx_hash:      registration.transactionHash,
               block_number: registration.blockNumber,
               address:      registration.returnValues.user.toLowerCase(),
-              eos_key:      registration.returnValues.key
+              eos_key:      encodeURIComponent(eos_key_data_string)
             })
           })
           state.sync_contract.registrations+=request.length
