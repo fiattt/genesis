@@ -16,6 +16,10 @@ module.exports = (state, all_systems_go) => {
   }
 
   const connect_redis = connected => {
+
+    connected() //skip
+    return false
+
     if( !config.registration_fallback ) {
       connected() //skip
       return false
@@ -25,19 +29,30 @@ module.exports = (state, all_systems_go) => {
       try {
         const redis = require('../../services/redis')
         global.redis = redis(config.redis_host, config.redis_port)
-        return true
+        console.log(colors.green.bold('Redis: Connected'))
+        connected()
       }
       catch(e) {
-        return false
+        console.log(colors.red.bold(`Redis: Not Connected (trying again in 5 seconds)`)),
+        setTimeout(check, 1000*5)
       }
     }
+    //
+    // const not_connected = retry => {
+    //   console.log(colors.red.bold(`Redis: Not Connected (trying again in 5 seconds)`)),
+    //   setTimeout( retry, 1000*5 )
+    // }
+    //
+    // if(check())
+    //   console.log(colors.green.bold('Redis: Connected')),
+    //   connected()
+    // else
+    //   console.log(colors.red.bold(`Redis: Not Connected (trying again in 5 seconds)`)),
+    //   setTimeout( check, 1000*5 )
 
-    if(check())
-      console.log(colors.green.bold('Redis: Connected')),
-      connected()
-    else
-      console.log(colors.red.bold(`Redis: Not Connected (trying again in 5 seconds)`)),
-      setTimeout( check, 1000*5 )
+    const redis = require('../../services/redis')
+    global.redis = redis(config.redis_host, config.redis_port)
+    connected()
 
   }
 
@@ -79,7 +94,7 @@ module.exports = (state, all_systems_go) => {
       .then( () => {
           console.log(colors.green.bold('Web3: Connected')),
           console.log(colors.gray.italic('Waiting 30 seconds before checking sync, parity/web3 can throw false positive.')),
-          setTimeout( connected, 1000*30 )
+          setTimeout( connected, 1000*1 )
       })
       .catch( () => { not_connected( () => connect_web3_connected(connected) ) })
   }
