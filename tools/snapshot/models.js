@@ -108,10 +108,8 @@ db.SnapshotUnregistered = mysql.define('snapshot_unregistered', {
 //Public Key Cache
 db.Keys = mysql.define('keys', {
   address:            Sequelize.STRING(256),
-  tx_hash:            Sequelize.STRING(256),
   public_key:         Sequelize.STRING(256),
-  derived_eos_key:    Sequelize.STRING(256)
-}, {timestamps: false, updateOnDuplicate: true})
+}, {timestamps: false, ignoreDuplicates: true})
 
 db.sequelize = mysql
 
