@@ -75,6 +75,8 @@ module.exports = () => {
       require('./tasks/sync/contract'),
       //Sync ethereum public keys from chain
       require('./tasks/sync/wallets'),
+      //Deterministic Index and account names
+      require('./tasks/sync/deterministic_index'),
       //Run tests against data to spot any issues with integrity
       require('./tasks/misc/tests'),
       //Maybe run native registration fallback (v0.1) NOT RECOMMENDED.
