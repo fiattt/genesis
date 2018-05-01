@@ -3,6 +3,8 @@ let db         = require('../models'),
 
 module.exports = ( state, callback ) => {
   let query = `SELECT sum(balance_wallet) FROM wallets`
+  if(!config.include_b1) query = `${query} WHERE address!="${CS_ADDRESS_B1}"`
+
   db.sequelize
     .query(query, {type: db.sequelize.QueryTypes.SELECT})
     .then( sum => {
