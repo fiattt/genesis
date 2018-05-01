@@ -5,13 +5,20 @@ module.exports = ( state, complete ) => {
         Table     = require('ascii-table'),
         util        = require('../../utilities')
 
-  let   start_block = 46147,
+  let   start_block = CS_BLOCK_FIRST,
         block_index = start_block, //first ethereum block with txs
         blocks_total = 0,
         pks_found = 0,
         blocks_processed = 0,
         status_log_intval = false,
-        fallback = {}
+        fallback = {},
+
+        //benchmarking
+        started = 0,
+        ms_per_block = 0,
+        blocks_checked = 0,
+        total_time = 0,
+        elapsed = 0
 
   const tx_hash_from_query_results = ( results, callback ) => (results.length) ? callback( results[0].dataValues.tx_hash ) : callback( false )
   const pubkey_from_tx_hash        = ( tx_hash, callback ) => util.misc.get_tx(tx_hash).then( result => { callback( result.publicKey ) })
@@ -19,8 +26,7 @@ module.exports = ( state, complete ) => {
   //TODO Fix callback hell
   const iterate_blocks = ( callback ) => {
     const _for = require('async-for')
-
-    var loop = _for(start_block, (i) => i<=state.block_end-start_block, function(i){ return i+1 }, iterate);
+    var loop = _for(start_block, (i) => i<=state.block_end, function(i){ return i+1 }, iterate);
 
     function iterate(i, _break, _continue) {
       block_index = i
@@ -39,7 +45,6 @@ module.exports = ( state, complete ) => {
                 if(err)
                   throw new Error(err)
                 else
-                  i++,
                   blocks_processed++,
                   _continue()
               }
@@ -56,7 +61,6 @@ module.exports = ( state, complete ) => {
 
   //Check TX
   const check_tx = (tx, next_tx) => {
-    // console.log(tx.blockNumber, tx.hash)
     try {
       redis.get(tx.from, (err, reply) => {
         if(reply)
@@ -118,7 +122,7 @@ module.exports = ( state, complete ) => {
         console.log(table.setAlign(0, Table.RIGHT).setAlign(1, Table.LEFT).render())
 
       })
-    }, 60000)
+    }, 60*1000)
   }
 
   console.log('Fallback: Slow')
