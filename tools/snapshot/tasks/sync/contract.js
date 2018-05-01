@@ -117,7 +117,7 @@ module.exports = ( state, complete ) => {
               tx_hash:      registration.transactionHash,
               block_number: registration.blockNumber,
               address:      registration.returnValues.user.toLowerCase(),
-              eos_key:      eos_key_data_string.replace(/[\x00-\x09\x0B-\x0C\x0E-\x1F\x7F-\x9F]/g, '')
+              eos_key:      encodeURIComponent(eos_key_data_string)
             })
           })
           state.sync_contract.registrations+=request.length
