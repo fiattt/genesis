@@ -10,15 +10,20 @@ module.exports = ( state, complete ) => {
     })
     return
   }
-
-  console.log('Truncating tables, starting clean')
-  async.series([
-    next => db.Wallets.destroy({ truncate : true, cascade: false }).then(next),
-    next => db.Transfers.destroy({ truncate : true, cascade: false }).then(next),
-    next => db.Claims.destroy({ truncate : true, cascade: false }).then(next),
-    next => db.Buys.destroy({ truncate : true, cascade: false }).then(next),
-    next => db.Reclaimables.destroy({ truncate : true, cascade: false }).then(next),
-    next => db.Registrations.destroy({ truncate : true, cascade: false }).then(next)
-  ], () => complete( null, state ) )
+  else if(!config.resume) {
+    console.log('Truncating tables, starting clean')
+    async.series([
+      next => db.Wallets.destroy({ truncate : true, cascade: false }).then(next),
+      next => db.Transfers.destroy({ truncate : true, cascade: false }).then(next),
+      next => db.Claims.destroy({ truncate : true, cascade: false }).then(next),
+      next => db.Buys.destroy({ truncate : true, cascade: false }).then(next),
+      next => db.Reclaimables.destroy({ truncate : true, cascade: false }).then(next),
+      next => db.Registrations.destroy({ truncate : true, cascade: false }).then(next)
+    ], () => complete( null, state ) )
+  }
+  else {
+    console.log('Skipping truncation, assuming resume')
+    complete( null, state )
+  }
 
 }
