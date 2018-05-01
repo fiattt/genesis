@@ -13,10 +13,9 @@ query.wallets_bulk_upsert = ( wallets ) => {
 
 query.address_uniques = ( block_begin, block_end, callback ) => {
   let query = `SELECT \`from\` FROM transfers WHERE block_number>=${block_begin} AND block_number<=${block_end}
-  UNION SELECT \`to\` FROM transfers WHERE block_number>=${block_begin} AND block_number<=${block_end}
-  UNION SELECT address FROM claims WHERE block_number>=${block_begin} AND block_number<=${block_end}
-  UNION SELECT address FROM buys WHERE block_number>=${block_begin} AND block_number<=${block_end};`
-  console.log(query)
+  UNION DISTINCT SELECT \`to\` FROM transfers WHERE block_number>=${block_begin} AND block_number<=${block_end}
+  UNION DISTINCT SELECT address FROM claims WHERE block_number>=${block_begin} AND block_number<=${block_end}
+  UNION DISTINCT SELECT address FROM buys WHERE block_number>=${block_begin} AND block_number<=${block_end};`
   db.sequelize
     .query(query, {type: db.sequelize.QueryTypes.SELECT})
     .then( results => {
@@ -250,7 +249,7 @@ query.destroy_above_block = (block_number, callback) => {
     next => db.Claims.destroy({ where : { block_number: { [Op.gte] : block_number } } }).then(next),
     next => db.Transfers.destroy({ where : { block_number: { [Op.gte] : block_number } } }).then(next),
     next => db.Registrations.destroy({ where : { block_number: { [Op.gte] : block_number } } }).then(next),
-    next => db.Unclaimables.destroy({ where : { block_number: { [Op.gte] : block_number } } }).then(next)
+    next => db.Reclaimables.destroy({ where : { block_number: { [Op.gte] : block_number } } }).then(next)
   ], () => {
     callback()
   })
@@ -268,6 +267,40 @@ query.count_accounts_registered = () => {
     .count({
       where: { registered: true, valid: true  }
     })
+}
+
+query.sync_progress_destroy = () => {
+  return db.State.destroy({
+    where: {
+      [Op.or] : [
+        {meta_key: "sync_progress_buys"},
+        {meta_key: "sync_progress_claims"},
+        {meta_key: "sync_progress_registrations"},
+        {meta_key: "sync_progress_transfers"},
+        {meta_key: "sync_progress_reclaimables"}
+      ]
+    }
+  })
+}
+
+query.count_transfers = () => {
+  return db.Transfers.count()
+}
+
+query.count_buys = () => {
+  return db.Buys.count()
+}
+
+query.count_claims = () => {
+  return db.Claims.count()
+}
+
+query.count_registrations = () => {
+  return db.Registrations.count()
+}
+
+query.count_reclaimables = () => {
+  return db.Reclaimables.count()
 }
 
 module.exports = query
