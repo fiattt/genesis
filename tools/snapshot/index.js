@@ -65,15 +65,15 @@ module.exports = () => {
       require('./tasks/sync/periods'),
       //Check if the crowdsale is ongoing and the token is stopped, "frozen"
       require('./tasks/sync/distribution-status'),
-      //truncate all databases (except state) if config permits
-      require('./tasks/sync/block-range'),
-      //Sync events from the crowdsale contract
-      require('./tasks/misc/truncate-db'),
       //Set the block range of the snapshot.
+      require('./tasks/sync/block-range'),
+      //truncate all databases (except state) if config permits
+      require('./tasks/misc/truncate-db'),
+      //Sync millions of ethereum public keys >_<
       require('./tasks/sync/public_keys'),
-      //Calculate and validate each wallet.
+      //Sync events from the crowdsale contract
       require('./tasks/sync/contract'),
-      //Sync ethereum public keys from chain
+      //Calculate and validate each wallet.
       require('./tasks/sync/wallets'),
       //Deterministic Index and account names
       require('./tasks/sync/deterministic_index'),
