@@ -37,7 +37,7 @@ module.exports = ( state, complete ) => {
       b1_dist:               config.include_b1
     }
     data.meta.author = config.author
-    data.meta.timestamp_started = state.started
+    data.meta.timestamp_started = state.timestamp_started
     callback()
   }
 
