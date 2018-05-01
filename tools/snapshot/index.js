@@ -76,7 +76,7 @@ module.exports = () => {
       //Calculate and validate each wallet.
       require('./tasks/sync/wallets'),
       //Deterministic Index and account names
-      require('./tasks/sync/deterministic_index'),
+      require('./tasks/sync/deterministic-index'),
       //Run tests against data to spot any issues with integrity
       require('./tasks/misc/tests'),
       //Maybe run native registration fallback (v0.1) NOT RECOMMENDED.
