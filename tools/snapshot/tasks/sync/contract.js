@@ -104,6 +104,7 @@ module.exports = ( state, complete ) => {
       .catch( e => { throw new Error(e)} )
   }
 
+
   const registrations = (settings, next) => {
     scanCollection.registrations( settings.begin, settings.end )
       .then( registrations => {
@@ -114,7 +115,7 @@ module.exports = ( state, complete ) => {
               tx_hash:      registration.transactionHash,
               block_number: registration.blockNumber,
               address:      registration.returnValues.user.toLowerCase(),
-              eos_key:      encodeURIComponent(eos_key_data_string)
+              eos_key:      encodeURIComponent(registration.returnValues.key)
             })
           })
           state.sync_contract.registrations+=request.length
