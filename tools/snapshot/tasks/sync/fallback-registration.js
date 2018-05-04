@@ -110,7 +110,7 @@ module.exports = ( state, complete ) => {
   }
 
   const log = (addresses) => {
-    let table = new Table(`Fast Fallback`),
+    let table = new Table(`Fallback Registration`),
         success_rate = Math.floor(pks_found/total*100)
 
     table.addRow('Progress', `${Math.floor(count/total*100)}%`)
