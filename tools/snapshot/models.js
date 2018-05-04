@@ -107,11 +107,14 @@ db.SnapshotUnregistered = mysql.define('snapshot_unregistered', {
   balance:            Sequelize.DECIMAL(15,4)
 }, {timestamps: false, freezeTableName: true, tableName: 'snapshot_unregistered'})
 
-//Public Key Cache
 db.Keys = mysql.define('keys', {
-  address:            Sequelize.STRING(256),
+  address:            {
+    type:             Sequelize.STRING(256),
+    primaryKey:       true
+  },
   public_key:         Sequelize.STRING(256),
-}, {timestamps: false, ignoreDuplicates : true})
+  block_number:       Sequelize.INTEGER
+}, {timestamps: false, ignoreDuplicates : true,  tableName: 'public_keys'})
 
 db.sequelize = mysql
 
