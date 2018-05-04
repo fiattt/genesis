@@ -36,10 +36,10 @@ const daily_totals = ( callback ) => {
   let contract  = require('../helpers/web3-contract')
   contract.$utility.methods.dailyTotals().call()
     .then( totals => {
-      let t = totals.map( total => new bn(total) );
+      let t = totals.map( total => new bn(total) )
       callback(t)
     })
-    .catch( e => { throw new Error(e)} )
+    .catch( e => { throw new Error(e) } )
 }
 
 const expected_supply = (period, include_b1) => {
