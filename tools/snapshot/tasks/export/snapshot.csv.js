@@ -27,14 +27,11 @@ module.exports = ( state, callback ) => {
     .destroy({ truncate : true, cascade: false })
     .then( () => {
       db.sequelize
-        .query('INSERT INTO `snapshot` (`user`, `key`, `balance`) SELECT `address`, `eos_key`, `balance_total` FROM `wallets` WHERE `valid`=1 ORDER BY `balance_total` DESC')
+        .query('INSERT INTO `snapshot` (`user`, `key`, `balance`) SELECT `address`, `eos_key`, `balance_total` FROM `wallets` WHERE `valid`=1 ORDER BY `deterministic_index` ASC')
         .then(results => {
           console.log( 'Snapshot Table Synced' )
           csv( callback )
         })
         .catch( error => { throw new Error(error) })
     })
-
-
-
 }
