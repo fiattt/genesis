@@ -46,12 +46,13 @@ module.exports = ( state, complete ) => {
   const run = () => {
     progress_interval()
     parallel(control_flow, (error, result) => {
+      console.log('All threads complete')
       clearInterval(progressIntval)
+      clearInterval(logIntval)
       cache_lowest_block()
       save_resume_block( () => {
         console.log(error, result)
-        console.log('All threads complete')
-        clearInterval(logIntval)
+        console.log('Resume Block Saved to State')
         log()
         complete(null, state)
       })
@@ -108,10 +109,11 @@ module.exports = ( state, complete ) => {
   }
 
   const save_resume_block = (callback=()=>{}) => {
-    if(typeof resume_block === "number" && resume_block>0) {
+    if(resume_block>0) {
       db.State
         .upsert({ meta_key: `sync_progress_keys`, meta_value: lowest_block })
-        .then( (error, result) => callback )
+        .then( callback )
+        .catch( e => {throw new Error(e)})
     } else {
       callback()
     }
