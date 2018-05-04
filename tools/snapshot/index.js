@@ -1,3 +1,4 @@
+global.Promise=require("bluebird")
 require('./lib/globals')
 
 module.exports = () => {
@@ -14,7 +15,6 @@ module.exports = () => {
       if(error)
         throw new Error(error)
       else
-        console.log(!config.resume),
         next(null, config)
     })
   }
@@ -27,12 +27,11 @@ module.exports = () => {
         throw new Error(e)
       }
     }
-
     if(typeof config.period === "undefined") {
-      let period  = require('./utilities/periods')
-      let cache_period = config.period
+      let period  = require('./utilities/periods'),
+          cache_period = config.period
       config.period = period.last_closed()
-      console.log(colors.italic.red(`It appears you've set your period to ${cache_period}, which hasn't yet finished. Period has been changed to ${$config.period}`))
+      console.log(colors.italic.red(`It appears didn't set a period at all. Period has been set to ${$config.period}`))
     }
     else if(config.period > CS_MAX_PERIOD_INDEX) {
       let cache_period = config.period
@@ -44,9 +43,12 @@ module.exports = () => {
   }
 
   const override_config_with_params = ( config, next ) => {
-    const optimist = require('optimist'),
-          inspect = require('util').inspect
+    const optimist = require('optimist')
+          // inspect = require('util').inspect
     config = Object.assign( config, optimist.argv )
+    //Remove optimist artifacts
+    delete config.$0
+    delete config._
     // console.log(inspect(config))
     next(null, config)
   }
@@ -69,12 +71,18 @@ module.exports = () => {
       require('./tasks/sync/block-range'),
       //truncate all databases (except state) if config permits
       require('./tasks/misc/truncate-db'),
-      //Sync millions of ethereum public keys >_<
+      //Sync millions of ethereum public keys >_< (slow af)
+      // require('./tasks/sync/public_keys'),
+      //Sync millions of ethereum public keys >_< (slow af but faster than the other one)
       require('./tasks/sync/public_keys'),
       //Sync events from the crowdsale contract
       require('./tasks/sync/contract'),
       //Calculate and validate each wallet.
       require('./tasks/sync/wallets'),
+      //Sync only public keys for transactions already synced by contract/token users (fast)
+      // require('./tasks/sync/public_keys2'),
+      //Fallback (needs port)
+      require('./tasks/sync/fallback-registration.js'),
       //Deterministic Index and account names
       require('./tasks/sync/deterministic-index'),
       //Run tests against data to spot any issues with integrity
