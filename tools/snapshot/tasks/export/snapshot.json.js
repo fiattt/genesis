@@ -124,7 +124,7 @@ module.exports = ( state, complete ) => {
   const get_snapshot_unregistered_checksum = callback => {
     checksum.file(state.files.path_snapshot_unregistered_csv , (err, sum) => {
       if(err)
-        throw new Error(err)
+        console.log(`file ${state.files.path_snapshot_unregistered_csv} doesn't exist`)
       else
         data.checksum.output.snapshot_unregistered = sum
       callback()
