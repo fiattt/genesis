@@ -5,7 +5,8 @@ module.exports = ( state, complete ) => {
         db_config      = {ignoreDuplicates: true},
         colors         = require('colors/safe'),
         Op             = Sequelize.Op,
-        quert          = require('../../queries')
+        query          = require('../../queries'),
+        async          = require('async')
 
   let   util           = require('../../utilities'),
         scanCollection = require('../../helpers/web3-collection'),
@@ -15,7 +16,8 @@ module.exports = ( state, complete ) => {
         sync = {},
         log_intval,
         iterator,
-        settings = {}
+        settings = {},
+        resume_tries = 0
 
 
   if(config.recalculate_wallets === true) {
@@ -32,8 +34,6 @@ module.exports = ( state, complete ) => {
     transfers:0,
   }
 
-  //Almost ready to DRY up
-
   const transfers = (settings, next) => {
     scanCollection.transfers( settings.begin, settings.end )
       .then( transfers => {
@@ -49,11 +49,9 @@ module.exports = ( state, complete ) => {
             })
           })
           state.sync_contract.transfers+=request.length
-          db.Transfers.bulkCreate( request )
-            .then( () => next() )
-            .catch(e => {throw new Error(e)})
+          next(null, request)
         } else {
-          next()
+          next(null, [])
         }
       })
   }
@@ -72,11 +70,9 @@ module.exports = ( state, complete ) => {
             }
           })
           state.sync_contract.buys+=request.length
-          db.Buys.bulkCreate( request )
-            .then( () => next() )
-            .catch(e => {throw new Error(e)})
+          next(null, request)
         } else {
-          next()
+          next(null, [])
         }
       })
       .catch( e => { throw new Error(e)} )
@@ -96,11 +92,9 @@ module.exports = ( state, complete ) => {
               }
           })
           state.sync_contract.claims+=request.length
-          db.Claims.bulkCreate( request )
-            .then( () => next() )
-            .catch(e => {throw new Error(e)})
+          next(null, request)
         } else {
-          next()
+          next(null, [])
         }
       })
       .catch( e => { throw new Error(e)} )
@@ -112,21 +106,17 @@ module.exports = ( state, complete ) => {
       .then( registrations => {
         if(registrations.length) {
           let request = registrations.map( registration => {
-            let eos_key_data_bytes = unescape(encodeURIComponent(registration.returnValues.key)),
-                eos_key_data_string = decodeURIComponent(escape(eos_key_data_bytes))
             return {
               tx_hash:      registration.transactionHash,
               block_number: registration.blockNumber,
               address:      registration.returnValues.user.toLowerCase(),
-              eos_key:      eos_key_data_string.replace(/\W/g, '')
+              eos_key:      encodeURIComponent(registration.returnValues.key)
             }
           })
           state.sync_contract.registrations+=request.length
-          db.Registrations.bulkCreate( request )
-            .then( () => next() )
-            .catch(e => {throw new Error(e)})
+          next(null, request)
         } else {
-          next()
+          next(null, [])
         }
       })
       .catch( e => { throw new Error(e)} )
@@ -148,14 +138,39 @@ module.exports = ( state, complete ) => {
             }
           });
           state.sync_contract.reclaimables+=request.length
-          db.Reclaimables.bulkCreate( request )
-            .then( () => next() )
-            .catch(e => {throw new Error(e)})
+          next(null, request)
         } else {
-          next()
+          next(null, [])
         }
       })
       .catch( e => { throw new Error(e)} )
+  }
+
+  const save_progress = (request, end, callback) => {
+    const save_records = next => {
+      async.series([
+        next => { db.Transfers.bulkCreate( request.Transfers ).then( () => next() ).catch(e => {throw new Error(e)}) },
+        next => { db.Buys.bulkCreate( request.Buys ).then( () => next() ).catch(e => {throw new Error(e)}) },
+        next => { db.Claims.bulkCreate( request.Claims ).then( () => next() ).catch(e => {throw new Error(e)}) },
+        next => { db.Registrations.bulkCreate( request.Registrations ).then( () => next() ).catch(e => {throw new Error(e)}) },
+        next => { db.Reclaimables.bulkCreate( request.Reclaimables ).then( () => next() ).catch(e => {throw new Error(e)}) },
+      ], () => next())
+    }
+
+    const save_current_state = next => {
+      save_sync_progress( 'contracts_state', JSON.stringify(state.sync_contract), next )
+    }
+
+    const save_block_height = next => {
+      save_sync_progress( 'contracts', end, next )
+    }
+
+    async.series([
+      save_records,
+      save_current_state,
+      save_block_height
+    ], callback )
+
   }
 
   const sync_contract = (begin, end, synced) => {
@@ -177,21 +192,22 @@ module.exports = ( state, complete ) => {
         if(settings.end > end) settings.end = end
 
         const parallel = require('async').parallel
-        parallel([
-            next => transfers( settings, next ),
-            next => buys( settings, next ),
-            next => claims( settings, next ),
-            next => registrations( settings, next ),
-            next => reclaimables( settings, next )
-        ], result => {
-          sync_progress( 'contracts_state', JSON.stringify(state.sync_contract), () => {
-            sync_progress( 'contracts', settings.end, () => {
-              if(i == end) console.log('reached the end', i, end)
-              if(settings.end == end)
-                _break()
-              else
-                _continue()
-            })
+        parallel({
+            Transfers     : next => transfers( settings, next ),
+            Buys          : next => buys( settings, next ),
+            Claims        : next => claims( settings, next ),
+            Registrations : next => registrations( settings, next ),
+            Reclaimables  : next => reclaimables( settings, next )
+        }, (error, result) => {
+          if(error)
+            throw new Error(error)
+          else
+            save_progress( result, settings.end, () => {
+              // if(i == end) console.log('Reached the end', i, end)
+              // if(settings.end == end)
+              //   _break()
+              // else
+            _continue()
           })
         })
       });
@@ -236,7 +252,7 @@ module.exports = ( state, complete ) => {
     })
   }
 
-  const sync_progress = ( type, value, callback ) => {
+  const save_sync_progress = ( type, value, callback ) => {
     // console.log(`Syncing progress for ${type} to block ${value}`)
     db.State
       .upsert({ meta_key: `sync_progress_${type}`, meta_value: value })
@@ -255,12 +271,12 @@ module.exports = ( state, complete ) => {
     const parallel = require('async').parallel
     let stats = {}
     parallel([
-      (next) => { query.count_buys().then( r => { stats.buys = r, next() }) },
-      (next) => { query.count_claims().then( r => { stats.claims = r, next() }) },
-      (next) => { query.count_registrations().then( r => { stats.registrations = r, next() }) },
-      (next) => { query.count_transfers().then( r => { stats.transfers = r, next() }) },
-      (next) => { query.count_reclaimables().then( r => { stats.reclaimables = r, next() }) }
-    ], () => {
+      (next) => { query.count_buys().then( r => { stats.buys = r, next() }).catch(e => {throw new Error(e)}) },
+      (next) => { query.count_claims().then( r => { stats.claims = r, next() }).catch(e => {throw new Error(e)}) },
+      (next) => { query.count_registrations().then( r => { stats.registrations = r, next() }).catch(e => {throw new Error(e)}) },
+      (next) => { query.count_transfers().then( r => { stats.transfers = r, next() }).catch(e => {throw new Error(e)}) },
+      (next) => { query.count_reclaimables().then( r => { stats.reclaimables = r, next() }).catch(e => {throw new Error(e)}) }
+    ], (error, results) => {
       ordered = {}
       Object.keys(stats).sort().forEach(function(key) {
         ordered[key] = stats[key];
@@ -269,7 +285,7 @@ module.exports = ( state, complete ) => {
     })
   }
 
-  const verify_resume =  callback  => {
+  const verify_resume = (resume_block, callback)  => {
     format_verification_query( counted_from_db => {
       db.State
         .findAll({
@@ -287,46 +303,64 @@ module.exports = ( state, complete ) => {
             console.log("Something isn't right, you will have to resync contracts, remove 'resume' from configuration"),
             process.exit()
           else
+            console.log(JSON.stringify(saved_state_ordered), counted_from_db),
             console.log("Resume verified."),
             state.sync_contract = saved_state_ordered
             callback()
         })
+        .catch(e => {throw new Error(e)})
     })
   }
 
-  const resume = () => {
+  const run_resume = (resume_block) => {
+    prepare_resume( resume_block, () => {
+      verify_resume( resume_block, () => {
+        start_sync( resume_block, state.block_end )
+      })
+    })
+  }
+
+  const maybe_resume = () => {
     db.State
      .findAll({
         attributes: ['meta_value'],
         where: {meta_key: "sync_progress_contracts"}
       })
-    .then( results => {
-      const inspect = require('util').inspect
-      // console.log( inspect(results) )
-      // console.log(results.length)
-      let resume_block
-      if(results.length) {
-        resume_block = parseInt(results[0].dataValues.meta_value)+1
-      } else {
-        resume_block = state.block_begin
-      }
+      .then( results => {
+        const inspect = require('util').inspect
+        // console.log( inspect(results) )
+        // console.log(results.length)
+        let resume_block
+        if(results.length) {
+          resume_block = parseInt(results[0].dataValues.meta_value)+1
+        } else {
+          resume_block = state.block_begin
+        }
 
-      if(resume_block >= state.block_end) {
-        console.log(`Looks like contracts are already synced to or above block number ${resume_block}, jumping to wallets.`)
-        setTimeout(() => complete(null, state), 5000)
-        return
-      }
+        if(resume_block >= state.block_end) {
+          console.log(`Looks like contracts are already synced to or above block number ${resume_block}, jumping to wallets.`)
+          setTimeout(() => complete(null, state), 5000)
+          return
+        }
 
-      prepare_resume( resume_block, () => {
-        verify_resume( () => {
-          start_sync( resume_block, state.block_end )
-        })
+        run_resume(resume_block)
+
       })
-    })
+      .catch(e => {throw new Error(e)})
+  }
+
+  const cleanString = input => {
+    let output = "";
+    for (var i=0; i<input.length; i++) {
+      if (input.charCodeAt(i) <= 127) {
+        output += input.charAt(i);
+      }
+    }
+    return output;
   }
 
   if(config.resume) {
-    resume()
+    maybe_resume()
   } else {
     start_sync(state.block_begin, state.block_end)
   }
