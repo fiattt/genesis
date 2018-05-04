@@ -6,7 +6,7 @@ module.exports = (state, complete) => {
 
         util         = require('../../utilities'),
         query        = require('../../queries'),
-        Wallet       = ( typeof config.mode != 'undefined' && config.mode == 'final' && state.frozen == true
+        Wallet       = ( typeof state.mode != 'undefined' && state.mode == 'final' && state.frozen == true
                           ? require('../../classes/Wallet.Final')
                           : require('../../classes/Wallet.Ongoing') )
 
@@ -32,7 +32,7 @@ module.exports = (state, complete) => {
 
     //Cumulative balance calculations are not required for final snapshot because tokens will be frozen
     //final balance calculation uses EOS ERC20 token's balanceOf() method.
-    if( typeof config.mode !== 'undefined' && config.mode == 'final' && state.frozen ) {
+    if( typeof state.mode !== 'undefined' && state.mode == 'final' && state.frozen ) {
       finished(null, wallet)
       return
     }
