@@ -12,12 +12,6 @@ module.exports = ( state, complete ) => {
         count       = 0,
         total       = 0
 
-  /*****IMRPOTANT FOR TESTING, DETERMINE FINAL STRATEGY AND CLEAN */
-  const optimist = require('optimist')
-  TABLE_TO_USE_FOR_TEST_REMOVE = optimist.argv.fallback_fast ? 'Keys2' : 'Keys'
-  TABLE_TO_USE_FOR_TEST_REMOVE = 'Keys3'
-  /****/
-
   const run = () => {
     periodic_log()
     async.waterfall([
@@ -91,7 +85,7 @@ module.exports = ( state, complete ) => {
   }
 
   const pub_key_from_cache = (address, callback) => {
-    db[TABLE_TO_USE_FOR_TEST_REMOVE]
+    db.Keys
       .findAll({
         where: {
           address: address
