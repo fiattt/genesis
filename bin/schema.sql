@@ -1,3 +1,25 @@
+# ************************************************************
+# Sequel Pro SQL dump
+# Version 4541
+#
+# http://www.sequelpro.com/
+# https://github.com/sequelpro/sequelpro
+#
+# Host: 127.0.0.1 (MySQL 5.6.37)
+# Database: eos_snapshot
+# Generation Time: 2018-05-04 22:30:43 +0000
+# ************************************************************
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+
 # Dump of table buys
 # ------------------------------------------------------------
 
@@ -36,19 +58,16 @@ CREATE TABLE `claims` (
 
 
 
-# Dump of table keys
+# Dump of table public_keys
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `keys`;
+DROP TABLE IF EXISTS `public_keys`;
 
-CREATE TABLE `keys` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `public_keys` (
   `address` varchar(256) NOT NULL DEFAULT '',
-  `tx_hash` varchar(265) NOT NULL DEFAULT '',
   `public_key` varchar(256) NOT NULL DEFAULT '',
-  `derived_eos_key` varchar(256) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  KEY `INDEX_ADDRESS` (`address`)
+  `block_number` int(11) NOT NULL,
+  PRIMARY KEY (`address`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -80,7 +99,7 @@ CREATE TABLE `registrations` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `tx_hash` varchar(256) NOT NULL DEFAULT '',
   `block_number` int(255) NOT NULL,
-  `address` varchar(256) NOT NULL,
+  `address` varchar(256) NOT NULL DEFAULT '',
   `eos_key` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `INDEXADDRESS` (`address`),
@@ -161,7 +180,7 @@ DROP TABLE IF EXISTS `wallets`;
 
 CREATE TABLE `wallets` (
   `address` varchar(256) NOT NULL,
-  `eos_key` varchar(256) DEFAULT NULL,
+  `eos_key` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `balance_wallet` decimal(15,4) NOT NULL DEFAULT '0.0000',
   `balance_unclaimed` decimal(15,4) NOT NULL DEFAULT '0.0000',
   `balance_reclaimed` decimal(15,4) NOT NULL DEFAULT '0.0000',
@@ -171,8 +190,10 @@ CREATE TABLE `wallets` (
   `register_error` varchar(256) DEFAULT NULL,
   `fallback_error` varchar(256) DEFAULT NULL,
   `valid` tinyint(1) NOT NULL DEFAULT '0',
+  `deterministic_index` int(11) DEFAULT NULL,
+  `first_seen` int(11) DEFAULT NULL,
   PRIMARY KEY (`address`),
-  KEY `EOSKEYINDEX` (`eos_key`)
+  KEY `EOSKEYINDEX` (`eos_key`(191))
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
