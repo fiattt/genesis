@@ -8,7 +8,7 @@ module.exports = (state, all_systems_go) => {
 
   const connect = () => {
     async.series([
-      connect_redis,
+      // connect_redis,
       connect_mysql,
       connect_web3_connected,
       connect_web3_synced
@@ -74,7 +74,7 @@ module.exports = (state, all_systems_go) => {
           console.log(colors.green.bold('MySQL: Connected')),
           connected()
       })
-      .catch( e => not_connected( () => connect_mysql(connected) ) )
+      .catch( e => { not_connected( () => connect_mysql(connected) ) } )
   }
 
   const connect_web3_connected = connected => {
