@@ -67,15 +67,12 @@ module.exports = ( state, complete ) => {
     ], () => {
       //The crowdsale is over, and tokens are frozen.
       if(state.frozen > 0 && state.crowdsale_over) {
-        // if(config.mode != "mainnet") {
-          //prompt "Would you like to generate a mainnet snapshot"
-          complete(null, state)
-        // }
+        complete(null, state)
       }
       //Tokens aren't frozen, but the mode is set for mainnet. Keep checking until tokens are frozen.
-      else if(state.frozen == 0 && state.crowdsale_over && config.mode == "ongoing") {
+      else if(state.frozen == 0 && state.crowdsale_over && state.mode == "ongoing") {
         setTimeout(() => {
-          if(!recheck) console.log(colors.green("The crowdsale is over and your config indicats you would like to generate a mainnet snapshot, however, the tokens are not yet frozen. Will check once a second, until the tokens are frozen."))
+          if(!recheck) console.log(colors.green("The crowdsale is over and your config indicates you would like to generate a mainnet snapshot, however, the tokens are not yet frozen. Will check once a second, until the tokens are frozen."))
           check(true)
         }, 1000)
       }
