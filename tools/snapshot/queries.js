@@ -303,6 +303,11 @@ query.count_reclaimables = () => {
   return db.Reclaimables.count()
 }
 
+query.get_unregistered_users_sufficient_balance = () => {
+  let query = `SELECT address FROM wallets WHERE valid=false AND balance_total>=${config.snapshot_minimum_balance}`
+  return db.sequelize.query(query, {type: db.sequelize.QueryTypes.SELECT})
+}
+
 query.set_deterministic_indices = () => {
   query = `update wallets target join
   (
