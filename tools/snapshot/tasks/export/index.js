@@ -16,7 +16,7 @@ module.exports = ( state, complete ) => {
   }
 
   const get_ss_fs = () => {
-    let snapshot_id = config.mode=="final" ? "final" : config.period
+    let snapshot_id = state.mode=="final" ? "final" : config.period
 
     fs = {}
     fs.file_snapshot_csv                           = 'snapshot.csv'
