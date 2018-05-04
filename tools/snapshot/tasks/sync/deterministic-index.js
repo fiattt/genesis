@@ -1,5 +1,5 @@
 module.exports = (state, complete) => {
-  const det_ind = require('../../query').set_deterministic_indices
+  const det_ind = require('../../queries').set_deterministic_indices
 
   det_ind()
     .then( result => {
