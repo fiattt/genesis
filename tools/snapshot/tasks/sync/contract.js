@@ -35,6 +35,7 @@ module.exports = ( state, complete ) => {
   }
 
   const transfers = (settings, next) => {
+
     scanCollection.transfers( settings.begin, settings.end )
       .then( transfers => {
         if(transfers.length) {
