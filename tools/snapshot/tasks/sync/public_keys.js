@@ -51,8 +51,7 @@ module.exports = ( state, complete ) => {
       clearInterval(logIntval)
       cache_lowest_block()
       save_resume_block( () => {
-        console.log(error, result)
-        console.log('Resume Block Saved to State')
+        console.log(`Resume Block #${resume_block} Saved to State`)
         log()
         complete(null, state)
       })
@@ -109,7 +108,7 @@ module.exports = ( state, complete ) => {
   }
 
   const save_resume_block = (callback=()=>{}) => {
-    if(resume_block>0) {
+    if(resume_block>0 && lowest_block>0) {
       db.State
         .upsert({ meta_key: `sync_progress_keys`, meta_value: lowest_block })
         .then( callback )
