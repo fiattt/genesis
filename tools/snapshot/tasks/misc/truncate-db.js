@@ -3,14 +3,15 @@ module.exports = ( state, complete ) => {
   const async = require('async'),
         db = require('../../models')
 
-  if(config.recalculate_wallets === true || config.resume) {
-    console.log('recalculate_wallets set to true, skipping truncation')
-    db.Wallets.destroy({ truncate : true, cascade: false }).then(() => {
-      complete(null, state)
-    })
-    return
-  }
-  else if(!config.resume) {
+  // if(config.recalculate_wallets === true || config.resume) {
+  //   console.log('recalculate_wallets set to true, skipping truncation')
+  //   db.Wallets.destroy({ truncate : true, cascade: false }).then(() => {
+  //     complete(null, state)
+  //   })
+  //   return
+  // }
+  // else
+  if(!config.resume) {
     console.log('Truncating tables, starting clean')
     async.series([
       next => db.Wallets.destroy({ truncate : true, cascade: false }).then(next),
@@ -25,5 +26,5 @@ module.exports = ( state, complete ) => {
     console.log('Skipping truncation, not sure why (?)')
     complete( null, state )
   }
-  
+
 }
