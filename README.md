@@ -4,7 +4,7 @@
 
 This tool was created to aggregate the EOS ERC20 token distribution in it's entirety, acknowledge various scenarios, run validation on data and provide files representing balances in various states. 
 
-This tool can be used to generate snapshots for **any period** in a **deterministic** fashion until the **EOS ERC20** token has been frozen. Once frozen, the tool will only produce **final** snapshots that represent the final state of the EOS ERC20 token distribution. 
+This tool can be used to generate snapshots for **any period** in a **deterministic** fashion until the **EOS ERC20** token has been frozen. Once frozen, the tool will only produce **deterministic final** snapshots that represent the final state of the EOS ERC20 token distribution. 
 
 ## Table of Contents
 - [Installation](#installation)
@@ -15,6 +15,9 @@ This tool can be used to generate snapshots for **any period** in a **determinis
 - [Differences between Ongoing and Final snapshot](https://github.com/EOSIO/genesis/wiki/%22Ongoing%22-vs-%22Final%22-Snapshot)
 - [Configuration Options](https://github.com/EOSIO/genesis/wiki/Advanced-Configuration-Options)
 - [Contribute](https://github.com/EOSIO/genesis/wiki/Contribute)
+
+## Utilities
+- [Offline Key Generator and Validator](https://github.com/EOSIO/genesis/tree/master/tools/keys)
 
 ## External links
 - [Telegram Channel](https://t.me/joinchat/GgxZkRDT3PF5tVFm9m06gw)
@@ -50,11 +53,13 @@ Start parity, **it's imperitive that you start parity with --no-warp**. If you h
 
 *Sample Config:*
 
-`parity --mode active --tracing off --pruning fast --db-compaction ssd --jsonrpc-apis all --chain mainnet --no-warp`
+`parity --mode active --tracing off --pruning fast --db-compaction ssd --jsonrpc-apis all --chain mainnet --no-warp --cache-size 2048`
 
 **Important:** Since Parity v1.7.8 `--warp` is enabled by default. **If you fail to configure with `no-warp` you will have issues.**
 
-**Note** If you must use an HDD, be sure to change the `--db-compaction` parameter for parity to `hdd`, like so: `--db-compaction hdd` 
+**Notes** 
+- If you must use an HDD, be sure to change the `--db-compaction` parameter for parity to `hdd`, like so: `--db-compaction hdd` 
+- You can adjust `--cache-size` as needed, this could provide some sync-speed improvements. 
 
 ### 3. Configure The Snapshot Parameters
 
