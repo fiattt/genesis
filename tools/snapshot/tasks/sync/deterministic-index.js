@@ -3,6 +3,7 @@ module.exports = (state, complete) => {
 
   det_ind()
     .then( result => {
+      console.log(`Deterministic Indices Set.`)
       complete(null, state)
     })
     .catch( e => {throw new Error(e)} )
