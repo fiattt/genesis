@@ -12,7 +12,6 @@ let balances = {}
 //Best for polling (fast)
 balances.wallet_token_state = (address, callback) => {
   const contract = require('../helpers/web3-contract')
-
   contract.$token.methods.balanceOf( address ).call()
     .then( balance => {
       balance = new bn( balance )
