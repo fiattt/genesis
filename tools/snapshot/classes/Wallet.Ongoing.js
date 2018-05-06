@@ -15,6 +15,8 @@ class WalletTestnet extends Wallet {
       this.balance.set( 'wallet', balance)
       complete()
     })
+    // this.balance.set('wallet', this.transfers)
+    // complete()
   }
 
   process_balance_unclaimed( complete = () => {} ){
