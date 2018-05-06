@@ -15,7 +15,8 @@ query.address_uniques = ( block_begin, block_end, callback ) => {
   let query = `SELECT \`from\` FROM transfers WHERE block_number>=${block_begin} AND block_number<=${block_end}
   UNION DISTINCT SELECT \`to\` FROM transfers WHERE block_number>=${block_begin} AND block_number<=${block_end}
   UNION DISTINCT SELECT address FROM claims WHERE block_number>=${block_begin} AND block_number<=${block_end}
-  UNION DISTINCT SELECT address FROM buys WHERE block_number>=${block_begin} AND block_number<=${block_end};`
+  UNION DISTINCT SELECT address FROM buys WHERE block_number>=${block_begin} AND block_number<=${block_end}
+  UNION DISTINCT SELECT address FROM registrations WHERE block_number>=${block_begin} AND block_number<=${block_end};`
   db.sequelize
     .query(query, {type: db.sequelize.QueryTypes.SELECT})
     .then( results => {
@@ -332,6 +333,27 @@ query.address_first_seen = address => {
   	UNION
   	(SELECT r.block_number FROM registrations AS r WHERE address="${address}"  ORDER BY r.block_number ASC LIMIT 1)
     ) AS bn ORDER BY bn.block_number ASC LIMIT 1`
+  return db.sequelize.query(query, {type: db.sequelize.QueryTypes.SELECT})
+}
+
+query.address_sum_transfer_balance = (address, block_from, block_to) => {
+  //Add balance is used to add the initial supply for EOSCrowdsale contract to it's wallet, this isn't a transaction, so needs to be added manually.
+  query = `SELECT sum(wallet) FROM (
+  (
+    SELECT SUM(_ti.eos_amount) AS wallet
+    FROM transfers AS _ti
+    WHERE \`to\`="${address}"
+    AND block_number<${block_to}
+    AND block_number>${block_from}
+  )
+  UNION
+  (
+    SELECT (SUM(_to.eos_amount)*-1) AS wallet
+    FROM transfers AS _to
+    WHERE \`from\`="${address}"
+    AND block_number<${block_to}
+    AND block_number>${block_from}
+  )) as wallet`
   return db.sequelize.query(query, {type: db.sequelize.QueryTypes.SELECT})
 }
 
