@@ -294,20 +294,24 @@ module.exports = ( state, complete ) => {
            where: {meta_key: "sync_progress_contracts_state"}
          })
         .then( results => {
-          let saved_state = results[0].dataValues.meta_value
-          let saved_state_ordered = {}
-          Object.keys(JSON.parse(saved_state)).sort().forEach(function(key) {
-            saved_state_ordered[key] = JSON.parse(saved_state)[key]
-          });
-          if( saved_state != counted_from_db )
-            console.log(JSON.stringify(saved_state_ordered), counted_from_db),
-            console.log("Something isn't right, you will have to resync contracts, remove 'resume' from configuration"),
-            process.exit()
-          else
-            console.log(JSON.stringify(saved_state_ordered), counted_from_db),
-            console.log("Resume verified."),
-            state.sync_contract = saved_state_ordered
-            callback()
+          if(results.length) {
+            let saved_state = results[0].dataValues.meta_value
+            let saved_state_ordered = {}
+            Object.keys(JSON.parse(saved_state)).sort().forEach(function(key) {
+              saved_state_ordered[key] = JSON.parse(saved_state)[key]
+            });
+            if( saved_state != counted_from_db )
+              console.log(JSON.stringify(saved_state_ordered), counted_from_db),
+              console.log("Something isn't right, you will have to resync contracts, remove 'resume' from configuration"),
+              process.exit()
+            else
+              console.log(JSON.stringify(saved_state_ordered), counted_from_db),
+              console.log("Resume verified."),
+              state.sync_contract = saved_state_ordered
+              callback()
+            } else {
+              callback()
+            }
         })
         .catch(e => {throw new Error(e)})
     })
