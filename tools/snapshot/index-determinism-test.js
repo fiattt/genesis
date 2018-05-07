@@ -63,11 +63,9 @@ module.exports = (COMPLETE) => {
     next(null, config)
   }
 
-  const run_snapshot = (_state) => {
-    let   state = _state || {}
+  const run_snapshot = () => {
+    let   state = {}
           state.timestamp_started = (Date.now() / 1000 | 0)
-
-    if(_period>0) console.log(config)
 
     waterfall([
       //Start waterfall with default state
@@ -114,10 +112,9 @@ module.exports = (COMPLETE) => {
       if(typeof COMPLETE === 'function') {
         COMPLETE()
       } else {
-        _period++
-        global.config.period = _period
+        global.config.period++
         check_for_poll(state)
-        console.log(`Running period ${_period} in 10 seconds`)
+        console.log(`Running period ${config.period} in 10 seconds`)
         // setTimeout( () => {
         //   check_for_poll(state)
         // }, 10000)
@@ -128,8 +125,8 @@ module.exports = (COMPLETE) => {
   }
 
   const check_for_poll = (state) => {
-    console.log(_period, period.last_closed())
-    if(_period <= period.last_closed())
+    console.log("Should poll?", config.period, period.last_closed())
+    if(config.period <= period.last_closed())
       run_snapshot(state)
     else
       console.log("New period not yet discovered, trying again in 60 seconds"),
