@@ -289,7 +289,6 @@ module.exports = (state, complete) => {
     */
     const process_addresses = next => {
       query.address_uniques( block_begin, block_end, _uniques => {
-        console.log(block_begin, block_end, _uniques)
         uniques     = new Set(_uniques)
         state.total = uniques.size
 

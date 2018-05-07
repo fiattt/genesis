@@ -121,6 +121,7 @@ const run = () => {
    }
 
   const save_rows = ( callback, deadlock ) => {
+    // console.log(config)
     // console.log(cache)
     // query.public_keys_bulk_upsert( cache )
     //   .then( result => {
@@ -146,7 +147,8 @@ const run = () => {
       })
       .catch( e => {
         //We assume this is a deadlock, if you get repeated unresolved deadlocks, uncomment line below.
-        // throw new Error(e)
+        console.log(config)
+        throw new Error(e)
         console.log(`Thread ${id}: DEADLOCK: RETRY`)
         setTimeout( () => save_rows(callback, true), 10 )
       })

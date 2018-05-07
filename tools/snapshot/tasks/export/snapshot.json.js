@@ -144,7 +144,7 @@ module.exports = ( state, complete ) => {
   const get_table_checksum = callback => {
     console.log(`Generating DB Table Checksums`)
     db.sequelize
-      .query('CHECKSUM TABLE wallets, buys, claims, registrations, transfers, snapshot')
+      .query('CHECKSUM TABLE wallets, buys, claims, registrations, transfers, snapshot, keys')
       .then( results => {
         results[0].forEach( result => {
           let key = result.Table.split('.')[1]
@@ -179,17 +179,18 @@ module.exports = ( state, complete ) => {
   }
 
   const get_config = callback => {
-    data.config = config
+    //Clone object
+    data.config = JSON.parse(JSON.stringify(config))
 
-    delete config.eth_node_type
-    delete config.eth_node_path
-    delete config.redis_host
-    delete config.redis_port
-    delete config.mysql_db
-    delete config.mysql_user
-    delete config.mysql_pass
-    delete config.mysql_host
-    delete config.mysql_port
+    //Delete potentially unsafe data from object before saving to file
+    delete data.config.eth_node_type
+    delete data.config.eth_node_path
+    delete data.config.redis_host
+    delete data.config.redis_port
+    delete data.config.mysql_db
+    delete data.config.mysql_user
+    delete data.config.mysql_pass
+    delete data.config.mysql_host
 
     callback()
   }
