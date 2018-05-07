@@ -23,7 +23,7 @@ module.exports = ( state, complete ) => {
     ], () => complete( null, state ) )
   }
   else {
-    console.log('Skipping truncation, not sure why (?)')
+    console.log('Skipping truncation (resume is set to true)')
     complete( null, state )
   }
 
