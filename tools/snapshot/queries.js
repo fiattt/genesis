@@ -338,7 +338,7 @@ query.address_first_seen = address => {
 
 query.address_sum_transfer_balance = (address, block_from, block_to) => {
   //Add balance is used to add the initial supply for EOSCrowdsale contract to it's wallet, this isn't a transaction, so needs to be added manually.
-  query = `SELECT sum(wallet) FROM (
+  const query = `SELECT sum(wallet) FROM (
   (
     SELECT SUM(_ti.eos_amount) AS wallet
     FROM transfers AS _ti
@@ -355,6 +355,11 @@ query.address_sum_transfer_balance = (address, block_from, block_to) => {
     AND block_number>${block_from}
   )) as wallet`
   return db.sequelize.query(query, {type: db.sequelize.QueryTypes.SELECT})
+}
+
+query.public_keys_bulk_upsert = ( keys ) => {
+  // return db.sequelize.query( keys )
+  return db.Keys.bulkCreate( keys )
 }
 
 module.exports = query
