@@ -259,7 +259,11 @@ module.exports = (state, complete) => {
     * @param {function} next Proceed to next step in control flow
     */
     const handle_resume = next => {
-      if(config.resume && resume_period < config.period) {
+      if(resume_period == config.period && !config.recalculate_wallets) {
+        console.log(`Wallets already calculated for Period #${resume_period}, if you would like to recalculate, run script with --recalculate-wallets parameter`)
+        complete(null, state)
+      }
+      else if(config.resume && resume_period < config.period) {
       //Only query addresses with activity since last recorded sync.
         //If period x was synced previously, and period z is being synced now, then from the first block of period x+1=y (period[y].begin)
         block_begin = state.period_map[resume_period+1].begin
@@ -269,7 +273,6 @@ module.exports = (state, complete) => {
       } else {
       //Truncate wallets table
         console.log(`Truncating Wallets Table (config period: ${config.period} resume period: ${resume_period} resume: ${config.resume}`)
-        process.exit()
         db.Wallets
           .destroy({ truncate : true, cascade: false })
           .then(() => {
@@ -286,6 +289,7 @@ module.exports = (state, complete) => {
     */
     const process_addresses = next => {
       query.address_uniques( block_begin, block_end, _uniques => {
+        console.log(block_begin, block_end, _uniques)
         uniques     = new Set(_uniques)
         state.total = uniques.size
 
