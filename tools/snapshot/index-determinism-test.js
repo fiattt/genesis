@@ -114,7 +114,7 @@ module.exports = (COMPLETE) => {
         console.log(`Running period ${_period} in 10 seconds`)
         setTimeout( () => {
           check_for_poll(state)
-        })
+        }, 10000)
       }
       if(error)
         console.log('Error:', error)
