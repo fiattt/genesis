@@ -191,6 +191,7 @@ module.exports = ( state, complete ) => {
     delete data.config.mysql_user
     delete data.config.mysql_pass
     delete data.config.mysql_host
+    delete data.config.mysql_port
 
     callback()
   }
