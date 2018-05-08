@@ -147,7 +147,7 @@ const run = () => {
       })
       .catch( e => {
         //We assume this is a deadlock, if you get repeated unresolved deadlocks, uncomment line below.
-        console.log(e)
+        // console.log(e)
         console.log(`Thread ${id}: DEADLOCK: RETRY`)
         setTimeout( () => save_rows(callback, true), 10 )
       })
