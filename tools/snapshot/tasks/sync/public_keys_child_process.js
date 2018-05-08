@@ -9,7 +9,6 @@ let   id,
       current_block
 
 const setup = settings => {
-  const connections = require('../misc/connections')
 
   id = settings.id
   threads = settings.threads
@@ -28,6 +27,7 @@ const setup = settings => {
   thread_block_end = thread_block_begin + blocks_to_sync - blocks_extra
   thread_block_end = (thread_block_end > block_end) ? thread_block_end - threads : thread_block_end
 
+  const connections = require('../misc/connections')
   connections(state, ( error, response ) => {
     setTimeout(run, id*50)
   })
@@ -100,11 +100,13 @@ const run = () => {
           .then( block => {
             if(current_block == thread_block_end)
               console.log(`Thread ${id}: Last Pass Detected - Current:${current_block}, End: ${thread_block_end}`)
+
             if(cache.length>CACHE_THRESHOLD || current_block == thread_block_end)
               save_rows( () => { process_transactions(block, _continue ) } )
             else
-              process_transactions(block, _continue )
+              setTimeout( () => process_transactions(block, _continue ), 1000)
           })
+          .catch(e => { throw new Error(e) })
         }
     )
 
