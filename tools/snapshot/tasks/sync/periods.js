@@ -23,7 +23,7 @@ module.exports = ( state, complete )  => {
   }
 
   get_period_map( map => {
-    const PeriodMap = require('../../classes/PeriodMap.new')
+    const PeriodMap = require('../../classes/PeriodMap')
     let periods = new PeriodMap(map)
     if(periods.syncedToPeriod() < config.period ) {
       periods.periodMax = config.period
