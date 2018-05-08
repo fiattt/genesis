@@ -20,11 +20,11 @@ module.exports = ( state, complete ) => {
         resume_tries = 0
 
 
-  if(config.recalculate_wallets === true) {
-    console.log('recalculate_wallets set to true, skipping contract sync')
-    complete(null, state)
-    return
-  }
+  // if(config.recalculate_wallets === true) {
+  //   console.log('recalculate_wallets set to true, skipping contract sync')
+  //   complete(null, state)
+  //   return
+  // }
 
   state.sync_contract = {
     buys:0,
@@ -148,6 +148,7 @@ module.exports = ( state, complete ) => {
   }
 
   const save_progress = (request, end, callback) => {
+
     const save_records = next => {
       async.series([
         next => { db.Transfers.bulkCreate( request.Transfers ).then( () => next() ).catch(e => {throw new Error(e)}) },
@@ -204,12 +205,8 @@ module.exports = ( state, complete ) => {
             throw new Error(error)
           else
             save_progress( result, settings.end, () => {
-              // if(i == end) console.log('Reached the end', i, end)
-              // if(settings.end == end)
-              //   _break()
-              // else
-            _continue()
-          })
+              _continue()
+            })
         })
       });
 
@@ -332,12 +329,10 @@ module.exports = ( state, complete ) => {
         where: {meta_key: "sync_progress_contracts"}
       })
       .then( results => {
-        const inspect = require('util').inspect
-        // console.log( inspect(results) )
-        // console.log(results.length)
         let resume_block
         if(results.length) {
           resume_block = parseInt(results[0].dataValues.meta_value)+1
+          console.log(`Contracts previously synced up to block ${resume_block-1}, resuming from ${resume_block}`)
         } else {
           resume_block = state.block_begin
         }

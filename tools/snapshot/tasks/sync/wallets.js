@@ -264,9 +264,10 @@ module.exports = (state, complete) => {
         complete(null, state)
       }
       else if(config.resume && resume_period < config.period) {
+        let _resume_from_period = resume_period-1 >= 0 ? resume_period-1 : resume_period
       //Only query addresses with activity since last recorded sync.
         //If period x was synced previously, and period z is being synced now, then from the first block of period x+1=y (period[y].begin)
-        block_begin = state.period_map[resume_period+1].begin
+        block_begin = state.period_map[_resume_from_period].begin
         //to the end of period z (previously defined in block range.)
         block_end = state.block_end
         next()
@@ -278,7 +279,7 @@ module.exports = (state, complete) => {
           .then(() => {
             block_begin = state.block_begin
             block_end = state.block_end
-            next()
+            setTimeout( () => next(), 5000 )
           })
       }
     }

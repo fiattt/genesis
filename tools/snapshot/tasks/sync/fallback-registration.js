@@ -4,8 +4,10 @@ module.exports = ( state, complete ) => {
         Table     = require('ascii-table'),
 
         db        = require('../../models'),
+        Sequelize = require('sequelize'),
+        Op        = Sequelize.Op,
         util      = require('../../utilities'),
-        query      = require('../../queries')
+        query     = require('../../queries')
 
   let   intval,
         pks_found   = 0,
@@ -88,7 +90,19 @@ module.exports = ( state, complete ) => {
     db.Keys
       .findAll({
         where: {
-          address: address
+          address: address,
+          [Op.and] : [
+            {
+              block_number: {
+                [Op.gte] : state.block_begin
+              }
+            },
+            {
+              block_number: {
+                [Op.lte] : state.block_end
+              }
+            }
+          ]
         },
         attributes: ['public_key'],
         limit: 1

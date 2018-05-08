@@ -1,14 +1,16 @@
 module.exports = ( state, complete ) => {
 
   const cpus = require('os').cpus,
-        threads = cpus().length,
         cp = require('child_process'),
         parallel = require('async').parallel,
         series = require('async').series,
         optimist = require('optimist'),
-        db = require('../../models')
+        db = require('../../models'),
+        colors = require('colors/safe')
 
-  let cache = [],
+  let threads = cpus().length,
+
+      cache = [],
       control_flow = [],
       stats = [],
       resume_block = 0,
@@ -17,10 +19,16 @@ module.exports = ( state, complete ) => {
       logIntval,
       progressIntval
 
-  if(config.recalculate_wallets === true) {
-    console.log('recalculate_wallets set to true, skipping ethereum public key sync')
-    complete(null, state)
-    return
+  // if(config.recalculate_wallets === true) {
+  //   console.log('recalculate_wallets set to true, skipping ethereum public key sync')
+  //   complete(null, state)
+  //   return
+  // }
+
+  if(config.eth_node_type !== "ipc") {
+    console.log(colors.bold.red("Multithreaded implementation cannot be used on HTTP JSON RPC or WS!!!! I did suggest using IPC AFTER ALL!"))
+    console.log(colors.bold.red("Slow and single threaded for you."))
+    threads = 1
   }
 
   if(config.registration_fallback === false) {
