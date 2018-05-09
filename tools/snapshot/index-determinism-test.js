@@ -113,7 +113,7 @@ module.exports = (COMPLETE) => {
         COMPLETE()
       } else {
         global.config.period++
-        check_for_poll(state)
+        check_for_poll()
         console.log(`Running period ${config.period} in 10 seconds`)
         // setTimeout( () => {
         //   check_for_poll(state)
