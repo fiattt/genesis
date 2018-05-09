@@ -39,7 +39,7 @@ This tool can be used to generate snapshots for **any period** in a **determinis
 ### 1. Create Config File
 
 - In the root directory of this project you'll find a `config.default.js` file.
-- create a copy and rename the copy `config.js`. The parameters are described in the file, but for your convenience they are also listed below in greater detail. 
+- **Copy** `config.default.js` and rename the copy to `config.js`. The parameters are described in the file, but for your convenience they are also listed below in greater detail. **DO NOT REMOVE OR RENAME config.default.js**
 
 ### 2. MySQL
 MySQL stores all the intricate details of the distribution and the contract. These instructions assume you already have MySQL configured locally or have a remote MySQL instance. 
