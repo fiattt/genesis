@@ -263,7 +263,7 @@ module.exports = (state, complete) => {
         console.log(`Wallets already calculated for Period #${resume_period}, if you would like to recalculate, run script with --recalculate-wallets parameter`)
         complete(null, state)
       }
-      else if(config.resume && resume_period < config.period) {
+      else if(config.resume && resume_period < config.period && !config.recalculate_wallets) {
         let _resume_from_period = resume_period-1 >= 0 ? resume_period-1 : resume_period
       //Only query addresses with activity since last recorded sync.
         //If period x was synced previously, and period z is being synced now, then from the first block of period x+1=y (period[y].begin)
@@ -274,6 +274,7 @@ module.exports = (state, complete) => {
       } else {
       //Truncate wallets table
         console.log(`Truncating Wallets Table (config period: ${config.period} resume period: ${resume_period} resume: ${config.resume}`)
+        // TODO DELETE SYNCED WALLET PERIOD STATE FROM STATE TABLE.
         db.Wallets
           .destroy({ truncate : true, cascade: false })
           .then(() => {
