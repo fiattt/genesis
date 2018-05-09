@@ -6,8 +6,8 @@
 # https://github.com/sequelpro/sequelpro
 #
 # Host: 127.0.0.1 (MySQL 5.6.37)
-# Database: eos_snapshot
-# Generation Time: 2018-05-04 22:30:43 +0000
+# Database: eos_snapshot_polling_test
+# Generation Time: 2018-05-09 15:13:08 +0000
 # ************************************************************
 
 
@@ -26,13 +26,13 @@
 DROP TABLE IF EXISTS `buys`;
 
 CREATE TABLE `buys` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(256) NOT NULL,
   `tx_hash` varchar(256) NOT NULL DEFAULT '',
   `block_number` int(255) NOT NULL,
   `address` varchar(256) NOT NULL,
   `period` int(11) NOT NULL,
   `eth_amount` decimal(65,0) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`uuid`),
   KEY `INDEXADDRESS` (`address`),
   KEY `INDEXBN` (`block_number`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -45,13 +45,13 @@ CREATE TABLE `buys` (
 DROP TABLE IF EXISTS `claims`;
 
 CREATE TABLE `claims` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(256) NOT NULL,
   `tx_hash` varchar(256) NOT NULL DEFAULT '',
   `block_number` int(255) NOT NULL,
   `address` varchar(256) NOT NULL DEFAULT '',
   `period` int(11) NOT NULL,
   `eos_amount` decimal(65,0) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`uuid`),
   KEY `INDEXADDRESS` (`address`),
   KEY `INDEXBN` (`block_number`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -78,12 +78,12 @@ CREATE TABLE `public_keys` (
 DROP TABLE IF EXISTS `reclaimables`;
 
 CREATE TABLE `reclaimables` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(256) NOT NULL,
   `tx_hash` varchar(256) NOT NULL DEFAULT '',
   `block_number` varchar(256) NOT NULL,
   `address` varchar(256) NOT NULL DEFAULT '',
   `eos_amount` decimal(65,0) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`uuid`),
   KEY `INDEXADDRESS` (`address`),
   KEY `INDEXBN` (`block_number`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -96,12 +96,12 @@ CREATE TABLE `reclaimables` (
 DROP TABLE IF EXISTS `registrations`;
 
 CREATE TABLE `registrations` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(256) NOT NULL,
   `tx_hash` varchar(256) NOT NULL DEFAULT '',
   `block_number` int(255) NOT NULL,
   `address` varchar(256) NOT NULL DEFAULT '',
   `eos_key` varchar(256) DEFAULT NULL,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`uuid`),
   KEY `INDEXADDRESS` (`address`),
   KEY `INDEXBN` (`block_number`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -159,13 +159,13 @@ CREATE TABLE `state` (
 DROP TABLE IF EXISTS `transfers`;
 
 CREATE TABLE `transfers` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(256) NOT NULL,
   `tx_hash` mediumtext NOT NULL,
   `block_number` int(255) NOT NULL,
   `from` varchar(256) NOT NULL DEFAULT '',
   `to` varchar(256) NOT NULL DEFAULT '',
   `eos_amount` decimal(65,0) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`uuid`),
   KEY `FROMINDEX` (`from`),
   KEY `TOINDEX` (`to`),
   KEY `INDEXBN` (`block_number`)
