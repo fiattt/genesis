@@ -23,8 +23,8 @@ db.Wallets = mysql.define("wallet", {
 }, {updateOnDuplicate: true, timestamps: false})
 
 db.Transfers = mysql.define('transfer', {
-  id: {
-    type:             Sequelize.INTEGER,
+  uuid:               {
+    type:             Sequelize.STRING(256),
     primaryKey:       true
   },
   tx_hash:            Sequelize.STRING(256),
@@ -35,8 +35,8 @@ db.Transfers = mysql.define('transfer', {
 }, modelConfig)
 
 db.Buys = mysql.define('buy', {
-  id: {
-    type:             Sequelize.INTEGER,
+  uuid:               {
+    type:             Sequelize.STRING(256),
     primaryKey:       true
   },
   tx_hash:            Sequelize.STRING(256),
@@ -47,8 +47,8 @@ db.Buys = mysql.define('buy', {
 }, modelConfig)
 
 db.Claims = mysql.define('claim', {
-  id: {
-    type:             Sequelize.INTEGER,
+  uuid:               {
+    type:             Sequelize.STRING(256),
     primaryKey:       true
   },
   tx_hash:            Sequelize.STRING,
@@ -59,8 +59,8 @@ db.Claims = mysql.define('claim', {
 }, modelConfig)
 
 db.Reclaimables = mysql.define('reclaimable', {
-  id: {
-    type:             Sequelize.INTEGER,
+  uuid:               {
+    type:             Sequelize.STRING(256),
     primaryKey:       true
   },
   tx_hash:            Sequelize.STRING(256),
@@ -70,8 +70,8 @@ db.Reclaimables = mysql.define('reclaimable', {
 }, modelConfig)
 
 db.Registrations = mysql.define('registration', {
-  id: {
-    type:             Sequelize.INTEGER,
+  uuid:               {
+    type:             Sequelize.STRING(256),
     primaryKey:       true
   },
   tx_hash:            Sequelize.STRING(256),
