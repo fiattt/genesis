@@ -205,8 +205,6 @@ module.exports = ( state, complete ) => {
 
         if(settings.end > end) settings.end = end
 
-        console.log(settings)
-
         parallel({
             Transfers     : next => transfers( settings, next ),
             Buys          : next => buys( settings, next ),
