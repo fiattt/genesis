@@ -2,11 +2,14 @@ module.exports = ( state, complete ) => {
 
   const db             = require('../../models'),
         Sequelize      = require('sequelize'),
-        db_config      = {ignoreDuplicates: true},
+        // db_config      = {ignoreDuplicates: true},
+        db_config      = {}
         colors         = require('colors/safe'),
         Op             = Sequelize.Op,
         query          = require('../../queries'),
-        async          = require('async')
+        sha256         = require('sha256'),
+        series         = require('async').series,
+        parallel       = require('async').parallel
 
   let   util           = require('../../utilities'),
         scanCollection = require('../../helpers/web3-collection'),
@@ -34,21 +37,24 @@ module.exports = ( state, complete ) => {
     transfers:0,
   }
 
+  // let DEBUG_COLLISION
+
   const transfers = (settings, next) => {
 
     scanCollection.transfers( settings.begin, settings.end )
       .then( transfers => {
         if(transfers.length) {
-          let request = []
-          transfers.forEach( transfer => {
-            request.push({
+          let request = transfers.map( transfer => {
+            return {
+              uuid:         generate_uuid(transfer),
               tx_hash:      transfer.transactionHash,
               block_number: transfer.blockNumber,
               from:         transfer.returnValues.from.toLowerCase(),
               to:           transfer.returnValues.to.toLowerCase(),
               eos_amount:   new bn(transfer.returnValues.value).toFixed()
-            })
+            }
           })
+          // DEBUG_COLLISION = transfers
           state.sync_contract.transfers+=request.length
           next(null, request)
         } else {
@@ -63,6 +69,7 @@ module.exports = ( state, complete ) => {
         if(buys.length) {
           let request = buys.map( buy => {
             return {
+              uuid:         generate_uuid(buy),
               tx_hash:      buy.transactionHash,
               block_number: buy.blockNumber,
               address:      buy.returnValues.user.toLowerCase(),
@@ -85,12 +92,13 @@ module.exports = ( state, complete ) => {
         if(claims.length) {
           let request = claims.map( claim => {
             return {
-                tx_hash:      claim.transactionHash,
-                block_number: claim.blockNumber,
-                address:      claim.returnValues.user.toLowerCase(),
-                period:       claim.returnValues.window,
-                eos_amount:   new bn(claim.returnValues.amount).toFixed()
-              }
+              uuid:         generate_uuid(claim),
+              tx_hash:      claim.transactionHash,
+              block_number: claim.blockNumber,
+              address:      claim.returnValues.user.toLowerCase(),
+              period:       claim.returnValues.window,
+              eos_amount:   new bn(claim.returnValues.amount).toFixed()
+            }
           })
           state.sync_contract.claims+=request.length
           next(null, request)
@@ -108,6 +116,7 @@ module.exports = ( state, complete ) => {
         if(registrations.length) {
           let request = registrations.map( registration => {
             return {
+              uuid:         generate_uuid(registration),
               tx_hash:      registration.transactionHash,
               block_number: registration.blockNumber,
               address:      registration.returnValues.user.toLowerCase(),
@@ -129,15 +138,14 @@ module.exports = ( state, complete ) => {
         if(reclaimables.length) {
           let request = reclaimables.map( reclaimable => {
             let eos_amount = new bn(reclaimable.returnValues.value)
-            if(eos_amount.gt(0)) {
-              return {
-                tx_hash:      reclaimable.transactionHash,
-                block_number: reclaimable.blockNumber,
-                address:      reclaimable.returnValues.from.toLowerCase(),
-                eos_amount:   eos_amount.toFixed()
-              }
+            return {
+              uuid:         generate_uuid(reclaimable),
+              tx_hash:      reclaimable.transactionHash,
+              block_number: reclaimable.blockNumber,
+              address:      reclaimable.returnValues.from.toLowerCase(),
+              eos_amount:   eos_amount.toFixed()
             }
-          });
+          })
           state.sync_contract.reclaimables+=request.length
           next(null, request)
         } else {
@@ -150,12 +158,12 @@ module.exports = ( state, complete ) => {
   const save_progress = (request, end, callback) => {
 
     const save_records = next => {
-      async.series([
-        next => { db.Transfers.bulkCreate( request.Transfers ).then( () => next() ).catch(e => {throw new Error(e)}) },
-        next => { db.Buys.bulkCreate( request.Buys ).then( () => next() ).catch(e => {throw new Error(e)}) },
-        next => { db.Claims.bulkCreate( request.Claims ).then( () => next() ).catch(e => {throw new Error(e)}) },
-        next => { db.Registrations.bulkCreate( request.Registrations ).then( () => next() ).catch(e => {throw new Error(e)}) },
-        next => { db.Reclaimables.bulkCreate( request.Reclaimables ).then( () => next() ).catch(e => {throw new Error(e)}) },
+      series([
+        next => { db.Transfers.bulkCreate( request.Transfers, db_config ).then( () => next() ).catch(e => { throw new Error(e)}) },
+        next => { db.Buys.bulkCreate( request.Buys, db_config ).then( () => next() ).catch(e => {throw new Error(e)}) },
+        next => { db.Claims.bulkCreate( request.Claims, db_config ).then( () => next() ).catch(e => {throw new Error(e)}) },
+        next => { db.Registrations.bulkCreate( request.Registrations, db_config ).then( () => next() ).catch(e => {throw new Error(e)}) },
+        next => { db.Reclaimables.bulkCreate( request.Reclaimables, db_config ).then( () => next() ).catch(e => {throw new Error(e)}) },
       ], () => next())
     }
 
@@ -167,12 +175,16 @@ module.exports = ( state, complete ) => {
       save_sync_progress( 'contracts', end, next )
     }
 
-    async.series([
+    series([
       save_records,
       save_current_state,
       save_block_height
     ], callback )
 
+  }
+
+  const generate_uuid = (tx) => {
+    return sha256(tx.transactionHash+tx.id+String(tx.transactionIndex))
   }
 
   const sync_contract = (begin, end, synced) => {
@@ -193,7 +205,8 @@ module.exports = ( state, complete ) => {
 
         if(settings.end > end) settings.end = end
 
-        const parallel = require('async').parallel
+        console.log(settings)
+
         parallel({
             Transfers     : next => transfers( settings, next ),
             Buys          : next => buys( settings, next ),
@@ -266,7 +279,6 @@ module.exports = ( state, complete ) => {
   }
 
   const format_verification_query = callback => {
-    const parallel = require('async').parallel
     let stats = {}
     parallel([
       (next) => { query.count_buys().then( r => { stats.buys = r, next() }).catch(e => {throw new Error(e)}) },
@@ -315,11 +327,13 @@ module.exports = ( state, complete ) => {
   }
 
   const run_resume = (resume_block) => {
-    prepare_resume( resume_block, () => {
-      verify_resume( resume_block, () => {
-        start_sync( resume_block, state.block_end )
-      })
+    // prepare_resume( resume_block, () => {
+    verify_resume( resume_block, () => {
+      console.log("original start block:", state.block_start, "resume block saved:", resume_block-1, "resume block now:", resume_block)
+      // process.exit()
+      start_sync( resume_block, state.block_end )
     })
+    // })
   }
 
   const maybe_resume = () => {
