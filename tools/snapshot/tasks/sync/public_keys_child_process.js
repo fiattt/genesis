@@ -142,7 +142,7 @@ const run = () => {
     //   })
     db.Keys.bulkCreate( cache, {ignoreDuplicates: true} )
       .then( () => {
-        if(deadlock) console.log(`${id} DEADLOCK: RESOLVED`)
+        if(deadlock) console.log(colors.green(`Thread ${id}: DEADLOCK: RESOLVED`))
         cache = []
         update_state()
         callback()
@@ -150,7 +150,7 @@ const run = () => {
       .catch( e => {
         //We assume this is a deadlock, if you get repeated unresolved deadlocks, uncomment line below.
         // console.log(e)
-        console.log(`Thread ${id}: DEADLOCK: RETRY`)
+        console.log(colors.red(`Thread ${id}: DEADLOCK: RETRY`))
         setTimeout( () => save_rows(callback, true), 10 )
       })
   }
