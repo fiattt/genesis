@@ -11,11 +11,11 @@ query.wallets_bulk_upsert = ( wallets ) => {
   return db.Wallets.bulkCreate( wallets, { updateOnDuplicate: true })
 }
 
-query.address_uniques = ( block_begin, block_end, callback ) => {
+query.address_uniques = ( block_begin, block_end, period_begin, period_end, callback ) => {
   let query = `SELECT \`from\` FROM transfers WHERE block_number>=${block_begin} AND block_number<=${block_end}
   UNION DISTINCT SELECT \`to\` FROM transfers WHERE block_number>=${block_begin} AND block_number<=${block_end}
   UNION DISTINCT SELECT address FROM claims WHERE block_number>=${block_begin} AND block_number<=${block_end}
-  UNION DISTINCT SELECT address FROM buys WHERE block_number>=${block_begin} AND block_number<=${block_end}
+  UNION DISTINCT SELECT address FROM buys WHERE period>=${period_begin} AND period<=${period_end}
   UNION DISTINCT SELECT address FROM registrations WHERE block_number>=${block_begin} AND block_number<=${block_end};`
   db.sequelize
     .query(query, {type: db.sequelize.QueryTypes.SELECT})
