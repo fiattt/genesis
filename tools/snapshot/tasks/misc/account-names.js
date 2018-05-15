@@ -2,10 +2,12 @@ module.exports = ( state, complete ) => {
 
   const query = require('../../queries'),
         base32 = require('hi-base32'),
-        eachOf = require('async').eachOf,
+        eachOfSeries = require('async').eachOfSeries,
         db = require('../../models')
 
-  let cache = []
+  let cache = "",
+      cache_count = 0,
+      total = 0
 
   console.log('account names')
 
@@ -14,9 +16,24 @@ module.exports = ( state, complete ) => {
     if(account_name.length > 12) { throw new Error(`${account_name} is greater than 12 characters`) }
     // else if (account_name.length == 12) { console.log(`${wallet.address}:${wallet.deterministic_index} is exactly 12 characters`) }
     else { account_name = account_name.padEnd(12, "0") }
-    db.sequelize.query( `UPDATE wallets SET account_name="${account_name}" WHERE address="${wallet.address}";`)
-      .then( res => {  console.log(account_name, "for", wallet.address, "and index", wallet.deterministic_index), callback() })
-      .catch( e => {throw new Error(e)} )
+    // cache+=`UPDATE wallets SET account_name="${account_name}" WHERE address="${wallet.address}";`
+    if(cache_count!=0) cache+=', '
+    cache+=`("${wallet.address}", "${account_name}")`
+    cache_count++
+    // console.log(cache_count)
+    if(cache_count>=100 || key+1==total ) {
+      let query = `INSERT into wallets (address,account_name) VALUES ${cache} ON DUPLICATE KEY UPDATE account_name=VALUES(account_name)`
+      // console.log(key+1==total, query)
+      db.sequelize.query(query)
+        .then( res => {
+          cache = ""
+          cache_count = 0
+          callback()
+        })
+        .catch( e => {throw new Error(e)} )
+    } else {
+      callback()
+    }
   }
 
   const loop_finished = err => {
@@ -25,6 +42,7 @@ module.exports = ( state, complete ) => {
   }
 
   query.address_deterministic_indices( results => {
-    eachOf(results, set_account_name, loop_finished)
+    total = results.length
+    eachOfSeries(results, set_account_name, loop_finished)
   })
 }
