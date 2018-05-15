@@ -86,7 +86,9 @@ module.exports = (COMPLETE) => {
       //Fallback Registration
       require('./tasks/sync/fallback-registration.js'),
       //Deterministic Index and account names
-      require('./tasks/sync/deterministic-index'),
+      require('./tasks/misc/deterministic-index'),
+      //Set account names based on deterministic index
+      require('./tasks/misc/account-names'),
       //Run tests against data to spot any issues with integrity
       require('./tasks/misc/tests'),
       //Generate output files.
