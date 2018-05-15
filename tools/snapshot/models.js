@@ -18,8 +18,10 @@ db.Wallets = mysql.define("wallet", {
   register_error:     Sequelize.STRING(256),
   fallback_error:     Sequelize.STRING(256),
   valid:              Sequelize.BOOLEAN,
-  first_seen:         Sequelize.INTEGER,
-  deterministic_index:Sequelize.INTEGER
+  deterministic_index:Sequelize.INTEGER,
+  account_name:       Sequelize.STRING(256),
+  first_seen:         Sequelize.INTEGER
+
 }, {updateOnDuplicate: true, timestamps: false})
 
 db.Transfers = mysql.define('transfer', {
@@ -98,6 +100,7 @@ db.State = mysql.define('state', {
 //Table used to store Snapshot before export to CSV
 db.Snapshot = mysql.define('snapshot', {
   user:               Sequelize.STRING(256),
+  account_name:       Sequelize.STRING(256),
   key:                Sequelize.STRING(256),
   balance:            Sequelize.DECIMAL(15,4)
 }, {timestamps: false, freezeTableName: true, tableName: 'snapshot'})
