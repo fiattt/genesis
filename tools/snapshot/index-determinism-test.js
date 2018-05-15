@@ -9,8 +9,6 @@ module.exports = (COMPLETE) => {
         fs = require('fs'),
         period  = require('./utilities/periods')
 
-  /***** ONLY FOR TEST ****/
-  let _period = 0
   let SETUP = false
 
   const show_prompt = next => {
@@ -109,11 +107,16 @@ module.exports = (COMPLETE) => {
       //Generate output files.
       require('./tasks/export')
     ], (error, state) => {
-      console.log(`Snapshot for Period #${config.period} Completed.`)
+      if(error)
+        console.log('Error:', error)
+      else
+        console.log(`Snapshot for Period #${config.period} Completed.`)
+
       // const sync_progress_destroy = require('./queries').sync_progress_destroy
       if(typeof COMPLETE === 'function') {
         COMPLETE()
-      } else {
+      }
+      else if(config.poll) {
         global.config.period++
         check_for_poll()
         console.log(`Running period ${config.period} in 10 seconds`)
@@ -121,8 +124,10 @@ module.exports = (COMPLETE) => {
         //   check_for_poll(state)
         // }, 10000)
       }
-      if(error)
-        console.log('Error:', error)
+      else {
+        console.log(`Exiting in 10 seconds.`)
+        setTimeout( () => process.exit(), 10*1000 )
+      }
     })
   }
 
@@ -136,9 +141,6 @@ module.exports = (COMPLETE) => {
   }
 
   const configuration_complete = (error, config, callback) => {
-
-    /***** ONLY FOR TEST ****/
-    config.period = _period
 
     let table = new Table('Settings')
     Object.keys(config).forEach((key,index) => {
