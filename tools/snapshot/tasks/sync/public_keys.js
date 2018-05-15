@@ -146,11 +146,11 @@ module.exports = ( state, complete ) => {
   }
 
   const log = () => {
-    let count = 0;
+    // let count = 0;
     console.log(`-----------------`)
     stats.forEach( message => {
       console.log(`${message.thread}: ${message.progress} @ ${message.block}`)
-      count++
+      // count++
     })
     console.log(`-----------------`)
     console.log(`  `)
