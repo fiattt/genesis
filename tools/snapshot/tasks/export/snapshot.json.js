@@ -98,23 +98,23 @@ module.exports = ( state, complete ) => {
       .catch( error => { throw new Error(error) })
   }
 
-  // const get_accounts_fallback = (callback) => {
-  //   db.Wallets
-  //     .count({
-  //       where: { fallback: true, valid: true }
-  //     })
-  //     .then( count => {
-  //       data.accounts.fallback = count
-  //       data.accounts.fallback_included_percent = new String(data.accounts.fallback/data.accounts.valid*100)+"%"
-  //       callback()
-  //     })
-  //     .catch( error => { throw new Error(error) })
-  // }
+  const get_accounts_fallback = (callback) => {
+    db.Wallets
+      .count({
+        where: { fallback: true, valid: true }
+      })
+      .then( count => {
+        data.accounts.fallback = count
+        data.accounts.fallback_included_percent = new String(data.accounts.fallback/data.accounts.valid*100)+"%"
+        callback()
+      })
+      .catch( error => { throw new Error(error) })
+  }
 
   const get_snapshot_checksum = callback => {
     checksum.file(state.files.path_snapshot_csv , (err, sum) => {
       if(err)
-        throw new Error(err)
+        console.log(`file ${state.files.path_snapshot_csv} doesn't exist`)
       else
         data.checksum.output.snapshot = sum
       callback()
@@ -134,7 +134,7 @@ module.exports = ( state, complete ) => {
   const get_distribution_checksum = callback => {
     checksum.file(state.files.path_distribution_csv , (err, sum) => {
       if(err)
-        throw new Error(err)
+        console.log(`file ${state.files.path_distribution_csv} doesn't exist`)
       else
         data.checksum.output.distribution = sum
       callback()
@@ -221,7 +221,7 @@ module.exports = ( state, complete ) => {
     get_state_variables,
     get_accounts_total,
     get_accounts_registered,
-    // get_accounts_fallback,
+    get_accounts_fallback,
     get_supply_total,
     get_supply_expected,
     get_supply_included,
