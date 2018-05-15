@@ -32,7 +32,6 @@ query.address_deterministic_indices = ( callback ) => {
       order: [['deterministic_index', 'ASC']],
     }, {type: db.sequelize.QueryTypes.SELECT})
     .then( results => {
-      console.log( results )
       callback( results )
     })
 }
