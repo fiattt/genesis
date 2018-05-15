@@ -25,6 +25,18 @@ query.address_uniques = ( block_begin, block_end, callback ) => {
     })
 }
 
+query.address_deterministic_indices = ( callback ) => {
+  db.Wallets
+    .findAll({
+      attributes: ['address', 'deterministic_index'],
+      order: [['deterministic_index', 'ASC']],
+    }, {type: db.sequelize.QueryTypes.SELECT})
+    .then( results => {
+      console.log( results )
+      callback( results )
+    })
+}
+
 query.last_register = (address, begin, end, callback) => {
   db.Registrations
     .findAll({
@@ -51,7 +63,7 @@ query.last_register = (address, begin, end, callback) => {
 }
 
 // Address qeuries
-query.address_claims = (address, begin, end) => {
+query.address_claims = (address, begin, end, period) => {
   return db.Claims
     .findAll({
       where : {
@@ -66,13 +78,18 @@ query.address_claims = (address, begin, end) => {
             block_number: {
               [Op.lte] : end
             }
+          },
+          {
+            period: {
+              [Op.lte] : period
+            }
           }
         ]
       }
     })
 }
 
-query.address_buys = (address, begin, end) => {
+query.address_buys = (address, begin, end, period) => {
   return db.Buys
     .findAll({
       where : {
@@ -86,6 +103,11 @@ query.address_buys = (address, begin, end) => {
           {
             block_number: {
               [Op.lte] : end
+            }
+          },
+          {
+            period: {
+              [Op.lte] : period
             }
           }
         ]
@@ -323,6 +345,7 @@ query.set_deterministic_indices = () => {
   return db.sequelize.query(query)
 }
 
+
 query.address_first_seen = address => {
   const query = `SELECT bn.block_number from (
   	(SELECT tf.block_number FROM transfers AS tf WHERE \`from\`="${address}" ORDER BY tf.block_number ASC LIMIT 1)
@@ -355,7 +378,7 @@ query.address_sum_transfer_balance = (address, block_from, block_to) => {
     WHERE \`from\`="${address}"
     AND block_number<${block_to}
     AND block_number>${block_from}
-  )) as wallet`
+  )) AS wallet`
   return db.sequelize.query(query, {type: db.sequelize.QueryTypes.SELECT})
 }
 
