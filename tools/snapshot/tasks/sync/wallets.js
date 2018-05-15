@@ -260,15 +260,15 @@ module.exports = (state, complete) => {
     * @param {function} next Proceed to next step in control flow
     */
     const handle_resume = next => {
-      if(resume_period == config.period && !config.recalculate_wallets) {
+      if(resume_period == config.period && !config.recalculate_wallets && resume_period != 0) {
         console.log(`Wallets already calculated for Period #${resume_period}, if you would like to recalculate, run script with --recalculate-wallets parameter`)
         complete(null, state)
       }
       else if(config.resume && resume_period < config.period && !config.recalculate_wallets) {
-        let _resume_from_period = resume_period-1 >= 0 ? resume_period-1 : resume_period
+        // let _resume_from_period = resume_period-1 >= 0 ? resume_period-1 : resume_period
       //Only query addresses with activity since last recorded sync.
         //If period x was synced previously, and period z is being synced now, then from the first block of period x+1=y (period[y].begin)
-        block_begin = state.period_map[_resume_from_period].begin
+        block_begin = state.period_map[resume_period].begin
         //to the end of period z (previously defined in block range.)
         block_end = state.block_end
         next()
@@ -287,11 +287,11 @@ module.exports = (state, complete) => {
     }
 
     /**
-    * Loops through the unique addresses and processes each one.
+    * Queries unique addresses for (potentially modified in case of resume) block range and period range for buys (future buys are possible). Loops through the unique addresses and processes each one.
     * @param {function} next Proceed to next step in control flow
     */
     const process_addresses = next => {
-      query.address_uniques( block_begin, block_end, _uniques => {
+      query.address_uniques( block_begin, block_end, resume_period, config.period, _uniques => {
         uniques     = new Set(_uniques)
         state.total = uniques.size
 
