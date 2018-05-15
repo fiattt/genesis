@@ -273,7 +273,9 @@ module.exports = (state, complete) => {
         block_end = state.block_end
         next()
       } else {
-      //Truncate wallets table
+        //Reset resume period to 0.
+        resume_period = 0
+        //Truncate wallets table
         console.log(`Truncating Wallets Table (config period: ${config.period} resume period: ${resume_period} resume: ${config.resume}`)
         // TODO DELETE SYNCED WALLET PERIOD STATE FROM STATE TABLE.
         db.Wallets
