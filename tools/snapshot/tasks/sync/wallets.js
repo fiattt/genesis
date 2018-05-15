@@ -134,7 +134,7 @@ module.exports = (state, complete) => {
   */
   const claims = (wallet, finished) => {
     // console.log('Wallet Claims')
-    query.address_claims(wallet.address, state.block_begin, state.block_end)
+    query.address_claims(wallet.address, state.block_begin, state.block_end, config.period)
       .then( results => {
         wallet.claims = new Array( CS_NUMBER_OF_PERIODS ).fill( false )
         results.forEach( result => {
@@ -150,7 +150,7 @@ module.exports = (state, complete) => {
   * @param {boolean} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   */
   const buys = ( wallet, finished ) => {
-    query.address_buys(wallet.address, state.block_begin, state.block_end)
+    query.address_buys(wallet.address, state.block_begin, state.block_end, config.period)
       .then( results => {
         wallet.buys = new Array( CS_NUMBER_OF_PERIODS ).fill( new bn(0) )
         results.forEach( result => {
@@ -213,6 +213,7 @@ module.exports = (state, complete) => {
     if(cache.length >= 50 || is_complete || cache.length == state.total )
       query.wallets_bulk_upsert( cache )
         .then( () => { index++, reset_cache(next_address) } )
+        .catch( e => { throw new Error(e) } )
     else
       next_address()
   }
