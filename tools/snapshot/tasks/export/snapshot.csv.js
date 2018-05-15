@@ -10,7 +10,7 @@ module.exports = ( state, callback ) => {
       .findAll({ order: [ ['balance', 'DESC'] ] })
       .then( results => {
         let _results = results.map( result => {
-          return {user: result.dataValues.user, key: result.dataValues.key, balance: result.dataValues.balance}
+          return {user: result.dataValues.user, account_name: result.dataValues.account_name, key: result.dataValues.key, balance: result.dataValues.balance}
         })
         json_to_csv(_results, state.files.path_snapshot_csv, false)
           .then(() => {
@@ -27,7 +27,7 @@ module.exports = ( state, callback ) => {
     .destroy({ truncate : true, cascade: false })
     .then( () => {
       db.sequelize
-        .query('INSERT INTO `snapshot` (`user`, `key`, `balance`) SELECT `address`, `eos_key`, `balance_total` FROM `wallets` WHERE `valid`=1 ORDER BY `deterministic_index` ASC')
+        .query('INSERT INTO `snapshot` (`user`, `account_name`, `key`, `balance`) SELECT `address`, `account_name`, `eos_key`, `balance_total` FROM `wallets` WHERE `valid`=1 ORDER BY `deterministic_index` ASC')
         .then(results => {
           console.log( 'Snapshot Table Synced' )
           csv( callback )
