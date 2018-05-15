@@ -11,6 +11,7 @@
     "cli-table": "^0.3.1",
     "eosjs-ecc": "3.0.2",
     "ethereumjs-util": "5.1.2",
+    "hi-base32": "0.5.0",
     "json-to-csv": "github:dskvr/json-to-csv",
     "jsontocsv": "0.3.0",
     "md5": "2.2.1",
