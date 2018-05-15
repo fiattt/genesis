@@ -33,7 +33,7 @@ module.exports = ( state, callback ) => {
       db.sequelize
         .query(`INSERT INTO snapshot_unregistered (user, balance) SELECT address, balance_total FROM wallets WHERE valid=0 AND register_error!='exclude' AND balance_total>=${config.snapshot_minimum_balance} ORDER BY deterministic_index ASC`)
         .then(results => {
-          console.log( 'Snapshot Table Synced' )
+          console.log( 'Unregistered Snapshot Table Synced' )
           csv( callback )
         })
         .catch( error => { throw new Error(error) })
