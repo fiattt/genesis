@@ -58,8 +58,6 @@ module.exports = (COMPLETE) => {
     delete config.$0
     delete config._
 
-    console.log(inspect(config))
-
     next(null, config)
   }
 
