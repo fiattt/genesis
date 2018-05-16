@@ -15,7 +15,8 @@ module.exports = ( state, complete ) => {
     let account_name = base32.encode( wallet.deterministic_index.toString() ).replace(/=/g, "").toLowerCase()
     if(account_name.length > 12) { throw new Error(`${account_name} is greater than 12 characters`) }
     // else if (account_name.length == 12) { console.log(`${wallet.address}:${wallet.deterministic_index} is exactly 12 characters`) }
-    else { account_name = account_name.padEnd(12, "0") }
+    else if (wallet.address == CS_ADDRESS_B1 ) { account_name = "b1" }
+    else { account_name = account_name.padEnd(12, "genesis11111") }
     // cache+=`UPDATE wallets SET account_name="${account_name}" WHERE address="${wallet.address}";`
     if(cache_count!=0) cache+=', '
     cache+=`("${wallet.address}", "${account_name}")`
