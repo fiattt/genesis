@@ -297,7 +297,7 @@ module.exports = (state, complete) => {
         uniques     = new Set(_uniques)
         state.total = uniques.size
 
-        console.log(`Syncing ${state.total} Wallets`)
+        console.log(`Wallets: Found ${state.total} Unique Addresses based on Parameters`)
         log_table_reset()
 
         //Loop through every queried address and upsert that wallet's row.
