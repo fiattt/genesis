@@ -68,8 +68,6 @@ module.exports = ( state, complete ) => {
 
   const thread_process = (i, callback) => {
 
-    console.log('started thread process')
-
     let thread,
         settings = {
           id:i,
@@ -99,8 +97,6 @@ module.exports = ( state, complete ) => {
       .on('message', (m) => onMessage(i, m) )
       .on('close', (m) => onClose(i, callback))
       .send(settings)
-
-    console.log('finished thread process')
 
   }
 
