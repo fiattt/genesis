@@ -7,7 +7,7 @@ module.exports = ( state, callback ) => {
 
   const csv = callback => {
     db.Snapshot
-      .findAll({ order: [ ['balance', 'DESC'] ] })
+      .findAll({ order: [ ['id', 'ASC'] ] })
       .then( results => {
         let _results = results.map( result => {
           return {user: result.dataValues.user, account_name: result.dataValues.account_name, key: result.dataValues.key, balance: result.dataValues.balance}
