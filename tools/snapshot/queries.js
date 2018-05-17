@@ -381,9 +381,9 @@ query.address_sum_transfer_balance = (address, block_from, block_to) => {
   return db.sequelize.query(query, {type: db.sequelize.QueryTypes.SELECT})
 }
 
-query.public_keys_bulk_upsert = ( keys ) => {
-  // return db.sequelize.query( keys )
-  return db.Keys.bulkCreate( keys )
+query.public_keys_bulk_upsert = ( query ) => {
+  return db.sequelize.query( query )
+  // return db.Keys.bulkCreate( keys )
 }
 
 module.exports = query

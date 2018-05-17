@@ -48,8 +48,8 @@ const run = () => {
   let   sync = {},
         log_intval,
         iterator,
-        cache = [],
-        cache_length = 0,
+        cache = "",
+        cache_count = 0,
         block_current = 0,
         log = ""
 
@@ -81,8 +81,9 @@ const run = () => {
 
   const find_sync_pub_key = (tx, finished) => {
     pubkey_from_tx_hash(tx.hash, pubkey => {
-      cache.push({ address: tx.from, public_key: pubkey, block_number: tx.blockNumber })
-      // cache_length++
+      if(cache_count!=0) cache+=', '
+      cache += `("${tx.from}", "${pubkey}", ${tx.blockNumber})`
+      cache_count++
       finished()
     })
   }
@@ -101,7 +102,7 @@ const run = () => {
             if(current_block == thread_block_end)
               console.log(`Thread ${id}: Last Pass Detected - Current:${current_block}, End: ${thread_block_end}`)
 
-            if(cache.length>CACHE_THRESHOLD || current_block == thread_block_end)
+            if(cache_count>CACHE_THRESHOLD || current_block == thread_block_end)
               save_rows( () => { process_transactions(block, _continue ) } )
             else
               setTimeout( () => process_transactions(block, _continue ), 1000)
@@ -123,36 +124,34 @@ const run = () => {
    }
 
   const save_rows = ( callback, deadlock ) => {
-    // console.log(config)
-    // console.log(cache)
-    // query.public_keys_bulk_upsert( cache )
-    //   .then( result => {
-    //     console.log(result)
-    //     if(deadlock) console.log(`${id} DEADLOCK: RESOLVED`)
-    //     cache = ""
-    //     cache_length = 0
-    //     update_state()
-    //     callback()
-    //   })
-    //   .catch( e => {
-    //     //We assume this is a deadlock, if you get repeated unresolved deadlocks, uncomment line below.
-    //     throw new Error(e)
-    //     console.log(`Thread ${id}: DEADLOCK: RETRY`)
-    //     setTimeout( () => save_rows(callback, true), 500 )
-    //   })
-    db.Keys.bulkCreate( cache, {ignoreDuplicates: true} )
-      .then( () => {
+    let _query = `INSERT INTO public_keys (address, public_key, block_number) VALUES ${cache} ON DUPLICATE KEY UPDATE block_number = CASE WHEN VALUES(block_number) < block_number THEN VALUES(block_number) ELSE block_number END;`
+    query.public_keys_bulk_upsert( _query )
+      .then( result => {
         if(deadlock) console.log(colors.green(`Thread ${id}: DEADLOCK: RESOLVED`))
-        cache = []
+        cache = ""
+        cache_count = 0
         update_state()
         callback()
       })
       .catch( e => {
         //We assume this is a deadlock, if you get repeated unresolved deadlocks, uncomment line below.
-        // console.log(e)
+        // throw new Error(e)
         console.log(colors.red(`Thread ${id}: DEADLOCK: RETRY`))
-        setTimeout( () => save_rows(callback, true), 10 )
+        setTimeout( () => save_rows(callback, true), 500 )
       })
+    // db.Keys.bulkCreate( cache, {ignoreDuplicates: true} )
+    //   .then( () => {
+    //     if(deadlock) console.log(colors.green(`Thread ${id}: DEADLOCK: RESOLVED`))
+    //     cache = []
+    //     update_state()
+    //     callback()
+    //   })
+    //   .catch( e => {
+    //     //We assume this is a deadlock, if you get repeated unresolved deadlocks, uncomment line below.
+    //     // console.log(e)
+    //     console.log(colors.red(`Thread ${id}: DEADLOCK: RETRY`))
+    //     setTimeout( () => save_rows(callback, true), 10 )
+    //   })
   }
 
   sync_public_keys()
