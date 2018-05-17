@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.6.37)
 # Database: eos_snapshot_polling_test
-# Generation Time: 2018-05-09 15:13:08 +0000
+# Generation Time: 2018-05-17 19:23:24 +0000
 # ************************************************************
 
 
@@ -80,7 +80,7 @@ DROP TABLE IF EXISTS `reclaimables`;
 CREATE TABLE `reclaimables` (
   `uuid` varchar(256) NOT NULL,
   `tx_hash` varchar(256) NOT NULL DEFAULT '',
-  `block_number` varchar(256) NOT NULL,
+  `block_number` varchar(256) NOT NULL DEFAULT '',
   `address` varchar(256) NOT NULL DEFAULT '',
   `eos_amount` decimal(65,0) NOT NULL DEFAULT '0',
   PRIMARY KEY (`uuid`),
@@ -115,6 +115,7 @@ DROP TABLE IF EXISTS `snapshot`;
 
 CREATE TABLE `snapshot` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `account_name` varchar(256) NOT NULL DEFAULT '',
   `user` varchar(256) NOT NULL DEFAULT '',
   `key` varchar(256) NOT NULL DEFAULT '',
   `balance` decimal(15,4) NOT NULL,
@@ -191,6 +192,7 @@ CREATE TABLE `wallets` (
   `fallback_error` varchar(256) DEFAULT NULL,
   `valid` tinyint(1) NOT NULL DEFAULT '0',
   `deterministic_index` int(11) DEFAULT NULL,
+  `account_name` varchar(256) DEFAULT NULL,
   `first_seen` int(11) DEFAULT NULL,
   PRIMARY KEY (`address`),
   KEY `EOSKEYINDEX` (`eos_key`(191))
