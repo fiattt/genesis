@@ -78,7 +78,7 @@ module.exports = (state, complete) => {
       return
     }
     //query will sum all the user's incoming and outgoing(*-1) transfers within a block range, add initial supply to contract (not on chain)
-    query.address_sum_transfer_balance(wallet.address, block_begin, block_end)
+    query.address_sum_transfer_balance(wallet.address, state.block_begin, state.block_end)
       .then( balance => {
         let balance_wallet = new bn(0)
         if(balance[0]['sum(wallet)'] != null) {
