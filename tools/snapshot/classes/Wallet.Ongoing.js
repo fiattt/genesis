@@ -11,12 +11,12 @@ class WalletOngoing extends Wallet {
   }
 
   process_balance_wallet( complete = () => {} ){
-    util.balance.wallet_cumulative( this.transfers, balance => {
-      this.balance.set( 'wallet', balance)
-      complete()
-    })
-    // this.balance.set('wallet', this.transfers)
-    // complete()
+    // util.balance.wallet_cumulative( this.transfers, balance => {
+    //   this.balance.set( 'wallet', balance)
+    //   complete()
+    // })
+    this.balance.set('wallet', this.transfers)
+    complete()
   }
 
   process_balance_unclaimed( complete = () => {} ){
