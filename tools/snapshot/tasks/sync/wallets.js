@@ -78,53 +78,53 @@ module.exports = (state, complete) => {
       return
     }
     //query will sum all the user's incoming and outgoing(*-1) transfers within a block range, add initial supply to contract (not on chain)
-    // query.address_sum_transfer_balance(wallet.address, block_begin, block_end)
-      // .then( balance => {
-      //   console.log(balance)
-      //   let balance_wallet = new bn(0)
-      //   if(balance[0]['sum(wallet)'] != "null") {
-      //     balance_wallet = new bn(balance[0]['sum(wallet)'])
-      //     if(wallet.address.toLowerCase() == CS_ADDRESS_CROWDSALE.toLowerCase())
-      //       balance_wallet = balance_wallet.plus(CS_TOTAL_SUPPLY)
-      //   }
-      //   wallet.transfers = balance_wallet
-      //   finished( null, wallet )
-      // })
-      // .catch(e => {console.log(wallet.address); throw new Error(e)})
+    query.address_sum_transfer_balance(wallet.address, block_begin, block_end)
+      .then( balance => {
+        let balance_wallet = new bn(0)
+        if(balance[0]['sum(wallet)'] != null) {
+          balance_wallet = new bn(balance[0]['sum(wallet)'])
+          if(wallet.address.toLowerCase() == CS_ADDRESS_CROWDSALE.toLowerCase())
+            balance_wallet = balance_wallet.plus(CS_TOTAL_SUPPLY)
+        }
+        wallet.transfers = balance_wallet
+        finished( null, wallet )
+      })
+      .catch(e => { console.log(wallet.address); throw new Error(e)})
+
     // if( typeof state.mode !== 'undefined' && state.mode == 'final' && state.frozen ) {
     //   finished(null, wallet)
     //   return
     // }
 
-    wallet.transfers = []
-
-    const add = next => {
-
-      //Required for accurate contract wallet balance.
-      if(wallet.address.toLowerCase() == CS_ADDRESS_CROWDSALE.toLowerCase())
-        wallet.transfers.push(CS_TOTAL_SUPPLY)
-
-      query.address_transfers_in(wallet.address, state.block_begin, state.block_end)
-        .then( results => {
-          results = results.map( result => new bn(result.dataValues.eos_amount) )
-          wallet.transfers = wallet.transfers.concat(results)
-          next()
-        })
-    }
-
-    const subtract = next => {
-      query.address_transfers_out(wallet.address, state.block_begin, state.block_end)
-        .then( results => {
-          results = results.map( result => new bn(result.dataValues.eos_amount).times(-1) )
-          wallet.transfers = wallet.transfers.concat(results)
-          next()
-        })
-    }
-
-    async.series([
-      add,
-      subtract
-    ], () => { finished( null, wallet ) })
+    // wallet.transfers = []
+    //
+    // const add = next => {
+    //
+    //   //Required for accurate contract wallet balance.
+    //   if(wallet.address.toLowerCase() == CS_ADDRESS_CROWDSALE.toLowerCase())
+    //     wallet.transfers.push(CS_TOTAL_SUPPLY)
+    //
+    //   query.address_transfers_in(wallet.address, state.block_begin, state.block_end)
+    //     .then( results => {
+    //       results = results.map( result => new bn(result.dataValues.eos_amount) )
+    //       wallet.transfers = wallet.transfers.concat(results)
+    //       next()
+    //     })
+    // }
+    //
+    // const subtract = next => {
+    //   query.address_transfers_out(wallet.address, state.block_begin, state.block_end)
+    //     .then( results => {
+    //       results = results.map( result => new bn(result.dataValues.eos_amount).times(-1) )
+    //       wallet.transfers = wallet.transfers.concat(results)
+    //       next()
+    //     })
+    // }
+    //
+    // async.series([
+    //   add,
+    //   subtract
+    // ], () => { finished( null, wallet ) })
   }
 
   /**
@@ -298,6 +298,7 @@ module.exports = (state, complete) => {
         state.total = uniques.size
 
         console.log(`Wallets: Found ${state.total} Unique Addresses based on Parameters`)
+
         log_table_reset()
 
         //Loop through every queried address and upsert that wallet's row.
