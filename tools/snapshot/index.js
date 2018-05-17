@@ -6,7 +6,10 @@ module.exports = (COMPLETE) => {
         colors = require("colors/safe"),
         waterfall = require('async').waterfall,
         async = require('async'),
-        fs = require('fs')
+        fs = require('fs'),
+        period  = require('./utilities/periods')
+
+  let SETUP = false
 
   const show_prompt = next => {
     prompt = require('./prompt')
@@ -20,7 +23,6 @@ module.exports = (COMPLETE) => {
   }
 
   const load_validate_config = (config, next) => {
-    let period  = require('./utilities/periods')
     if(config.load_config) {
       try { config = require('../../config') }
       catch(e) {
@@ -49,12 +51,13 @@ module.exports = (COMPLETE) => {
 
   const override_config_with_params = ( config, next ) => {
     const optimist = require('optimist')
-          // inspect = require('util').inspect
+          inspect = require('util').inspect
     config = Object.assign( config, optimist.argv )
+
     //Remove optimist artifacts
     delete config.$0
     delete config._
-    // console.log(inspect(config))
+
     next(null, config)
   }
 
@@ -62,11 +65,23 @@ module.exports = (COMPLETE) => {
     let   state = {}
           state.timestamp_started = (Date.now() / 1000 | 0)
 
+
+
     waterfall([
       //Start waterfall with default state
       next => next(null, state),
       //Connect to mysql and web3 before starting
-      require('./tasks/misc/connections'),
+      (state, next) => {
+        if(!SETUP) {
+          const connections = require('./tasks/misc/connections')
+          connections(state, () => {
+            SETUP = true
+            next(null, state)
+          })
+        } else {
+          next(null, state)
+        }
+      },
       //Dynamically set globals
       require('./tasks/misc/preload'),
       //Set the period map
@@ -93,30 +108,69 @@ module.exports = (COMPLETE) => {
       require('./tasks/misc/tests'),
       //Generate output files.
       require('./tasks/export')
-    ], (error, result) => {
-      console.log(`Snapshot for Period #${config.period} Completed.`)
-      // const sync_progress_destroy = require('./queries').sync_progress_destroy
-      if(typeof COMPLETE === 'function') {
-        COMPLETE()
-      } else {
-        console.log(`Exiting in 10 seconds.`)
-        setTimeout( () => process.exit(), 10*1000 )
-      }
-      if(error)
-        console.log('Error:', error)
-    })
+    ], snapshot_complete )}
 
+  const snapshot_complete = (error, state) => {
+    if(error)
+      console.log('Error:', error)
+    else
+      console.log(`Snapshot for Period #${config.period} Completed.`)
+
+    // const sync_progress_destroy = require('./queries').sync_progress_destroy
+    if(typeof COMPLETE === 'function') {
+      COMPLETE()
+    }
+    else if(config.poll) {
+      global.config.period++
+      // check_for_poll()
+      console.log(`Running period ${config.period} in 10 seconds`)
+      setTimeout( () => {
+        check_for_poll()
+      }, 10000)
+    }
+    else {
+      console.log(`Exiting in 10 seconds.`)
+      setTimeout( () => process.exit(), 10*1000 )
+    }
+  }
+
+  const check_for_poll = (state) => {
+    console.log("Should poll?", config.period, period.last_closed())
+    if(config.period <= period.last_closed()) {
+      run_snapshot(state)
+    }
+    else if(period.last_closed == CS_NUMBER_OF_PERIODS) {
+      contract = require('../../helpers/web3-contract.js')
+      contract.$token.methods.stopped().call()
+        .then( stopped => {
+          if(stopped) {
+            console.log("Tokens frozen, running")
+            run_snapshot(state)
+          } else {
+            console.log("Tokens aren't frozen yet, trying again in 60 seconds")
+            setTimeout( () => check_for_poll(state), 60000 )
+          }
+        })
+    }
+    else {
+      console.log("New period not yet discovered, trying again in 60 seconds")
+      setTimeout( () => check_for_poll(state), 60000 )
+    }
   }
 
   const configuration_complete = (error, config, callback) => {
+
     let table = new Table('Settings')
     Object.keys(config).forEach((key,index) => {
       table.addRow([key, config[key]])
     })
-    console.log(colors.bold.white(table.setAlign(0, Table.RIGHT).setAlign(1, Table.LEFT).render()))
-    console.log(colors.white('Starting in 5 seconds.'))
+
     //Save config globally
     global.config = config;
+
+    console.log(colors.bold.white(table.setAlign(0, Table.RIGHT).setAlign(1, Table.LEFT).render()))
+    console.log(colors.white('Starting in 5 seconds.'))
+
     setTimeout( callback, 5000)
   }
 
