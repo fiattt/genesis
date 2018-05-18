@@ -1,6 +1,6 @@
 module.exports = ( state, complete ) => {
 
-  if(!config.registration_fallback) {
+    if(!config.registration_fallback) {
     console.log("Skipping fallback registration")
     complete(null, state)
     return
@@ -21,7 +21,6 @@ module.exports = ( state, complete ) => {
         total       = 0
 
   const run = () => {
-    periodic_log()
     async.waterfall([
         get_uniques,
         process_uniques
@@ -41,6 +40,7 @@ module.exports = ( state, complete ) => {
   }
 
   const process_uniques = ( addresses, next ) => {
+    periodic_log()
     async.eachSeries( addresses, (address, next_address) => {
       fallback( address, (error, eos_key) => {
         if(error || !eos_key)
@@ -51,6 +51,7 @@ module.exports = ( state, complete ) => {
               { where : { address: address } }
             )
             .then( () => next_address() )
+            .catch( e => {throw new Error(e)})
         else
           db.Wallets
             .update(
@@ -67,6 +68,7 @@ module.exports = ( state, complete ) => {
               pks_found++
               next_address()
             })
+            .catch( e => {throw new Error(e)})
       })
       count++
     },
@@ -119,6 +121,7 @@ module.exports = ( state, complete ) => {
         else
           callback(`no_public_key`)
       })
+      .catch( e => {throw new Error(e)})
   }
 
   const eos_key_from_pk = ( pubkey, callback ) => {
@@ -147,8 +150,6 @@ module.exports = ( state, complete ) => {
 
   run()
 }
-
-
 
 //
 // const pub_key_from_tx_hash = ( tx_hash, callback ) => {
