@@ -6,11 +6,12 @@ const Sequelize    = require('sequelize'),
 
       query = {}
 
-// Wallet queries
+//Accepts array of wallets, wallet.json() method provides appropriate response.
 query.wallets_bulk_upsert = ( wallets ) => {
   return db.Wallets.bulkCreate( wallets, { updateOnDuplicate: true })
 }
 
+//Returns an array of unique addresses in the database based on a block range and period range for buys (necessary for wallet resume)
 query.address_uniques = ( block_begin, block_end, period_begin, period_end, callback ) => {
   let query = `SELECT \`from\` FROM transfers WHERE block_number>=${block_begin} AND block_number<=${block_end}
   UNION DISTINCT SELECT \`to\` FROM transfers WHERE block_number>=${block_begin} AND block_number<=${block_end}
@@ -25,6 +26,7 @@ query.address_uniques = ( block_begin, block_end, period_begin, period_end, call
     })
 }
 
+//Returns an array of addresses and deterministic indices (used for conversion to deterministic byte32 account_names)
 query.address_deterministic_indices = ( callback ) => {
   db.Wallets
     .findAll({
@@ -36,6 +38,7 @@ query.address_deterministic_indices = ( callback ) => {
     })
 }
 
+//Returns a user's last registration (must be used for determinism, the register function still works after token freeze, so public constant cannot be used)
 query.last_register = (address, begin, end, callback) => {
   db.Registrations
     .findAll({
@@ -61,7 +64,7 @@ query.last_register = (address, begin, end, callback) => {
     .then( results => callback( results.length ? results[0].dataValues.eos_key : null ) )
 }
 
-// Address qeuries
+// Returns a promise with an addresses' claims within a defined block range
 query.address_claims = (address, begin, end, period) => {
   return db.Claims
     .findAll({
@@ -88,6 +91,7 @@ query.address_claims = (address, begin, end, period) => {
     })
 }
 
+// Returns a promise with an addresses' buys within a defined block range
 query.address_buys = (address, begin, end, period) => {
   return db.Buys
     .findAll({
@@ -114,6 +118,7 @@ query.address_buys = (address, begin, end, period) => {
     })
 }
 
+// Returns a promise with an addresses' incoming txs within a defined block range
 query.address_transfers_in = (address, begin, end) => {
   return db.Transfers
     .findAll({
@@ -136,6 +141,7 @@ query.address_transfers_in = (address, begin, end) => {
     }, {type: db.sequelize.QueryTypes.SELECT})
 }
 
+// Returns a promise with an addresses' outgoing txs within a defined block range
 query.address_transfers_out = (address, begin, end) => {
   return db.Transfers
     .findAll({
@@ -180,91 +186,8 @@ query.address_reclaimables = (address, begin, end) => {
     })
 }
 
-//tx range queries
-query.transfers_in_range = (begin, end) => {
-  return db.Transfers
-    .findAll({
-      attributes: ['from', 'to'],
-      where: {
-        [Op.and] : [
-          {
-            block_number: {
-              [Op.gte] : begin
-            }
-          },
-          {
-            block_number: {
-              [Op.lte] : end
-            }
-          }
-        ]
-      }
-    })
-}
-
-query.registrations_in_range = (begin, end) => {
-  return db.Registrations
-    .findAll({
-      attributes: ['address'],
-      where: {
-        [Op.and] : [
-          {
-            block_number: {
-              [Op.gte] : begin
-            }
-          },
-          {
-            block_number: {
-              [Op.lte] : end
-            }
-          }
-        ]
-      }
-    })
-}
-
-query.buys_in_range = (begin, end) => {
-  return db.Buys
-    .findAll({
-      attributes: ['address'],
-      where: {
-        [Op.and] : [
-          {
-            block_number: {
-              [Op.gte] : begin
-            }
-          },
-          {
-            block_number: {
-              [Op.lte] : end
-            }
-          }
-        ]
-      }
-    })
-}
-
-query.claims_in_range = (begin, end) => {
-  return db.Claims
-    .findAll({
-      attributes: ['address'],
-      where: {
-        [Op.and] : [
-          {
-            block_number: {
-              [Op.gte] : begin
-            }
-          },
-          {
-            block_number: {
-              [Op.lte] : end
-            }
-          }
-        ]
-      }
-    })
-}
-
+//DEPRECATED: No longer needed because transfers have a hash as UUID that is probablistically unique
+//Destroys contract logs above a block height
 query.destroy_above_block = (block_number, callback) => {
   //The block number passed here is the block that will be included in the range
   //so we want to delete everything greater than OR equal to that block (edge case: contract sync interrupt)
@@ -279,6 +202,7 @@ query.destroy_above_block = (block_number, callback) => {
   })
 }
 
+//Returns liquid supply
 query.supply_liquid = () => {
   let query = `SELECT sum(balance_total) FROM wallets WHERE address!="${CS_ADDRESS_TOKEN}" AND address!="${CS_ADDRESS_CROWDSALE}"`
   if(!config.include_b1)
@@ -286,6 +210,7 @@ query.supply_liquid = () => {
   return db.sequelize.query(query, {type: db.sequelize.QueryTypes.SELECT})
 }
 
+//Returns promise with count of registered accounts
 query.count_accounts_registered = () => {
   return db.Wallets
     .count({
@@ -293,6 +218,7 @@ query.count_accounts_registered = () => {
     })
 }
 
+//Deprecated
 query.sync_progress_destroy = () => {
   return db.State.destroy({
     where: {
@@ -307,31 +233,38 @@ query.sync_progress_destroy = () => {
   })
 }
 
+//Returns promise with count of transfers
 query.count_transfers = () => {
   return db.Transfers.count()
 }
 
+//Returns promise with count of buys
 query.count_buys = () => {
   return db.Buys.count()
 }
 
+//Returns promise with count of claims
 query.count_claims = () => {
   return db.Claims.count()
 }
 
+//Returns promise with count of registrations
 query.count_registrations = () => {
   return db.Registrations.count()
 }
 
+//Returns promise with count of reclaimables
 query.count_reclaimables = () => {
   return db.Reclaimables.count()
 }
 
+//Returns promise with addresses that are unregistered but have a balance_total above the configured minimum balance
 query.get_unregistered_users_sufficient_balance = () => {
   let query = `SELECT address FROM wallets WHERE valid=false AND balance_total>=${config.snapshot_minimum_balance}`
   return db.sequelize.query(query, {type: db.sequelize.QueryTypes.SELECT})
 }
 
+//Sets deterministic indices
 query.set_deterministic_indices = () => {
   query = `update wallets target join
   (
@@ -344,7 +277,7 @@ query.set_deterministic_indices = () => {
   return db.sequelize.query(query)
 }
 
-
+//Returns a promise with the lowest block number for an address, used for deterministic index.
 query.address_first_seen = address => {
   const query = `SELECT bn.block_number from (
   	(SELECT tf.block_number FROM transfers AS tf WHERE \`from\`="${address}" ORDER BY tf.block_number ASC LIMIT 1)
@@ -360,6 +293,7 @@ query.address_first_seen = address => {
   return db.sequelize.query(query, {type: db.sequelize.QueryTypes.SELECT})
 }
 
+//Returns promise with cumulative balance for an address within a block range, required for deterministic ongoing snapshots.
 query.address_sum_transfer_balance = (address, block_from, block_to) => {
   //Add balance is used to add the initial supply for EOSCrowdsale contract to it's wallet, this isn't a transaction, so needs to be added manually.
   const query = `SELECT sum(wallet) FROM (
@@ -379,11 +313,6 @@ query.address_sum_transfer_balance = (address, block_from, block_to) => {
     AND block_number>${block_from}
   )) AS wallet`
   return db.sequelize.query(query, {type: db.sequelize.QueryTypes.SELECT})
-}
-
-query.public_keys_bulk_upsert = ( query ) => {
-  return db.sequelize.query( query )
-  // return db.Keys.bulkCreate( keys )
 }
 
 module.exports = query
