@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.6.37)
 # Database: eos_snapshot_polling_test
-# Generation Time: 2018-05-17 19:23:24 +0000
+# Generation Time: 2018-05-18 17:48:29 +0000
 # ************************************************************
 
 
@@ -67,7 +67,8 @@ CREATE TABLE `public_keys` (
   `address` varchar(256) NOT NULL DEFAULT '',
   `public_key` varchar(256) NOT NULL DEFAULT '',
   `block_number` int(11) NOT NULL,
-  PRIMARY KEY (`address`)
+  PRIMARY KEY (`address`),
+  KEY `INDEXBN` (`block_number`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
