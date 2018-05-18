@@ -33,23 +33,14 @@ module.exports = (state, all_systems_go) => {
         connected()
       }
       catch(e) {
-        console.log(colors.red.bold(`Redis: Not Connected (trying again in 5 seconds)`)),
-        setTimeout(check, 1000*5)
+        if(e.toString().toLowerCase().includes("redis")) {
+          console.log(colors.red.bold(`Redis: Not Connected (trying again in 5 seconds)`)),
+          setTimeout(check, 1000*5)
+        } else {
+          throw new Error(e)
+        }
       }
     }
-    //
-    // const not_connected = retry => {
-    //   console.log(colors.red.bold(`Redis: Not Connected (trying again in 5 seconds)`)),
-    //   setTimeout( retry, 1000*5 )
-    // }
-    //
-    // if(check())
-    //   console.log(colors.green.bold('Redis: Connected')),
-    //   connected()
-    // else
-    //   console.log(colors.red.bold(`Redis: Not Connected (trying again in 5 seconds)`)),
-    //   setTimeout( check, 1000*5 )
-
     const redis = require('../../services/redis')
     global.redis = redis(config.redis_host, config.redis_port)
     connected()
@@ -74,7 +65,13 @@ module.exports = (state, all_systems_go) => {
           console.log(colors.green.bold('MySQL: Connected')),
           connected()
       })
-      .catch( e => { not_connected( () => connect_mysql(connected) ) } )
+      .catch( e => {
+        if(e.toString().toLowerCase().includes("econnrefused")) {
+          not_connected( () => connect_mysql(connected) )
+        } else {
+          throw new Error(e)
+        }
+      })
   }
 
   const connect_web3_connected = connected => {
@@ -94,9 +91,15 @@ module.exports = (state, all_systems_go) => {
       .then( () => {
           console.log(colors.green.bold('Web3: Connected')),
           console.log(colors.gray.italic('Waiting 30 seconds before checking sync, parity/web3 can throw false positive.')),
-          setTimeout( connected, 1000*1 )
+          setTimeout( connected, 30000*1 )
       })
-      .catch( () => { not_connected( () => connect_web3_connected(connected) ) })
+      .catch( e => {
+        if(e.toString().toLowerCase().includes("connection error")) {
+          not_connected( () => connect_web3_connected(connected) )
+        } else {
+          throw new Error(e)
+        }
+      })
   }
 
   const connect_web3_synced = synced => {
@@ -112,7 +115,14 @@ module.exports = (state, all_systems_go) => {
           console.log(colors.red.bold(`Web3 is Still Syncing (At Block #${syncing.currentBlock}). trying again in 30 seconds`)),
           setTimeout( check, 1000*30)
       })
-      .catch( e => setTimeout( check, 1000*30 ) )
+      .catch( e => {
+        if(e.toString().toLowerCase().includes("web3")) {
+          throw new Error(e)
+          setTimeout( check, 1000*30 )
+        } else {
+          throw new Error(e)
+        }
+      })
     }
     check()
   }
