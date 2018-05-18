@@ -35,7 +35,14 @@ class PeriodMap {
 
         sprint          = true,
         sprint_index    = walk_index,
-        sprint_steps    = 100
+        sprint_steps    = 100,
+
+        //there's two reasons for a catch on getBlock(),
+        //(1) polling,
+        //(2) an unsynced chain that skipped through connections check
+        //(3) parity node ran without --no-warp
+        //This will help 1, without infinitely making 2 worse. It does nothing for 3. RTFM
+        caught_block    = false
 
     if(typeof this.map[CS_MAX_PERIOD_INDEX] !== 'undefined' && typeof this.map[CS_MAX_PERIOD_INDEX].end === "number") {
       onComplete(this)
@@ -56,12 +63,8 @@ class PeriodMap {
 
     const iterate = () => {
       let block_index = sprint ? sprint_index : walk_index
-      util.block.get( block_index , block => {
-        // if(sprint) {
-        //   console.log(colors.magenta(`Sprinting: ${sprint_index}`))
-        // } else {
-        //   console.log(colors.yellow(`Walking: ${walk_index}`))
-        // }
+      web3.eth.getBlock( block_index )
+        .then( block => {
 
         //Derive a period number from the block's timestamp
         period_index = util.period.from_date( block.timestamp )
@@ -117,6 +120,23 @@ class PeriodMap {
         else
           this.map = map,
           onComplete( this )
+      })
+      .catch( e => {
+        //We assume this is a block not found error related to polling. We'll rewind the sprint once, but if it fails again, we'll assume the chain is not fully synced.
+        // console.log(e)
+        if(!caught_block && sprint) {
+          walk_index = sprint_index-sprint_steps
+          sprint = false
+          caught_block = true
+          setTimeout(iterate, 10000)
+        }
+        else {
+          sprint = true
+          util.block.head( head => {
+            console.log(`Need to check block #${block_index}'s timestamp, but your node's head block is ${head.number}. Trying again in 10 seconds.`)
+            setTimeout(iterate, 10000)
+          })
+        }
       })
     }
 
