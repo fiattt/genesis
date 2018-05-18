@@ -66,7 +66,7 @@ class Wallet {
     if( this.eos_key ) {
       eos_key = this.eos_key.trim()
 
-      //Might be hex, try to convert it.
+      //Might be a hex representation of a key, try to convert it.
       if( eos_key.length == 106 ){
         let eos_key_from_hex = util.misc.hex_to_ascii( "0x"+eos_key )
         if ( util.misc.is_eos_public_key(eos_key_from_hex) ) {
