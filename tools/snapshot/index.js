@@ -9,7 +9,7 @@ module.exports = (COMPLETE) => {
         fs = require('fs'),
         period  = require('./utilities/periods')
 
-  let SETUP = false
+  let IS_SETUP = false
 
   const show_prompt = next => {
     prompt = require('./prompt')
@@ -27,7 +27,6 @@ module.exports = (COMPLETE) => {
       try { config = require('../../config') }
       catch(e) {
         console.log("It appears you've set load_config somehow without having a config file you rascal. Duplicate the default config file and edit or set to false.")
-        throw new Error(e)
       }
     }
     if(typeof config.period === "undefined") {
@@ -72,10 +71,10 @@ module.exports = (COMPLETE) => {
       next => next(null, state),
       //Connect to mysql and web3 before starting
       (state, next) => {
-        if(!SETUP) {
+        if(!IS_SETUP) {
           const connections = require('./tasks/misc/connections')
           connections(state, () => {
-            SETUP = true
+            IS_SETUP = true
             next(null, state)
           })
         } else {
@@ -96,25 +95,41 @@ module.exports = (COMPLETE) => {
       require('./tasks/sync/public_keys'),
       //Sync events from the crowdsale contract
       require('./tasks/sync/contract'),
-      //Calculate and validate each wallet.
-      require('./tasks/sync/wallets'),
-      //Fallback Registration
-      require('./tasks/sync/fallback-registration.js'),
-      //Deterministic Index and account names
-      require('./tasks/misc/deterministic-index'),
-      //Set account names based on deterministic index
-      require('./tasks/misc/account-names'),
-      //Run tests against data to spot any issues with integrity
-      require('./tasks/misc/tests'),
-      //Generate output files.
-      require('./tasks/export')
+      (state, next) => {
+        if(config.only_produce_final_snapshot && !state.frozen) {
+          console.log("only_produce_final_snapshot is set to true, skipping wallet calculations and snapshot export.")
+          return next(null, state)
+        }
+        waterfall([
+          next => next(null, state),
+          //Calculate and validate each wallet.
+          require('./tasks/sync/wallets'),
+          //Fallback Registration
+          require('./tasks/sync/fallback-registration.js'),
+          //Deterministic Index and account names
+          require('./tasks/misc/deterministic-index'),
+          //Set account names based on deterministic index
+          require('./tasks/misc/account-names'),
+          //Run tests against data to spot any issues with integrity
+          require('./tasks/misc/tests'),
+          //Generate output files.
+          require('./tasks/export')
+        ], (error, state) => {
+          if(error)
+            throw new Error(error)
+          else
+            next(null, state)
+        })
+      }
     ], snapshot_complete )}
 
   const snapshot_complete = (error, state) => {
-    if(error)
+    if(error) {
       console.log('Error:', error)
-    else
+    }
+    else {
       console.log(`Snapshot for Period #${config.period} Completed.`)
+    }
 
     // const sync_progress_destroy = require('./queries').sync_progress_destroy
     if(typeof COMPLETE === 'function') {
@@ -122,7 +137,6 @@ module.exports = (COMPLETE) => {
     }
     else if(config.poll) {
       global.config.period++
-      // check_for_poll()
       console.log(`Running period ${config.period} in 10 seconds`)
       setTimeout( () => {
         check_for_poll()
@@ -135,7 +149,7 @@ module.exports = (COMPLETE) => {
   }
 
   const check_for_poll = (state) => {
-    console.log("Should poll?", config.period, period.last_closed())
+    // console.log("Should poll?", config.period, period.last_closed())
     if(config.period <= period.last_closed()) {
       run_snapshot(state)
     }
@@ -144,22 +158,21 @@ module.exports = (COMPLETE) => {
       contract.$token.methods.stopped().call()
         .then( stopped => {
           if(stopped) {
-            console.log("Tokens frozen, running")
+            console.log("Tokens frozen, running final snapshot.")
             run_snapshot(state)
           } else {
-            console.log("Tokens aren't frozen yet, trying again in 60 seconds")
-            setTimeout( () => check_for_poll(state), 60000 )
+            console.log("Tokens aren't frozen yet, trying again in 10 seconds")
+            setTimeout( () => check_for_poll(state), 10000 )
           }
         })
     }
     else {
-      console.log("New period not yet discovered, trying again in 60 seconds")
-      setTimeout( () => check_for_poll(state), 60000 )
+      console.log("New period not yet discovered, trying again in 10 seconds")
+      setTimeout( () => check_for_poll(state), 10000 )
     }
   }
 
   const configuration_complete = (error, config, callback) => {
-
     let table = new Table('Settings')
     Object.keys(config).forEach((key,index) => {
       table.addRow([key, config[key]])
