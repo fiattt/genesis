@@ -21,7 +21,7 @@ const setup = settings => {
 
   let blocks_to_sync = block_end-block_begin,
       blocks_per_thread = Math.floor(blocks_to_sync/threads),
-      blocks_extra = blocks_to_sync - (blocks_per_thread*threads)
+      blocks_extra = blocks_to_sync-(blocks_per_thread*threads)
 
   thread_block_begin = block_begin+id
   thread_block_end = thread_block_begin + blocks_to_sync - blocks_extra
@@ -101,8 +101,7 @@ const run = () => {
           .then( block => {
             if(current_block == thread_block_end)
               console.log(`Thread ${id}: Last Pass Detected - Current:${current_block}, End: ${thread_block_end}`)
-
-            if(cache_count>CACHE_THRESHOLD || current_block == thread_block_end)
+            if(cache_count>CACHE_THRESHOLD || current_block == thread_block_end && cache_count>0)
               save_rows( () => { process_transactions(block, _continue ) } )
             else
               setTimeout( () => process_transactions(block, _continue ), 1000)
@@ -136,6 +135,7 @@ const run = () => {
       .catch( e => {
         //We assume this is a deadlock, if you get repeated unresolved deadlocks, uncomment line below.
         // throw new Error(e)
+        // console.log(e)
         console.log(colors.red(`Thread ${id}: DEADLOCK: RETRY`))
         setTimeout( () => save_rows(callback, true), 500 )
       })
