@@ -19,12 +19,18 @@ const setup = settings => {
 
   global.config = settings.config
 
+      //find total number of blocks that require syncing
   let blocks_to_sync = block_end-block_begin,
+      //Determine how many blocks each thread needs to process
       blocks_per_thread = Math.floor(blocks_to_sync/threads),
+      //Here's how many blocks we missed by flooring
       blocks_extra = blocks_to_sync-(blocks_per_thread*threads)
 
+  //Start at the begin block + id (id is offset)
   thread_block_begin = block_begin+id
+  //Determine where to end
   thread_block_end = thread_block_begin + blocks_to_sync - blocks_extra
+  //If the calculated end is higher than the end block, then subtract the number of threads (steps)
   thread_block_end = (thread_block_end > block_end) ? thread_block_end - threads : thread_block_end
 
   const connections = require('../misc/connections')
@@ -142,19 +148,6 @@ const run = () => {
         }
         // console.log(e)
       })
-    // db.Keys.bulkCreate( cache, {ignoreDuplicates: true} )
-    //   .then( () => {
-    //     if(deadlock) console.log(colors.green(`Thread ${id}: DEADLOCK: RESOLVED`))
-    //     cache = []
-    //     update_state()
-    //     callback()
-    //   })
-    //   .catch( e => {
-    //     //We assume this is a deadlock, if you get repeated unresolved deadlocks, uncomment line below.
-    //     // console.log(e)
-    //     console.log(colors.red(`Thread ${id}: DEADLOCK: RETRY`))
-    //     setTimeout( () => save_rows(callback, true), 10 )
-    //   })
   }
 
   sync_public_keys()
