@@ -72,7 +72,7 @@ module.exports = (state, complete) => {
   * @param {boolean} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   */
   const transfers = (wallet, finished) => {
-    //Cumulative balance calculations are not required for final snapshot because tokens will be frozen, final snapshot uses balanceOf()
+    //Cumulative balance calculations are not required for final snapshot because tokens will be frozen, final snapshot uses tokenContract.balanceOf()
     if( typeof state.mode !== 'undefined' && state.mode == 'final' && state.frozen ) {
       finished(null, wallet)
       return
@@ -90,11 +90,6 @@ module.exports = (state, complete) => {
         finished( null, wallet )
       })
       .catch(e => { console.log(wallet.address); throw new Error(e)})
-
-    // if( typeof state.mode !== 'undefined' && state.mode == 'final' && state.frozen ) {
-    //   finished(null, wallet)
-    //   return
-    // }
 
     // wallet.transfers = []
     //
@@ -261,30 +256,37 @@ module.exports = (state, complete) => {
     */
     const handle_resume = next => {
       if(resume_period == config.period && !config.recalculate_wallets && resume_period != 0) {
-        console.log(`Wallets already calculated for Period #${resume_period}, if you would like to recalculate, run script with --recalculate-wallets parameter`)
+        console.log(`Wallets already calculated for Period #${resume_period}, if you would like to recalculate, run script with --recalculate_wallets parameter`)
         complete(null, state)
       }
-      else if(config.resume && resume_period < config.period && !config.recalculate_wallets) {
-        // let _resume_from_period = resume_period-1 >= 0 ? resume_period-1 : resume_period
-      //Only query addresses with activity since last recorded sync.
+      else if(config.resume && resume_period < config.period && !config.recalculate_wallets && !config.only_produce_final_snapshot) {
+        //Only query addresses with activity since last recorded sync.
         //If period x was synced previously, and period z is being synced now, then from the first block of period x+1=y (period[y].begin)
+        // block_begin = state.period_map[resume_period+1].begin //this results in supply loss >_<
         block_begin = state.period_map[resume_period].begin
         //to the end of period z (previously defined in block range.)
         block_end = state.block_end
         next()
-      } else {
+      }
+      else {
         //Reset resume period to 0.
         resume_period = 0
         //Truncate wallets table
-        console.log(`Truncating Wallets Table (config period: ${config.period} resume period: ${resume_period} resume: ${config.resume}`)
+        console.log(`Truncating Wallets Table`)
         // TODO DELETE SYNCED WALLET PERIOD STATE FROM STATE TABLE.
-        db.Wallets
-          .destroy({ truncate : true, cascade: false })
-          .then(() => {
-            block_begin = state.block_begin
-            block_end = state.block_end
-            setTimeout( () => next(), 5000 )
-          })
+        db.State.destroy({ where: {meta_key: "sync_wallets_period"} })
+        .then( () => {
+          db.Wallets
+            .destroy({ truncate : true, cascade: false })
+            .then(() => {
+              block_begin = state.block_begin
+              block_end = state.block_end
+              setTimeout( () => next(), 5000 )
+            })
+            .catch( e => { throw new Error(e) })
+        })
+        .catch( e => { throw new Error(e) })
+
       }
     }
 
