@@ -134,10 +134,13 @@ const run = () => {
       })
       .catch( e => {
         //We assume this is a deadlock, if you get repeated unresolved deadlocks, uncomment line below.
-        // throw new Error(e)
+        if(e.toString().toLowerCase().includes("deadlock")) {
+          console.log(colors.red(`Thread ${id}: DEADLOCK: RETRY`))
+          setTimeout( () => save_rows(callback, true), 500 )
+        } else {
+          throw new Error(e)
+        }
         // console.log(e)
-        console.log(colors.red(`Thread ${id}: DEADLOCK: RETRY`))
-        setTimeout( () => save_rows(callback, true), 500 )
       })
     // db.Keys.bulkCreate( cache, {ignoreDuplicates: true} )
     //   .then( () => {
