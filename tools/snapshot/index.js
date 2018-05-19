@@ -146,10 +146,10 @@ module.exports = (COMPLETE) => {
           console.log("It appears you've set load_config somehow without having a config file you rascal. Duplicate the default config file and edit or set to false.")
         }
       }
-      if(typeof config.period === "undefined") {
+      if(typeof config.period !== "number") {
         let cache_period = config.period
         config.period = period.last_closed()
-        console.log(colors.italic.red(`It appears didn't set a period at all. Period has been set to ${$config.period}`))
+        console.log(colors.italic.red(`It appears didn't set the period correctly. Period has been set to ${$config.period}`))
       }
       else if(config.period > period.last_closed()) {
         let cache_period = config.period
