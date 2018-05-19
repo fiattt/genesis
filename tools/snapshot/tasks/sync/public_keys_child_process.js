@@ -17,25 +17,22 @@ const setup = settings => {
   block_begin = settings.resume_block
   block_end   = state.block_end
 
+  //Since we've gotten this far, we'll assume web3 is synced, it'll shave off another 30 seconds.
+  settings.config.skip_web3_sync = true
+
   global.config = settings.config
 
-      //find total number of blocks that require syncing
   let blocks_to_sync = block_end-block_begin,
-      //Determine how many blocks each thread needs to process
       blocks_per_thread = Math.floor(blocks_to_sync/threads),
-      //Here's how many blocks we missed by flooring
       blocks_extra = blocks_to_sync-(blocks_per_thread*threads)
 
-  //Start at the begin block + id (id is offset)
   thread_block_begin = block_begin+id
-  //Determine where to end
   thread_block_end = thread_block_begin + blocks_to_sync - blocks_extra
-  //If the calculated end is higher than the end block, then subtract the number of threads (steps)
   thread_block_end = (thread_block_end > block_end) ? thread_block_end - threads : thread_block_end
 
   const connections = require('../misc/connections')
   connections(state, ( error, response ) => {
-    setTimeout(run, id*50)
+    setTimeout(run, id*11)
   })
 }
 
@@ -66,7 +63,7 @@ const run = () => {
   const process_transactions = (block, next) => {
     each(
       block.transactions,
-      find_sync_pub_key,
+      find_pub_key_and_cache,
       (err) => {
         if(err)
           throw new Error(err)
@@ -85,11 +82,13 @@ const run = () => {
     return query
   }
 
-  const find_sync_pub_key = (tx, finished) => {
+  const find_pub_key_and_cache = (tx, finished) => {
     pubkey_from_tx_hash(tx.hash, pubkey => {
-      if(cache_count!=0) cache+=', '
-      cache += `("${tx.from}", "${pubkey}", ${tx.blockNumber})`
-      cache_count++
+      if(pubkey.length && typeof pubkey !== 'undefined') {
+        if(cache_count!=0) cache+=', '
+        cache += `("${tx.from}", "${pubkey}", ${tx.blockNumber})`
+        cache_count++
+      }
       finished()
     })
   }
@@ -148,6 +147,19 @@ const run = () => {
         }
         // console.log(e)
       })
+    // db.Keys.bulkCreate( cache, {ignoreDuplicates: true} )
+    //   .then( () => {
+    //     if(deadlock) console.log(colors.green(`Thread ${id}: DEADLOCK: RESOLVED`))
+    //     cache = []
+    //     update_state()
+    //     callback()
+    //   })
+    //   .catch( e => {
+    //     //We assume this is a deadlock, if you get repeated unresolved deadlocks, uncomment line below.
+    //     // console.log(e)
+    //     console.log(colors.red(`Thread ${id}: DEADLOCK: RETRY`))
+    //     setTimeout( () => save_rows(callback, true), 10 )
+    //   })
   }
 
   sync_public_keys()
