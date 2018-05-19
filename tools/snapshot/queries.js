@@ -13,7 +13,7 @@ query.wallets_bulk_upsert = ( wallets ) => {
 
 //Returns an array of unique addresses in the database based on a block range and period range for buys (necessary for wallet resume)
 query.address_uniques = ( block_begin, block_end, period_begin, period_end, callback ) => {
-  let query = `SELECT \`from\` as address, block_number FROM transfers WHERE block_number>=${block_begin} AND block_number<=${block_end}
+  let query = `SELECT \`from\` as address FROM transfers WHERE block_number>=${block_begin} AND block_number<=${block_end}
                 UNION DISTINCT SELECT \`to\` as address, block_number FROM transfers WHERE block_number>=${block_begin} AND block_number<=${block_end}
                 UNION DISTINCT SELECT address as address, block_number FROM claims WHERE block_number>=${block_begin} AND block_number<=${block_end}
                 UNION DISTINCT SELECT address as address, block_number FROM buys WHERE period>=${period_begin} AND period<=${period_end}
