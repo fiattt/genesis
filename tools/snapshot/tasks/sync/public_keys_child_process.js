@@ -150,19 +150,6 @@ const run = () => {
         }
         // console.log(e)
       })
-    // db.Keys.bulkCreate( cache, {ignoreDuplicates: true} )
-    //   .then( () => {
-    //     if(deadlock) console.log(colors.green(`Thread ${id}: DEADLOCK: RESOLVED`))
-    //     cache = []
-    //     update_state()
-    //     callback()
-    //   })
-    //   .catch( e => {
-    //     //We assume this is a deadlock, if you get repeated unresolved deadlocks, uncomment line below.
-    //     // console.log(e)
-    //     console.log(colors.red(`Thread ${id}: DEADLOCK: RETRY`))
-    //     setTimeout( () => save_rows(callback, true), 10 )
-    //   })
   }
 
   sync_public_keys()
