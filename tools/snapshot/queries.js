@@ -13,11 +13,13 @@ query.wallets_bulk_upsert = ( wallets ) => {
 
 //Returns an array of unique addresses in the database based on a block range and period range for buys (necessary for wallet resume)
 query.address_uniques = ( block_begin, block_end, period_begin, period_end, callback ) => {
-  let query = `SELECT \`from\` FROM transfers WHERE block_number>=${block_begin} AND block_number<=${block_end}
-  UNION DISTINCT SELECT \`to\` FROM transfers WHERE block_number>=${block_begin} AND block_number<=${block_end}
-  UNION DISTINCT SELECT address FROM claims WHERE block_number>=${block_begin} AND block_number<=${block_end}
-  UNION DISTINCT SELECT address FROM buys WHERE period>=${period_begin} AND period<=${period_end}
-  UNION DISTINCT SELECT address FROM registrations WHERE block_number>=${block_begin} AND block_number<=${block_end};`
+  let query = `SELECT address
+                FROM (SELECT \`from\` as address, block_number FROM transfers WHERE block_number>=${block_begin} AND block_number<=${block_end}
+                      UNION DISTINCT SELECT \`to\` as address, block_number FROM transfers WHERE block_number>=${block_begin} AND block_number<=${block_end}
+                      UNION DISTINCT SELECT address as address, block_number FROM claims WHERE block_number>=${block_begin} AND block_number<=${block_end}
+                      UNION DISTINCT SELECT address as address, block_number FROM buys WHERE period>=${period_begin} AND period<=${period_end}
+                      UNION DISTINCT SELECT address as address, block_number FROM registrations WHERE block_number>=${block_begin} AND block_number<=${block_end} ) a
+                ORDER BY block_number, address ASC;`
   db.sequelize
     .query(query, {type: db.sequelize.QueryTypes.SELECT})
     .then( results => {
@@ -295,7 +297,6 @@ query.address_first_seen = address => {
 
 //Returns promise with cumulative balance for an address within a block range, required for deterministic ongoing snapshots.
 query.address_sum_transfer_balance = (address, block_from, block_to) => {
-  //Add balance is used to add the initial supply for EOSCrowdsale contract to it's wallet, this isn't a transaction, so needs to be added manually.
   const query = `SELECT sum(wallet) FROM (
   (
     SELECT SUM(_ti.eos_amount) AS wallet
