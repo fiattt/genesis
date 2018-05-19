@@ -266,7 +266,7 @@ query.get_unregistered_users_sufficient_balance = () => {
   return db.sequelize.query(query, {type: db.sequelize.QueryTypes.SELECT})
 }
 
-//Sets deterministic indices
+//Sets deterministic indices with a cross join based on rownumber after ordering ASC on first_seen and then address
 query.set_deterministic_indices = () => {
   query = `update wallets target join
   (
