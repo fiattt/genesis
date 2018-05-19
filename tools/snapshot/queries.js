@@ -282,15 +282,15 @@ query.set_deterministic_indices = () => {
 //Returns a promise with the lowest block number for an address, used for deterministic index.
 query.address_first_seen = address => {
   const query = `SELECT bn.block_number from (
-  	(SELECT tf.block_number FROM transfers AS tf WHERE \`from\`="${address}" ORDER BY tf.block_number ASC LIMIT 1)
+  	(SELECT tf.block_number FROM transfers AS tf WHERE \`from\`="${address}")
   	UNION
-  	(SELECT tt.block_number FROM transfers AS tt WHERE \`to\`="${address}" ORDER BY tt.block_number ASC LIMIT 1)
+  	(SELECT tt.block_number FROM transfers AS tt WHERE \`to\`="${address}")
   	UNION
-  	(SELECT b.block_number FROM buys AS b WHERE address="${address}" ORDER BY b.block_number ASC LIMIT 1)
+  	(SELECT b.block_number FROM buys AS b WHERE address="${address}")
   	UNION
-  	(SELECT c.block_number FROM claims AS c WHERE address="${address}" ORDER BY c.block_number ASC LIMIT 1)
+  	(SELECT c.block_number FROM claims AS c WHERE address="${address}")
   	UNION
-  	(SELECT r.block_number FROM registrations AS r WHERE address="${address}"  ORDER BY r.block_number ASC LIMIT 1)
+  	(SELECT r.block_number FROM registrations AS r WHERE address="${address}")
     ) AS bn ORDER BY bn.block_number ASC LIMIT 1`
   return db.sequelize.query(query, {type: db.sequelize.QueryTypes.SELECT})
 }
