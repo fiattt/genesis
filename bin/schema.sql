@@ -6,8 +6,8 @@
 # https://github.com/sequelpro/sequelpro
 #
 # Host: 127.0.0.1 (MySQL 5.6.37)
-# Database: eos_snapshot_polling_test
-# Generation Time: 2018-05-18 17:48:29 +0000
+# Database: eos_snapshot
+# Generation Time: 2018-05-19 11:47:13 +0000
 # ************************************************************
 
 
@@ -116,7 +116,7 @@ DROP TABLE IF EXISTS `snapshot`;
 
 CREATE TABLE `snapshot` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `account_name` varchar(256) NOT NULL DEFAULT '',
+  `account_name` varchar(12) NOT NULL DEFAULT '',
   `user` varchar(256) NOT NULL DEFAULT '',
   `key` varchar(256) NOT NULL DEFAULT '',
   `balance` decimal(15,4) NOT NULL,
@@ -133,6 +133,7 @@ DROP TABLE IF EXISTS `snapshot_unregistered`;
 
 CREATE TABLE `snapshot_unregistered` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `account_name` varchar(12) NOT NULL DEFAULT '',
   `user` varchar(256) NOT NULL DEFAULT '',
   `balance` decimal(15,4) NOT NULL,
   PRIMARY KEY (`id`)
