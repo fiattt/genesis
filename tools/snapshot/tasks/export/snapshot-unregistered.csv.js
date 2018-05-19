@@ -7,7 +7,7 @@ module.exports = ( state, callback ) => {
 
   const csv = () => {
     db.SnapshotUnregistered
-      .findAll({ order: [ ['balance', 'DESC'] ] })
+      .findAll({ order: [ ['id', 'DESC'] ] })
       .then( results => {
         let _results = results.map( result => {
           return {user: result.dataValues.user, balance: result.dataValues.balance}
@@ -27,6 +27,10 @@ module.exports = ( state, callback ) => {
       .catch( error => { throw new Error(error) })
   }
 
+  //It may seem redundant to do a select and insert on table and then find it again a second later,
+  //but there's a number of things that can happen with large queries in transport,
+  //This gives us a way to track and resolve (speaking from experience with ETL patterns)
+  //SQL is probablistically unlikely to hiccup here, so we have a constant if data is saved to table first.
   db.SnapshotUnregistered
     .destroy({ truncate : true, cascade: false })
     .then( () => {
