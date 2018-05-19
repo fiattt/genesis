@@ -268,14 +268,14 @@ query.get_unregistered_users_sufficient_balance = () => {
 
 //Sets deterministic indices with a cross join based on rownumber after ordering ASC on first_seen and then address
 query.set_deterministic_indices = () => {
-  query = `update wallets target join
+  query = `UPDATE wallets AS target JOIN
   (
-       select address, (@rownumber := @rownumber + 1) as rownum
-       from wallets
-       cross join (select @rownumber := 0) r
-       order by first_seen asc, address asc
-  ) source on target.address = source.address
-  set deterministic_index = rownum`
+       SELECT address, (@rownumber := @rownumber + 1) AS rownum
+       FROM wallets
+       CROSS JOIN (select @rownumber := 0) r
+       ORDER BY first_seen, address
+  ) source ON target.address = source.address
+  SET deterministic_index = rownum`
   return db.sequelize.query(query)
 }
 
