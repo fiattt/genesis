@@ -183,10 +183,10 @@ module.exports = (state, complete) => {
   const first_seen = ( wallet, finished ) => {
     query.address_first_seen( wallet.address )
       .then( results => {
-        if(results.length)
-          wallet.first_seen = results[0].block_number
+        wallet.first_seen = results[0].block_number,
         finished(null, wallet)
       })
+      .catch(e => {throw new Error(e)})
   }
 
   /**
