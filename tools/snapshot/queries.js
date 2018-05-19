@@ -194,11 +194,6 @@ query.destroy_above_block = (block_number, callback) => {
   //The block number passed here is the block that will be included in the range
   //so we want to delete everything greater than OR equal to that block (edge case: contract sync interrupt)
   async.series([
-    next => db.Buys.destroy({ where : { block_number: { [Op.gt] : block_number } } }).then(next),
-    next => db.Claims.destroy({ where : { block_number: { [Op.gt]: block_number } } }).then(next),
-    next => db.Transfers.destroy({ where : { block_number: { [Op.gt] : block_number } } }).then(next),
-    next => db.Registrations.destroy({ where : { block_number: { [Op.gt] : block_number } } }).then(next),
-    next => db.Reclaimables.destroy({ where : { block_number: { [Op.gt] : block_number } } }).then(next)
   ], () => {
     callback()
   })
