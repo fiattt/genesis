@@ -11,15 +11,15 @@ class WalletOngoing extends Wallet {
   }
 
   process_balance_wallet( complete = () => {} ){
-    if(config.use_mysql_cumulative) {
-      this.balance.set('wallet', this.transfers)
-      complete()
-    }
-    else {
+    if(config.use_js_cumulative) {
       util.balance.wallet_cumulative( this.transfers, balance => {
         this.balance.set( 'wallet', balance)
         complete()
       })
+    }
+    else {
+      this.balance.set('wallet', this.transfers)
+      complete()
     }
   }
 

@@ -78,23 +78,8 @@ module.exports = (state, complete) => {
       return
     }
 
-    if(config.use_mysql_cumulative) {
-      //query will sum all the user's incoming and outgoing(*-1) transfers within a block range, add initial supply to contract (not on chain)
-      query.address_sum_transfer_balance(wallet.address, state.block_begin, state.block_end)
-        .then( balance => {
-          let balance_wallet = new bn(0)
-          if(balance[0]['sum(wallet)'] != null) {
-            balance_wallet = new bn(balance[0]['sum(wallet)'])
-            //Add balance is used to add the initial supply for EOSCrowdsale contract to it's wallet, this isn't a transaction, so needs to be added manually.
-            if(wallet.address == CS_ADDRESS_CROWDSALE)
-              balance_wallet = balance_wallet.plus(CS_TOTAL_SUPPLY)
-          }
-          wallet.transfers = balance_wallet
-          finished( null, wallet )
-        })
-        .catch(e => { console.log(wallet.address); throw new Error(e)})
-    }
-    else {
+    //By default use MySQL unless something goes awfully wrong. Their output is the same, but MySQL is faster.
+    if(config.use_js_cumulative) {
       wallet.transfers = []
 
       const add = next => {
@@ -124,6 +109,22 @@ module.exports = (state, complete) => {
         add,
         subtract
       ], () => { finished( null, wallet ) })
+    }
+    else {
+      //query will sum all the user's incoming and outgoing(*-1) transfers within a block range, add initial supply to contract (not on chain)
+      query.address_sum_transfer_balance(wallet.address, state.block_begin, state.block_end)
+        .then( balance => {
+          let balance_wallet = new bn(0)
+          if(balance[0]['sum(wallet)'] != null) {
+            balance_wallet = new bn(balance[0]['sum(wallet)'])
+            //Add balance is used to add the initial supply for EOSCrowdsale contract to it's wallet, this isn't a transaction, so needs to be added manually.
+            if(wallet.address == CS_ADDRESS_CROWDSALE)
+              balance_wallet = balance_wallet.plus(CS_TOTAL_SUPPLY)
+          }
+          wallet.transfers = balance_wallet
+          finished( null, wallet )
+        })
+        .catch(e => { console.log(wallet.address); throw new Error(e)})
     }
   }
 
