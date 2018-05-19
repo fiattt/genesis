@@ -128,7 +128,8 @@ class PeriodMap {
           walk_index = sprint_index-sprint_steps
           sprint = false
           caught_block = true
-          setTimeout(iterate, 10000)
+          console.log(`Couldn't find the block, it's possible it's not confirmed/synced yet, trying again in 60 seconds.`)
+          setTimeout(iterate, 60000)
         }
         else {
           sprint = true
