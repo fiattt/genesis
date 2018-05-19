@@ -77,49 +77,54 @@ module.exports = (state, complete) => {
       finished(null, wallet)
       return
     }
-    //query will sum all the user's incoming and outgoing(*-1) transfers within a block range, add initial supply to contract (not on chain)
-    query.address_sum_transfer_balance(wallet.address, state.block_begin, state.block_end)
-      .then( balance => {
-        let balance_wallet = new bn(0)
-        if(balance[0]['sum(wallet)'] != null) {
-          balance_wallet = new bn(balance[0]['sum(wallet)'])
-          if(wallet.address.toLowerCase() == CS_ADDRESS_CROWDSALE.toLowerCase())
-            balance_wallet = balance_wallet.plus(CS_TOTAL_SUPPLY)
-        }
-        wallet.transfers = balance_wallet
-        finished( null, wallet )
-      })
-      .catch(e => { console.log(wallet.address); throw new Error(e)})
 
-    // wallet.transfers = []
-    //
-    // const add = next => {
-    //
-    //   //Required for accurate contract wallet balance.
-    //   if(wallet.address.toLowerCase() == CS_ADDRESS_CROWDSALE.toLowerCase())
-    //     wallet.transfers.push(CS_TOTAL_SUPPLY)
-    //
-    //   query.address_transfers_in(wallet.address, state.block_begin, state.block_end)
-    //     .then( results => {
-    //       results = results.map( result => new bn(result.dataValues.eos_amount) )
-    //       wallet.transfers = wallet.transfers.concat(results)
-    //       next()
-    //     })
-    // }
-    //
-    // const subtract = next => {
-    //   query.address_transfers_out(wallet.address, state.block_begin, state.block_end)
-    //     .then( results => {
-    //       results = results.map( result => new bn(result.dataValues.eos_amount).times(-1) )
-    //       wallet.transfers = wallet.transfers.concat(results)
-    //       next()
-    //     })
-    // }
-    //
-    // async.series([
-    //   add,
-    //   subtract
-    // ], () => { finished( null, wallet ) })
+    if(config.use_mysql_cumulative) {
+      //query will sum all the user's incoming and outgoing(*-1) transfers within a block range, add initial supply to contract (not on chain)
+      query.address_sum_transfer_balance(wallet.address, state.block_begin, state.block_end)
+        .then( balance => {
+          let balance_wallet = new bn(0)
+          if(balance[0]['sum(wallet)'] != null) {
+            balance_wallet = new bn(balance[0]['sum(wallet)'])
+            //Add balance is used to add the initial supply for EOSCrowdsale contract to it's wallet, this isn't a transaction, so needs to be added manually.
+            if(wallet.address == CS_ADDRESS_CROWDSALE)
+              balance_wallet = balance_wallet.plus(CS_TOTAL_SUPPLY)
+          }
+          wallet.transfers = balance_wallet
+          finished( null, wallet )
+        })
+        .catch(e => { console.log(wallet.address); throw new Error(e)})
+    }
+    else {
+      wallet.transfers = []
+
+      const add = next => {
+
+        //Required for accurate contract wallet balance.
+        if(wallet.address.toLowerCase() == CS_ADDRESS_CROWDSALE.toLowerCase())
+          wallet.transfers.push(CS_TOTAL_SUPPLY)
+
+        query.address_transfers_in(wallet.address, state.block_begin, state.block_end)
+          .then( results => {
+            results = results.map( result => new bn(result.dataValues.eos_amount) )
+            wallet.transfers = wallet.transfers.concat(results)
+            next()
+          })
+      }
+
+      const subtract = next => {
+        query.address_transfers_out(wallet.address, state.block_begin, state.block_end)
+          .then( results => {
+            results = results.map( result => new bn(result.dataValues.eos_amount).times(-1) )
+            wallet.transfers = wallet.transfers.concat(results)
+            next()
+          })
+      }
+
+      async.series([
+        add,
+        subtract
+      ], () => { finished( null, wallet ) })
+    }
   }
 
   /**
@@ -180,8 +185,6 @@ module.exports = (state, complete) => {
       .then( results => {
         if(results.length)
           wallet.first_seen = results[0].block_number
-        else
-          wallet.first_seen = 0
         finished(null, wallet)
       })
   }
@@ -269,24 +272,25 @@ module.exports = (state, complete) => {
         next()
       }
       else {
-        //Reset resume period to 0.
-        resume_period = 0
         //Truncate wallets table
-        console.log(`Truncating Wallets Table`)
-        // TODO DELETE SYNCED WALLET PERIOD STATE FROM STATE TABLE.
-        db.State.destroy({ where: {meta_key: "sync_wallets_period"} })
-        .then( () => {
-          db.Wallets
-            .destroy({ truncate : true, cascade: false })
-            .then(() => {
-              block_begin = state.block_begin
-              block_end = state.block_end
-              setTimeout( () => next(), 5000 )
-            })
-            .catch( e => { throw new Error(e) })
-        })
-        .catch( e => { throw new Error(e) })
-
+        console.log(`Truncating Wallets Table in 5 seconds`)
+        setTimeout( () => {
+          //Reset resume period to 0.
+          resume_period = 0
+          // TODO DELETE SYNCED WALLET PERIOD STATE FROM STATE TABLE.
+          db.State.destroy({ where: {meta_key: "sync_wallets_period"} })
+          .then( () => {
+            db.Wallets
+              .destroy({ truncate : true, cascade: false })
+              .then(() => {
+                block_begin = state.block_begin
+                block_end = state.block_end
+                setTimeout( () => next(), 5000 )
+              })
+              .catch( e => { throw new Error(e) })
+          })
+          .catch( e => { throw new Error(e) })
+        }, 5000)
       }
     }
 
@@ -351,7 +355,7 @@ module.exports = (state, complete) => {
   */
   const log_table_reset = () => {
     table = new Table(`${Math.round(index*50/uniques.size*100)}% [${index*50}/${uniques.size}] `)
-    table.setHeading('V', 'R', 'ETH', 'EOS', 'In Wallet', 'Unclaimed', 'Reclaimed', 'Total', 'Reg. Error')
+    table.setHeading('V', 'R', 'ETH', 'EOS', 'In Wallet', 'Unclaimed', 'Reclaimed', 'Total', 'Reg. Error', 'First Seen')
   }
 
   /**
@@ -367,7 +371,8 @@ module.exports = (state, complete) => {
       `${wallet.balance.unclaimed} EOS`,
       `${wallet.balance.reclaimed} EOS`,
       `${wallet.balance.total} EOS`,
-      `${wallet.register_error ? wallet.register_error : ""}`
+      `${wallet.register_error ? wallet.register_error : ""}`,
+      `${wallet.first_seen ? wallet.first_seen : ""}`
     )
   }
 
