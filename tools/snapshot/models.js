@@ -107,6 +107,7 @@ db.Snapshot = mysql.define('snapshot', {
 
 db.SnapshotUnregistered = mysql.define('snapshot_unregistered', {
   user:               Sequelize.STRING(256),
+  account_name:       Sequelize.STRING(256),
   balance:            Sequelize.DECIMAL(15,4)
 }, {timestamps: false, freezeTableName: true, tableName: 'snapshot_unregistered'})
 
