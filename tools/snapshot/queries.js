@@ -268,7 +268,7 @@ query.get_unregistered_users_sufficient_balance = () => {
 query.set_deterministic_indices = () => {
   query = `UPDATE wallets AS target JOIN
   (
-       SELECT address, (@rownumber := @rownumber + 1) AS rownum
+       SELECT address, first_seen, (@rownumber := @rownumber + 1) AS rownum
        FROM wallets
        CROSS JOIN (select @rownumber := 0) r
        ORDER BY first_seen, address
