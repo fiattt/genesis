@@ -142,13 +142,31 @@ module.exports = (COMPLETE) => {
     }
 
     //Load and validate config.
-    const load_validate_config = (config, next) => {
+    const load_config = (config, next) => {
       if(config.load_config) {
         try { config = require('../../config') }
         catch(e) {
           console.log("It appears you've set load_config somehow without having a config file you rascal. Duplicate the default config file and edit or set to false.")
         }
       }
+      config = Object.assign( require('../../config.default'), config )
+      next(null, config)
+    }
+
+    const override_config_with_params = ( config, next ) => {
+      const optimist = require('optimist')
+            inspect = require('util').inspect
+      config = Object.assign( config, optimist.argv )
+
+      //Remove optimist artifacts
+      delete config.$0
+      delete config._
+
+      next(null, config)
+    }
+
+    const validate_config = (config, next) => {
+
       if(typeof config.period !== "number") {
         let cache_period = config.period
         config.period = period.last_closed()
@@ -164,18 +182,6 @@ module.exports = (COMPLETE) => {
         config.period = CS_MAX_PERIOD_INDEX
         console.log(colors.italic.red(`It appears you've set your period to ${cache_period}, which doesn't exist. Period has been reset to ${config.period}`))
       }
-      config = Object.assign( require('../../config.default'), config )
-      next(null, config)
-    }
-
-    const override_config_with_params = ( config, next ) => {
-      const optimist = require('optimist')
-            inspect = require('util').inspect
-      config = Object.assign( config, optimist.argv )
-
-      //Remove optimist artifacts
-      delete config.$0
-      delete config._
 
       next(null, config)
     }
@@ -199,7 +205,7 @@ module.exports = (COMPLETE) => {
     }
 
     waterfall(
-      [ show_prompt, load_validate_config, override_config_with_params ],
+      [ show_prompt, load_config, override_config_with_params, validate_config ],
       (error, config) => configuration_complete(error, config, callback)
     )
   }
