@@ -105,7 +105,10 @@ module.exports = (COMPLETE) => {
     if(config.period <= period.last_closed()) {
       run_snapshot(state)
     }
-    else if(period.last_closed == CS_NUMBER_OF_PERIODS) {
+    //In polling, the config.period is autoincremented before check_for_poll() is called,
+    //so if it's greater than the highest period index (350) and the last closed period eq highest period index
+    //Check if the token is frozen before attempting to generate final snapshot (tasks/block_range.js will force run the final snapshot.)
+    else if(period.last_closed == CS_MAX_PERIOD_INDEX && config.period > CS_MAX_PERIOD_INDEX) {
       contract = require('../../helpers/web3-contract.js')
       contract.$token.methods.stopped().call()
         .then( stopped => {
