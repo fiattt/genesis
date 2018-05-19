@@ -248,7 +248,7 @@ module.exports = (state, complete) => {
             resume_period = parseInt(resume_from[0].dataValues.meta_value),
             console.log(`Resuming from Period ${resume_period} up to ${config.period}`)
           else
-            console.log(`Starting at Period 0 up to ${resume_period}`)
+            console.log(`Starting at Period 0 up to ${config.period}`)
           next()
         })
         .catch( e => { throw new Error(e) })
