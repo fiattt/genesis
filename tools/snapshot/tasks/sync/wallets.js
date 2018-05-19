@@ -277,7 +277,6 @@ module.exports = (state, complete) => {
         setTimeout( () => {
           //Reset resume period to 0.
           resume_period = 0
-          // TODO DELETE SYNCED WALLET PERIOD STATE FROM STATE TABLE.
           db.State.destroy({ where: {meta_key: "sync_wallets_period"} })
           .then( () => {
             db.Wallets
