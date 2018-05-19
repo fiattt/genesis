@@ -187,6 +187,10 @@ module.exports = ( state, complete ) => {
     return sha256(tx.transactionHash+tx.id+String(tx.transactionIndex))
   }
 
+  const start_sync = (begin, end) => {
+    sync_contract( begin, end, () => { complete( null, state ) })
+  }
+
   const sync_contract = (begin, end, synced) => {
     console.log(`Syncing Contract State between block #${begin} & ${end}`)
 
@@ -199,11 +203,17 @@ module.exports = ( state, complete ) => {
     let loop = _for(0, function (i) { return i < settings.iterations }, function (i) { return i + 1; },
       function loopBody(i, _break, _continue) {
         settings.begin = (i*settings.per_iteration)+settings.offset
-        settings.end = settings.begin+settings.per_iteration-1
+        settings.end = settings.begin+settings.per_iteration
+        //If difference between begin and end can be perfectly divided by per_iterationshould
+        //settings end should not subtract one because otherwise it will miss a block!
+        if(settings.end != end) settings.end=settings.end-1
+        if(settings.end > end) settings.end = end
+
         settings.index = i
         settings.total = settings.iterations
 
-        if(settings.end > end) settings.end = end
+
+        // console.log(state.block_begin, state.block_end, begin, end, settings)
 
         parallel({
             Transfers     : next => transfers( settings, next ),
@@ -230,35 +240,6 @@ module.exports = ( state, complete ) => {
 
     // console.log(`Syncing Contracts between block #${state.block_begin} and #${state.block_end}, this may take a while.`)
     log_periodically()
-  }
-
-  const log = (color, complete) => {
-    const Table  = require('ascii-table')
-
-    let   table
-
-    if(complete)
-      table = new Table(`100%: ${state.block_begin} ~> ${state.block_end}`)
-    else
-      table = new Table(`${Math.floor(settings.index/settings.total*100)}%: ${settings.begin}~>${settings.end}`)
-
-    table.addRow('Transfers', state.sync_contract.transfers)
-    table.addRow('Buys', state.sync_contract.buys)
-    table.addRow('Claims', state.sync_contract.claims)
-    table.addRow('Registrations', state.sync_contract.registrations)
-    table.addRow('Reclaimables', state.sync_contract.reclaimables)
-    console.log(colors[color](table.setAlign(0, Table.RIGHT).setAlign(1, Table.LEFT).render()))
-  }
-
-  const log_periodically = () => {
-    log_intval = setInterval( () => log('gray'), 10*1000 )
-  }
-
-
-  const start_sync = (begin, end) => {
-    sync_contract( begin, end, () => {
-      complete( null, state )
-    })
   }
 
   const save_sync_progress = ( type, value, callback ) => {
@@ -325,13 +306,12 @@ module.exports = ( state, complete ) => {
   }
 
   const run_resume = (resume_block) => {
-    // prepare_resume( resume_block, () => {
-    verify_resume( resume_block, () => {
-      console.log("original start block:", state.block_start, "resume block saved:", resume_block-1, "resume block now:", resume_block)
-      // process.exit()
-      start_sync( resume_block, state.block_end )
+    prepare_resume( resume_block, () => {
+      verify_resume( resume_block, () => {
+        console.log("original start block:", state.block_start, "resume block saved:", resume_block-1, "resume block now:", resume_block)
+        start_sync( resume_block, state.block_end )
+      })
     })
-    // })
   }
 
   const maybe_resume = () => {
@@ -369,6 +349,28 @@ module.exports = ( state, complete ) => {
       }
     }
     return output;
+  }
+
+  const log_periodically = () => {
+    log_intval = setInterval( () => log('gray'), 10*1000 )
+  }
+
+  const log = (color, complete) => {
+    const Table  = require('ascii-table')
+
+    let   table
+
+    if(complete)
+      table = new Table(`100%: ${state.block_begin} ~> ${state.block_end}`)
+    else
+      table = new Table(`${Math.floor(settings.index/settings.total*100)}%: ${settings.begin}~>${settings.end}`)
+
+    table.addRow('Transfers', state.sync_contract.transfers)
+    table.addRow('Buys', state.sync_contract.buys)
+    table.addRow('Claims', state.sync_contract.claims)
+    table.addRow('Registrations', state.sync_contract.registrations)
+    table.addRow('Reclaimables', state.sync_contract.reclaimables)
+    console.log(colors[color](table.setAlign(0, Table.RIGHT).setAlign(1, Table.LEFT).render()))
   }
 
   if(config.resume) {
