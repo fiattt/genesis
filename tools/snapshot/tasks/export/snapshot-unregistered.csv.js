@@ -31,15 +31,12 @@ module.exports = ( state, callback ) => {
     .destroy({ truncate : true, cascade: false })
     .then( () => {
       db.sequelize
-        .query(`INSERT INTO snapshot_unregistered (user, balance) SELECT address, balance_total FROM wallets WHERE valid=0 AND register_error!='exclude' AND balance_total>=${config.snapshot_minimum_balance} ORDER BY deterministic_index ASC`)
+        .query(`INSERT INTO snapshot_unregistered (id, user, account_name, balance) SELECT deterministic_index, address, account_name, balance_total FROM wallets WHERE valid=0 AND register_error!='exclude' AND balance_total>=${config.snapshot_minimum_balance} ORDER BY deterministic_index, address ASC`)
         .then(results => {
           console.log( 'Unregistered Snapshot Table Synced' )
           csv( callback )
         })
         .catch( error => { throw new Error(error) })
     })
-
-
-
 
 }
