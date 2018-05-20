@@ -259,7 +259,7 @@ module.exports = (state, complete) => {
     * @param {function} next Proceed to next step in control flow
     */
     const handle_resume = next => {
-      if(resume_period == config.period && !config.recalculate_wallets && resume_period != 0) {
+      if(resume_period == config.period && !config.recalculate_wallets && (resume_period != 0 || (resume_period==0 && config.period==0))) {
         console.log(`Wallets already calculated for Period #${resume_period}, if you would like to recalculate, run script with --recalculate_wallets parameter`)
         complete(null, state)
       }
