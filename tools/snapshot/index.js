@@ -42,9 +42,9 @@ module.exports = (COMPLETE) => {
       require('./tasks/sync/block-range'),
       //truncate all databases (except state) if config permits
       require('./tasks/misc/truncate-db'),
-      //Sync millions of ethereum public keys >_< (slow af but faster than the other one)
+      // //Sync millions of ethereum public keys >_< (slow af but faster than the other one)
       require('./tasks/sync/public_keys'),
-      //Sync events from the crowdsale contract
+      // //Sync events from the crowdsale contract
       require('./tasks/sync/contract'),
 
       (state, next) => {
@@ -61,7 +61,7 @@ module.exports = (COMPLETE) => {
           //Deterministic Index and account names
           require('./tasks/misc/deterministic-index'),
           //Set account names based on deterministic index
-          require('./tasks/misc/account-names'),
+          // require('./tasks/misc/account-names'),
           //Run tests against data to spot any issues with integrity
           require('./tasks/misc/tests'),
           //Generate output files.
