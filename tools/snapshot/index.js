@@ -37,9 +37,9 @@ module.exports = (COMPLETE) => {
       //Set the period map
       require('./tasks/sync/periods'),
       //Check if the crowdsale is ongoing and the token is stopped, "frozen"
-      require('./tasks/sync/distribution-status'),
+      require('./tasks/process/distribution-status'),
       //Set the block range of the snapshot.
-      require('./tasks/sync/block-range'),
+      require('./tasks/process/block-range'),
       //truncate all databases (except state) if config permits
       require('./tasks/misc/truncate-db'),
       // //Sync millions of ethereum public keys >_< (slow af but faster than the other one)
@@ -55,13 +55,11 @@ module.exports = (COMPLETE) => {
         waterfall([
           next => next(null, state),
           //Calculate and validate each wallet.
-          require('./tasks/sync/wallets'),
+          require('./tasks/process/wallets'),
           //Fallback Registration
-          require('./tasks/sync/fallback-registration.js'),
+          require('./tasks/process/fallback-registration.js'),
           //Deterministic Index and account names
-          require('./tasks/misc/deterministic-index'),
-          //Set account names based on deterministic index
-          // require('./tasks/misc/account-names'),
+          require('./tasks/process/deterministic-index-account-names'),
           //Run tests against data to spot any issues with integrity
           require('./tasks/misc/tests'),
           //Generate output files.
