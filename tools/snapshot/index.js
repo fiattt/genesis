@@ -32,19 +32,19 @@ module.exports = (COMPLETE) => {
           next(null, state)
         }
       },
-      //Async globals
+      //Misc: Async globals
       require('./tasks/misc/preload'),
-      //Set the period map
+      //Sync: Set the period map
       require('./tasks/sync/periods'),
-      //Check if the crowdsale is ongoing and the token is stopped, "frozen"
+      //Misc: Check if the crowdsale is ongoing and the token is stopped, "frozen"
       require('./tasks/process/distribution-status'),
-      //Set the block range of the snapshot.
+      //Process: Set the block range of the snapshot.
       require('./tasks/process/block-range'),
-      //truncate all databases (except state) if config permits
+      //Misc: truncate all databases (except state) if config permits
       require('./tasks/misc/truncate-db'),
-      // //Sync millions of ethereum public keys >_< (slow af but faster than the other one)
+      //Sync: millions of ethereum public keys >_< (slow af but faster than the other one)
       require('./tasks/sync/public_keys'),
-      // //Sync events from the crowdsale contract
+      //Sync: events from the crowdsale contract
       require('./tasks/sync/contract'),
 
       (state, next) => {
@@ -54,13 +54,13 @@ module.exports = (COMPLETE) => {
         }
         waterfall([
           next => next(null, state),
-          //Calculate and validate each wallet.
+          //Process: Calculate and validate each wallet.
           require('./tasks/process/wallets'),
-          //Fallback Registration
+          //Process: Fallback Registration
           require('./tasks/process/fallback-registration.js'),
-          //Deterministic Index and account names
+          //Process: Deterministic Index and account names
           require('./tasks/process/deterministic-index-account-names'),
-          //Run tests against data to spot any issues with integrity
+          //Misc: Run tests against data to spot any issues with integrity
           require('./tasks/misc/tests'),
           //Generate output files.
           require('./tasks/export')
