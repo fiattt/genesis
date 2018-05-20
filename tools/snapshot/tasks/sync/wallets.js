@@ -274,23 +274,23 @@ module.exports = (state, complete) => {
       }
       else {
         //Truncate wallets table
-        console.log(`Truncating Wallets Table in 5 seconds`)
+        console.log(`Truncating Wallets Table in 30 seconds`)
         setTimeout( () => {
           //Reset resume period to 0.
           resume_period = 0
           db.State.destroy({ where: {meta_key: "sync_wallets_period"} })
-          .then( () => {
-            db.Wallets
-              .destroy({ truncate : true, cascade: false })
-              .then(() => {
-                block_begin = state.block_begin
-                block_end = state.block_end
-                setTimeout( () => next(), 5000 )
-              })
-              .catch( e => { throw new Error(e) })
-          })
-          .catch( e => { throw new Error(e) })
-        }, 5000)
+            .then( () => {
+              db.Wallets
+                .destroy({ truncate : true, cascade: false })
+                .then(() => {
+                  block_begin = state.block_begin
+                  block_end = state.block_end
+                  setTimeout( () => next(), 5000 )
+                })
+                .catch( e => { throw new Error(e) })
+            })
+            .catch( e => { throw new Error(e) })
+        }, 30000)
       }
     }
 
