@@ -77,6 +77,7 @@ db.Registrations = mysql.define('registration', {
     primaryKey:       true
   },
   tx_hash:            Sequelize.STRING(256),
+  position:           Sequelize.INTEGER,
   block_number:       Sequelize.STRING(256),
   address:            Sequelize.STRING(256),
   eos_key:            Sequelize.STRING(256)

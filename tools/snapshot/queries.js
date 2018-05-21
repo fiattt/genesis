@@ -58,7 +58,10 @@ query.last_register = (address, begin, end, callback) => {
           }
         ]
       },
-      order: [['block_number', 'DESC']],
+      order: [
+        ['block_number', 'DESC'],
+        ['position', 'DESC']
+      ],
       limit: 1
     })
     .then( results => callback( results.length ? results[0].dataValues.eos_key : null ) )

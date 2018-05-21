@@ -6,8 +6,8 @@
 # https://github.com/sequelpro/sequelpro
 #
 # Host: 127.0.0.1 (MySQL 5.6.37)
-# Database: eos_snapshot
-# Generation Time: 2018-05-19 11:47:13 +0000
+# Database: eos_snapshot_refactor
+# Generation Time: 2018-05-21 10:27:33 +0000
 # ************************************************************
 
 
@@ -99,6 +99,7 @@ DROP TABLE IF EXISTS `registrations`;
 CREATE TABLE `registrations` (
   `uuid` varchar(256) NOT NULL,
   `tx_hash` varchar(256) NOT NULL DEFAULT '',
+  `position` int(11) NOT NULL,
   `block_number` int(255) NOT NULL,
   `address` varchar(256) NOT NULL DEFAULT '',
   `eos_key` varchar(256) DEFAULT NULL,

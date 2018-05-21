@@ -118,6 +118,7 @@ module.exports = ( state, complete ) => {
             return {
               uuid:         generate_uuid(registration),
               tx_hash:      registration.transactionHash,
+              position:     registration.transactionIndex,
               block_number: registration.blockNumber,
               address:      registration.returnValues.user.toLowerCase(),
               eos_key:      encodeURIComponent(registration.returnValues.key)
