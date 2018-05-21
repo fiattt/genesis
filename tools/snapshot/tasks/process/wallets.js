@@ -136,7 +136,7 @@ module.exports = (state, complete) => {
   */
   const claims = (wallet, finished) => {
     // console.log('Wallet Claims')
-    query.address_claims(wallet.address, state.block_begin, state.block_end, config.period)
+    query.address_claims(wallet.address, state.block_begin, state.block_end)
       .then( results => {
         wallet.claims = new Array( CS_NUMBER_OF_PERIODS ).fill( false )
         results.forEach( result => {
