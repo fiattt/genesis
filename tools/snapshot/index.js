@@ -77,7 +77,7 @@ module.exports = (COMPLETE) => {
     if(error) {
       console.log(art("try again","2"))
       console.log("Try with recalculate wallets, if that doesn't work remove --resume")
-      console.log('Error:', error)
+      throw new Error(error)
     }
     else {
       console.log(art("complete","2"))
