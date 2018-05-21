@@ -317,4 +317,8 @@ query.address_sum_transfer_balance = (address, block_from, block_to) => {
   return db.sequelize.query(query, {type: db.sequelize.QueryTypes.SELECT})
 }
 
+query.set_address_account_name = values => {
+  return db.sequelize.query(`INSERT into wallets (address, deterministic_index, account_name) VALUES ${values} ON DUPLICATE KEY UPDATE deterministic_index=VALUES(deterministic_index), account_name=VALUES(account_name)`)
+}
+
 module.exports = query
