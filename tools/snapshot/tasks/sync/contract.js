@@ -306,12 +306,12 @@ module.exports = ( state, complete ) => {
   }
 
   const run_resume = (resume_block) => {
-    prepare_resume( resume_block, () => {
+    // prepare_resume( resume_block, () => {
       verify_resume( resume_block, () => {
         console.log("original start block:", state.block_start, "resume block saved:", resume_block-1, "resume block now:", resume_block)
         start_sync( resume_block, state.block_end )
       })
-    })
+    // })
   }
 
   const maybe_resume = () => {
