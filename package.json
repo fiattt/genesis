@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "ascii-table": "0.0.9",
+    "ascii-text-generator": "1.0.5",
     "async": "2.6.0",
     "async-for": "2.0.0",
     "babel-polyfill": "6.26.0",
