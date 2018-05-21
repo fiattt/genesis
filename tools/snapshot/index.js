@@ -75,9 +75,12 @@ module.exports = (COMPLETE) => {
 
   const snapshot_complete = (error, state) => {
     if(error) {
+      console.log(art("try again","2"))
+      console.log("Try with recalculate wallets, if that doesn't work remove --resume")
       console.log('Error:', error)
     }
     else {
+      console.log(art("complete","2"))
       console.log(`Snapshot for Period #${config.period} Completed.`)
     }
 
@@ -126,6 +129,8 @@ module.exports = (COMPLETE) => {
   }
 
   const configure = (callback) => {
+
+    console.log(art("level 1","2"))
 
     //Show prompt?
     const show_prompt = next => {
@@ -197,7 +202,9 @@ module.exports = (COMPLETE) => {
 
       //Some screen output.
       console.log(colors.bold.white(table.setAlign(0, Table.RIGHT).setAlign(1, Table.LEFT).render()))
-      console.log(colors.white('Starting in 5 seconds.'))
+      console.log(colors.white('Configured. Starting in 5 seconds.'))
+
+      // art("Configuration Complete","1")
 
       setTimeout( callback, 5000 )
     }

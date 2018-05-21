@@ -32,6 +32,9 @@ global.SS_ACCEPTABLE_SUPPLY_DEVIATION     = 5 //total number of EOS deviation al
 global.CS_END_TIME                        = CS_START_TIME + ((CS_MAX_PERIOD_INDEX) * CS_PERIOD_LENGTH_SECONDS)
 // global.CS_END_TIME                        = 1527893999
 
+//For screen output
+global.art = require('ascii-text-generator')
+
 //Services are global to help avoid extraneous connection bottlenecks.
 global.web3
 global.mysql

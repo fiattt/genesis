@@ -7,12 +7,16 @@ module.exports = (state, all_systems_go) => {
   const util = require('util')
 
   const connect = () => {
+    console.log(art("level 2","2"))
+
     async.series([
       // connect_redis,
       connect_mysql,
       connect_web3_connected,
       connect_web3_synced
-    ], () => all_systems_go(null, state) )
+    ], () => {
+      all_systems_go(null, state)}
+    )
   }
 
   const connect_redis = connected => {

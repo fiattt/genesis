@@ -5,6 +5,8 @@ module.exports = ( state, complete ) => {
 
   state.tests = {}
 
+  console.log(art("level 5","2"))
+
   const passed = (test_results) => {
     let table = new Table('Tests Passed'),
         count = 0

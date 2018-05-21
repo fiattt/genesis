@@ -22,7 +22,6 @@ module.exports = ( state, complete ) => {
         settings = {},
         resume_tries = 0
 
-
   // if(config.recalculate_wallets === true) {
   //   console.log('recalculate_wallets set to true, skipping contract sync')
   //   complete(null, state)

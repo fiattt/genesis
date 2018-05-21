@@ -1,4 +1,5 @@
 module.exports = ( state, complete ) => {
+
   const colors = require("colors/safe"),
         series    = require('async').series,
         contract = require('../../helpers/web3-contract.js')

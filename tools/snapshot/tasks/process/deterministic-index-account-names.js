@@ -19,7 +19,6 @@ module.exports = (state, complete) => {
         console.log(`Deterministic Index: Found ${addresses.length} Addresses`)
         callback(null, addresses)
       })
-      .catch( e => { throw new Error(e)} )
   }
 
   const set_deterministic_indices = (addresses, callback) => {
@@ -58,12 +57,12 @@ module.exports = (state, complete) => {
           .then( result => {
             cache = ""
             cache_index = 0
-            return next()
+            next()
           })
           .catch(e => {throw new Error(e)})
       }
       else {
-        return next()
+        next()
       }
     }, () => complete(null, state) )
   }

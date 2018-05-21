@@ -43,6 +43,7 @@ module.exports = (state, complete) => {
         block_begin,
         block_end
 
+  console.log(art("level 4","2"))
 
   /**
   * Instantiates the wallet and passes into the control flow.

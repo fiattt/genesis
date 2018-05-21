@@ -1,10 +1,10 @@
 module.exports = ( state, complete ) => {
 
-    if(!config.registration_fallback) {
-    console.log("Skipping fallback registration")
-    complete(null, state)
-    return
-  }
+  // if(!config.registration_fallback) {
+  //   console.log("Skipping fallback registration")
+  //   complete(null, state)
+  //   return
+  // }
 
   const async     = require('async'),
         Table     = require('ascii-table'),
