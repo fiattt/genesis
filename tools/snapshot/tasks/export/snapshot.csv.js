@@ -7,7 +7,7 @@ module.exports = ( state, callback ) => {
 
   const csv = callback => {
     db.Snapshot
-      .findAll({ order: [ ['id', 'ASC'] ] })
+      .findAll({ order: [ ['id', 'ASC'] ] }, {type: db.sequelize.QueryTypes.SELECT})
       .then( results => {
         let _results = results.map( result => {
           return {user: result.dataValues.user, account_name: result.dataValues.account_name, key: result.dataValues.key, balance: result.dataValues.balance}
@@ -18,7 +18,7 @@ module.exports = ( state, callback ) => {
             if(config.overwrite_snapshot) fs.createReadStream(state.files.path_snapshot_csv).pipe(fs.createWriteStream(state.files.file_snapshot_csv))
             callback(null, state)
           })
-          .catch( error => { throw new Error(error) })
+          // .catch( error => { throw new Error(error) } )
       })
       .catch( error => { throw new Error(error) })
   }
