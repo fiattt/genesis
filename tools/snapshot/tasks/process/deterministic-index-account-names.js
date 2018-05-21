@@ -48,6 +48,7 @@ module.exports = (state, complete) => {
       return
     }
     console.log(`Deterministic Index: Updating Indices and Account Names to DB in batches`)
+    console.log(`This is probably going to take a while.`)
     async.eachOfSeries(addresses, (address, key, next) => {
       let total_addresses = addresses.length
       if(cache_index!=0) cache += ', '
