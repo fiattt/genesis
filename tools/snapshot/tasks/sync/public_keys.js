@@ -33,11 +33,11 @@ module.exports = ( state, complete ) => {
     threads = 1
   }
 
-  if(config.registration_fallback === false) {
-    console.log('registration_fallback set to false, skipping ethereum public key sync')
-    complete(null, state)
-    return
-  }
+  // if(config.registration_fallback === false) {
+  //   console.log('registration_fallback set to false, skipping ethereum public key sync')
+  //   complete(null, state)
+  //   return
+  // }
 
   console.log(`${threads} cpus detected`)
 
