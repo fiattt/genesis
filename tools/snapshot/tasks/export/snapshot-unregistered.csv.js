@@ -10,16 +10,15 @@ module.exports = ( state, callback ) => {
       .findAll({ order: [ ['id', 'DESC'] ] })
       .then( results => {
         let _results = results.map( result => {
-          return {id user: result.dataValues.user, account_name: result.dataValues.account_name, balance: result.dataValues.balance}
+          return {user: result.dataValues.user, account_name: result.dataValues.account_name, balance: result.dataValues.balance}
         })
         if(results.length)
           json_to_csv(_results, state.files.path_snapshot_unregistered_csv, false)
             .then(() => {
               console.log(`${results.length} Records Saved to CSV`)
-              if(config.overwrite_snapshot) fs.createReadStream(state.files.path_snapshot_unregistered_csv).pipe( fs.createWriteStream(state.files.file_snapshot_unregistered_csv))
+              if(config.overwrite_snapshot) fs.createReadStream(state.files.path_snapshot_unregistered_csv).pipe( fs.createWriteStream(state.files.file_snapshot_unregistered_csv) )
               callback(null, state)
             })
-            .catch( error => { throw new Error(error) })
         else
           console.log(`snapshot_unregistered.csv not generated because there were no unregistered addresses (It's a perfect world?)`),
           callback(null, state)
