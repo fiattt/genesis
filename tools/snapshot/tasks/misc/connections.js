@@ -89,9 +89,12 @@ module.exports = (state, all_systems_go) => {
 
     check()
       .then( () => {
-          console.log(colors.green.bold('Web3: Connected')),
-          console.log(colors.gray.italic('Waiting 30 seconds before checking sync, parity/web3 can throw false positive.')),
-          setTimeout( connected, 30000*1 )
+          console.log(colors.green.bold('Web3: Connected'))
+          if(config.skip_web3_sync)
+            connected()
+          else
+            console.log(colors.gray.italic('Waiting 30 seconds before checking sync, parity/web3 can throw false positive.')),
+            setTimeout( connected, 30000*1 )
       })
       .catch( e => {
         if(e.toString().toLowerCase().includes("connection error")) {
