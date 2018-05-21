@@ -10,7 +10,7 @@ module.exports = ( state, callback ) => {
       .findAll({ order: [ ['id', 'DESC'] ] })
       .then( results => {
         let _results = results.map( result => {
-          return {user: result.dataValues.user, balance: result.dataValues.balance}
+          return {id user: result.dataValues.user, account_name: result.dataValues.account_name, balance: result.dataValues.balance}
         })
         if(results.length)
           json_to_csv(_results, state.files.path_snapshot_unregistered_csv, false)
