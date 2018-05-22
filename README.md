@@ -191,6 +191,10 @@ Because of this [unresolved issue](https://github.com/ethereum/web3.js/issues/16
 ### What happens if EOS key does not validate?
 Registration Fallback will attempt to find a public key for the address, and fallback register it. 
 
+### Do I need to agree on block numbers with others for block ranges?
+
+NO! That sounds like a recipe for indeterminism. The script will choose the deterministic end block for final snapshot, it's picks that block by detecting when the tokens were frozen. For ongoing snapshots the block ranges are determined by period, from the first block where the crowdsale had a transaction, to the last block of the defined period. 
+
 ## Troubleshooting
 
 ### Tests are failing
