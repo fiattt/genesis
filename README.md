@@ -147,7 +147,7 @@ There are three methods for configuration
 - `mysql_host`
 - `mysql_port`
 
-**All of the above options can be set either in your config.js or as startup parameters, simply prepend the option with `--` so for example `poll` or `period=111`. Startup parameters will override config.js parameters.**
+**All of the above options can be set either in your config.js or as startup parameters, simply prepend the option with `--` so for example `--poll` or `--period=111`. Startup parameters will override config.js parameters.**
 
 ## Developer Parameters
 _Misuse of these parameters without understanding the implications can result in inaccurate snapshot and/or result in error_
