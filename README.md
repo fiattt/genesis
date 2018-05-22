@@ -205,6 +205,11 @@ npm install
 
 You probably started your Parity node without `--no-warp` (add --no-warp to parity startup), if using geth make sure `syncmode` is set to "full"` is set (`--syncmode "full"`_
 
+
+### I'm seeing an useful error or I public keys don't appear to be syncing
+
+First, run snapshot with `--verbose_mt`, this will display the stdout of the child processes for public key sync. If there's an error, look into it. Most likely you just need to `npm install`
+
 ## Common Usage
 
 ### Suggested usage (sync up to last closed period and poll)
