@@ -176,6 +176,13 @@ Determinstic index is the order of all wallets with respect to when they were se
 ### How are account names set?
 Account names the deterministic index encoded to byte32, and then padded with "genesis11111" up to 12 chars. 
 
+### Does the script validation EOS keys?
+
+Yes
+
+### What happens if EOS key does not validation?
+
+Then Registration Fallback will attempt to find a public key for the address, and fallback register it. 
 
 ## Troubleshooting
 
