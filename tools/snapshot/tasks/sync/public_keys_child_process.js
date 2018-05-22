@@ -141,14 +141,12 @@ const run = () => {
         callback()
       })
       .catch( e => {
-        //We assume this is a deadlock, if you get repeated unresolved deadlocks, uncomment line below.
         if(e.toString().toLowerCase().includes("deadlock")) {
           console.log(colors.red(`Thread ${id}: DEADLOCK: RETRY`))
           setTimeout( () => save_rows(callback, true), 500 )
         } else {
           throw new Error(e)
         }
-        // console.log(e)
       })
   }
 
