@@ -28,7 +28,7 @@ let schema = {
       type: 'number',
       conform: function (p) {
         if(p > period.last_closed())
-          return
+          return period.last_closed()
         return true
       },
       default: period.last_closed(),

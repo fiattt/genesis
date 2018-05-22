@@ -3,7 +3,7 @@ const async  = require('async'),
       Wallet = require('./Wallet'),
       util = require('../utilities')
 
-class WalletTestnet extends Wallet {
+class WalletOngoing extends Wallet {
 
   process_key( complete = () => {} ){
     this.maybe_fix_key()
@@ -11,10 +11,16 @@ class WalletTestnet extends Wallet {
   }
 
   process_balance_wallet( complete = () => {} ){
-    util.balance.wallet_cumulative( this.transfers, balance => {
-      this.balance.set( 'wallet', balance)
+    if(config.use_js_cumulative) {
+      util.balance.wallet_cumulative( this.transfers, balance => {
+        this.balance.set( 'wallet', balance)
+        complete()
+      })
+    }
+    else {
+      this.balance.set('wallet', this.transfers)
       complete()
-    })
+    }
   }
 
   process_balance_unclaimed( complete = () => {} ){
@@ -78,4 +84,4 @@ class WalletTestnet extends Wallet {
   }
 }
 
-module.exports = WalletTestnet
+module.exports = WalletOngoing

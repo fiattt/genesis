@@ -9,7 +9,7 @@ module.exports = ( state, callback ) => {
     .query(query, {type: db.sequelize.QueryTypes.SELECT})
     .then( sum => {
       let total  = new bn(parseFloat(sum[0]['sum(balance_wallet)'])),
-          expected = new bn(200000000).plus(new bn(CS_NUMBER_OF_PERIODS-1).times(2000000))
+          expected = new bn(200000000).plus(new bn(CS_MAX_PERIOD_INDEX).times(2000000))
 
       if(config.include_b1) expected = expected.plus(new bn(100000000))
 

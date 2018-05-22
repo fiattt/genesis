@@ -8,13 +8,11 @@ This tool can be used to generate snapshots for **any period** in a **determinis
 
 ## Table of Contents
 - [Installation](#installation)
+- [Troubleshooting](#troubleshooting)
+- [Common Usage](#comnmon-usage)
+- [Configuration Options](#configuration-options)
+- [How it works](#how-it-works)
 - [Glossary](#glossary)
-
-## Wiki
-- [How it works](https://github.com/EOSIO/genesis/wiki/How-it-Works)
-- [Differences between Ongoing and Final snapshot](https://github.com/EOSIO/genesis/wiki/%22Ongoing%22-vs-%22Final%22-Snapshot)
-- [Configuration Options](https://github.com/EOSIO/genesis/wiki/Advanced-Configuration-Options)
-- [Contribute](https://github.com/EOSIO/genesis/wiki/Contribute)
 
 ## Utilities
 - [Offline Key Generator and Validator](https://github.com/EOSIO/genesis/tree/master/tools/keys)
@@ -26,15 +24,23 @@ This tool can be used to generate snapshots for **any period** in a **determinis
 
 ### Prerequisites
 
+#### Dependencies
+
 1. MySQL (local or remote) 
 2. Parity 1.7.8+
 3. [Node 8+](https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions) 
 
+#### Time
+1. For a full sync, Parity can take 3-4 days.
+2. A fresh snapshot sync can take upwards of 15 hours to the current periods.
+
+_Plan accordingly_
+
 ### System requirements
 
-1. 8GB Ram Recommended, can make due with 4gb
-2. SSD recommended, NVME to win the race. HDD read/write speeds are intolerably slow with parity. It can increase your parity sync time by 3-4x, and will increase the amount of time for snapshot to process by 2-3x. 
-3. Around 110GB of storage space, required for full parity chain. 
+1. Ram: 16GB+ Recommended
+2. Hard drive: SSD recommended, NVME to win the race. HDD read/write speeds are intolerably slow with parity.
+3. Around 128GB of free storage, required for full parity chain, database and large file exports. 
 
 ### 1. Create Config File
 
@@ -47,19 +53,31 @@ MySQL stores all the intricate details of the distribution and the contract. The
 - Add your mysql details to your newly copied config file. 
 - Import `schema.sql` located in the `./bin` directory of this project. 
 
-### 3. Start and Sync Parity
+### 3. Start/Sync Ethereum Node
 
-Start parity, **it's imperitive that you start parity with --no-warp**. If you have a pre-existing parity configuration file you've modified, you'll want to create a new configuration file for the snapshot. 
+**The instructions below are for IPC because it's the recommended connection method. HTTP/WS has issues with multi-threading, and so you will be limited to a single thread for public key sync.**
 
-*Sample Config:*
+#### 4. Parity
 
-`parity --mode active --tracing off --pruning fast --db-compaction ssd --jsonrpc-apis all --chain mainnet --no-warp --cache-size 2048`
+On most linux systems, the default IPC defined in config.default.js should work for most linux platforms. 
 
+`parity --no-warp --mode active --tracing off --pruning fast --db-compaction ssd --jsonrpc-apis all --chain mainnet --cache-size 2048`
+
+If you're on Mac, it's suggested you pass a flag to parity to generate an IPC file, like below
+
+`parity --mode active --tracing off --pruning fast --db-compaction ssd --jsonrpc-apis all --chain mainnet --no-warp --cache-size 2048  --ipc-path /Users/youruser/jsonrpc.ipc`
+
+And then set that path in your config.js
+
+**it's imperitive that you start parity with --no-warp**. If you have a pre-existing parity configuration file you've modified, you'll want to create a new configuration file for the snapshot. 
 **Important:** Since Parity v1.7.8 `--warp` is enabled by default. **If you fail to configure with `no-warp` you will have issues.**
 
 **Notes** 
+- If you do not use IPC, you will have limited performance due to limitations with HTTP and WS transports. 
 - If you must use an HDD, be sure to change the `--db-compaction` parameter for parity to `hdd`, like so: `--db-compaction hdd` 
 - You can adjust `--cache-size` as needed, this could provide some sync-speed improvements. 
+
+Please view [Parity Documentation](https://wiki.parity.io/Configuring-Parity) if you have issues with Parity.
 
 ### 3. Configure The Snapshot Parameters
 
@@ -69,7 +87,6 @@ Start parity, **it's imperitive that you start parity with --no-warp**. If you h
 **If you're taking an "ongoing" snapshot,** change "period" to the period for which you would like to generate a snapshot. 
 **Note** If you put in a period that hasn't yet completed, the "last closed period" will override your choice. 
 
-Explore the options as defined [here](https://github.com/EOSIO/genesis/wiki/Advanced-Configuration-Options)
 
 ### 4. Run the Snapshot
 
@@ -101,6 +118,215 @@ From the *root directory of this project directory*, run the following:
 #### 6c. Snapshot in Root Directory
 If `overwrite_snapshot` is set to true, all the above files will be put into the root directory of the project. If you are doing any development on this project, it's suggested that you change this to `false` (it's enabled by default in the `config.default.js` file.) 
 
+## Configuration Options
+
+There are three methods for configuration
+1. *Config File* (recommended)
+2. *User Prompt*, fast if your using default mysql, redis and web3 settings.
+3. *CLI* args, will override _Prompt_ 
+
+### Snapshot Parameters
+- `period` (integer, default: last closed period) The period to sync to, it will sync to the last block of any given period.
+- `snapshot_minimum_balance` (integer, default: 1) Minimum balance required for inclusion in snapshots.
+- `overwrite_snapshot`(boolean, default: true) Overwrites snapshots in root directory. 
+
+### Session Parameters
+- `poll` (boolean) Will finish the configured period, and then try the next one. If the next one isn't ready (or tokens aren't frozen) it will continue to try every 10 seconds until there's a new period to process.
+- `resume` (boolean) Will resume from last synced data. If you successfully run period 1, and the run period 3 with resume, it will only sync contract data between 1 and 3 (instead of starting fresh) and will only update wallets with changes between 1 and 3. **Important** This functionality isn't perfect, there are situations where this flag could produce a failed test and force a resync (run without resume) 
+- `only_produce_final_snapshot` (boolean) Should be used in conjunction with poll. It will sync contract data, but will only calculate wallets after the tokens are frozen. 
+
+### Misc
+- `author` (string, default: "Anonymous") Optional meta to identify snapshotter
+
+### Connection Details 
+- `eth_node_type` (http, ipc , ws) [default: http] Based on performance testing, `ipc` is recommended for local configurations and `http` is recommended for cloud configurations. 
+- `eth_node_path` (valid host/path) Relative to type as defined above
+- `mysql_db`
+- `mysql_user`
+- `mysql_pass`
+- `mysql_host`
+- `mysql_port`
+
+**All of the above options can be set either in your config.js or as startup parameters, simply prepend the option with `--` so for example `poll` or `period=111`. Startup parameters will override config.js parameters.**
+
+## Developer Parameters
+_Misuse of these parameters without understanding the implications can result in inaccurate snapshot and/or result in error_
+- `recalculate_wallets` (boolean, default: false) Recalculates wallet balances without syncing contracts. Useful for development when resyncing the contracts is unnecessary (for example, you've already synced the contracts for period 1, and simply need to recalculate wallet balances for period 1)
+- `skip_web3_sync` (boolean, default: false) Skips web3 sync requirement. Useful for development if you know that Parity is caught up to the period you want to sync to (for example, you want to run a snapshot on period 2, but ran period 300 last night, so you know Parity is caught up to Period 2.)
+
+
+
+
+## FAQ
+
+### What happens to tokens left unclaimed in contract?
+Unclaimed tokens are attributed to the contributing address. 
+
+### What if an address sent EOS ERC20 tokens to EOSCrowdsale or EOSToken contract?
+Those tokens are assigned to the sending address.
+
+### What happens if a wallet isn't registered?
+It is exposed to fallback registeration. Script will sync all ethereum public keys in block range. If it can locate a public key belonging to an unregsitered address, it will generate an EOS Public Key from the Ethereum Public Key. The Ethereum Private Key then matches the EOS Public Key.
+
+### What happens to the unregistered supply of tokens?
+The script will attampt to register unregistered users with fallback
+
+### What is determinstic index?
+Determinstic index is the order of all wallets with respect to when they were seen by either of the contract's (EOSCrowdsale and EOSTokens)
+
+### How are account names set?
+Account names the deterministic index encoded to byte32, and then padded with "genesis11111" up to 12 chars. 
+
+
+## Troubleshooting
+
+1. Tests are failing
+
+Data is corrupted, try running with `--recalculate_wallets`, if that doesn't work, run without `resume`
+
+2. I got a "module not found error"
+
+```
+npm update
+npm install
+```
+
+## Common Usage
+
+### Suggested usage (sync up to last closed period and poll)
+
+`node snapshot --load_config --poll --resume --period=350` 
+
+If period 350 isn't closed yet, the script will reset your period to the `last_closed_period`, and then when finished try to sync again.
+
+### Recalculate Wallets, keep contract data (failed tests)
+
+`node snapshot --load_config --poll --resume --recalculate_wallets --period=350` 
+
+This will recalculate the wallets, but resume on the contract data. 
+
+### Start from Scratch (failed tests)
+
+`node snapshot --load_config --period=350 --recalculate_wallets` 
+
+This is a nuke, it will truncate your contract tables and wallet table, recalculating wallets. 
+
+_Note: Public Keys table is not deleted, if you need to delete it for whatever reason, it must be done manually_
+
+### Debug Multi-threaded
+
+add `--verbose_mt` to startup
+
+Verbose MT will display stdout from child processes, it's noisy, so it's disabled by default. 
+
+
+
+## Ongoing Vs Final
+
+There are some differences between "ongoing" and "final" snapshots that need to be mentioned.
+
+- *Ongoing* snapshots will produce accurate output based on period by constraining all blockchain activity to that range. 
+   - Block range for each period must be found (determinism) 
+	- Balances are calculated cumulatively, as opposed to `balanceOf()` method provided by  EOSCrowdsale contract
+	- EOS Key Registration is concluded by last registration within the block range. 
+-*Final* simplifies a few things. However, it would be recommended that a cutoff block be enforced to encourage network consensus (primarily for registration transactions)
+	- Balances are not calculated but inferred from state returned by `balanceOf()` function provided by Token Contract.
+	- EOS Key Registration is concluded by last registration within the block range. (keys public constant provided by EOSCrowdsale contract is not used) 
+
+## How It Works
+#### High Level
+
+The snapshot parameters this software proposes are as follows
+
+1. All data is constrained by block range determined by period (for ongoing snapshots)
+1. EOS Balance of an address must be greater-than or equal to `snapshot_minimum_balance` to be considered valid for snapshot export. 
+2. An EOS key must be associated to an account either by registration
+3. If an ethereum address sent EOS ERC20 tokens to the EOS Crowdsale or EOS Token contract within the block range of the snapshot, these tokens are allocated to the respective address. 
+4. If an address has unclaimed EOS ERC20 tokens in the EOS Crowdsale contract within block range, these tokens are allocated to the respective address.
+5. If an address is unregistered and the script was able to find a public key belonging to the address, it will generate an EOS Public Key that matches the holding addresses' Ethereum private key. 
+5. Registered addresses whose EOS key validates and whose EOS ERC20 balance is greater-than or equal to the `minimum_snapshot_balance` are exported to `snapshot.csv` file (ethereum address, EOS public key, balance) 
+5. Addresses that are not registered but are equal to or greater-than the `minimum_snapshot_balance`, will be exported to `snapshot_unregistered.csv` (ethereum address, balance) 
+6. Entire distribution is exported to `distribution.csv` file without any rules or validation applied (ethereum address, balance) 
+
+
+<a name="snapshot-install-manual-about-lowlevel"></a>
+#### Low Level
+
+The script employs strict patterns to encourage predictable output, often at the expense of performance. The pattern is *aggregate - calculate - validate* and closely resembles an ETL or _extract, transform and load_ pattern. This decision came after numerous iterations and determining that debugging from state was more efficient than debugging from logs.
+
+Below is the script transposed to plain english.
+
+1. User Configured Parameters are set through one of three methods. 
+2. Check Connections to MySQL, Redis and Web3
+3. Truncate Databases
+4. Generate Period Map
+	1. Used to define block ranges of periods
+	2. Determines the block range that the snapshot is based upon
+5. Set Application State Variables (including user configurations)
+6. Set Block Range
+	7. If tokens are frozen, force the snapshot block range to `state.block_state` and the deterministic freeze block (block tokens were frozen) 
+	8. Otherwise, set block range to user defined block range. 
+6. Sync Public keys
+	7. For every address between block range, sync ethereum public keys to table. 
+	8. If IPC connection, use multi-threaded implementation.
+5. Sync history of token and crowdsale contract. 
+	1. EOS Transfers
+	2. Buys
+	3. Claims
+	4. Registrations
+	5. Reclaimable Transfers
+2. Compile list of every address that has ever had an EOS balance, for each address:
+	1. Aggregate relevant txs
+		1. Claims and Buys, required for Unclaimed Balance Calculation
+		2. Transfers, all incoming and outgoing tx from address
+		3. Reclaimable Transfers, every reclaimable has a corresponding transfer [special case]
+		4. The last registration transaction to occur within defined block range
+	2. Calculate
+		1. Sum Wallet Balance (sum(transfers_in) - sum(transfers_out))
+		2. Calculate Unclaimed Balance
+		3. Sum Reclaimed Transfer Balances
+		4. Sum Balances
+		5. Convert balances from gwei
+	3. Validate
+		1. 	Check Wallet Balance
+		2. Validate EOS Key, if valid set `registered` to `true`
+		3. If EOS key error, save error to column `register_error`
+		4. If all validated, set `valid` to true.
+	5. Process
+		6. Save every wallet regardless of validation or balance to `wallets` table
+1. Registration Fallback
+	1. Query invalid addresses, above minimum snapshot threshold and without register error "exclude" (EOSToken/Crowdsale contracts)
+	2. Attempt to locate public key for each addrses
+		1. if a public key is found, convert it to an EOS Key, update the wallet with the generated key, set fallback to true and set valid to true. 
+2. Deterministic Index and Account Names
+	3. 	Query addresses `order by first_seen, address` in batches of 10000.
+	4. For each batch set the deterministic index and generate the account name
+	5. Update each address.
+3. Test
+	1. Daily Totals from DB against daily totals from EOS Utility Contract, failure here would not fail the below tests, but would instead result in inaccurate unclaimed balances. Difficult problem to detect without this test. 
+	2. Total Supply, margin of error should be low due to _dust_ from rounding (generally 0.00000001%)
+   3. Negative Balances, there should be **zero** negative balances
+7. Output
+	1. **snapshot.csv** - comma-delimited list of ETH addresses, EOS keys and Total EOS ERC20 Balances (user, key, balance respectively) 
+		1. Move all valid entries from `wallets` table to `snapshot` table, ordered by balance DESC. 
+		2. Generate snapshot.csv from `snapshot` table
+	1. **snapshot_unregistered.csv** - comma-delimited list of ETH addresses and Total EOS ERC20 Balances (user, balance respectively)
+		1. Move all invalid entries whose balance is greater-than or equal-to `minimum_snapshot_balance` from `wallets` table to `snapshot_unregistered` table, ordered by balance DESC.
+		2. Generate snapshot_unregistered.csv from `snapshot_unregistered` table
+	1. **distribution.csv** - comma-delimited list of ETH addresses and Total EOS ERC20 Balances (user, balance respectively) **does not include EOS keys!** 
+		1. Export all Ethereum Addresses and EOS ERC20 total balances from `wallets` table without any rules of validation imposed to **distribution.csv**
+   2. **snapshot.json** - Snapshot meta data
+
+		1. Snapshot parameters
+		2. Test results
+		3. General Statistics
+		4. Generate MD5 Checksums
+			1. 	From generated **snapshot.csv** file, useful for debugging and auditing
+			2. From mysql checksum for every table in database (useful for debugging)
+		5. Pass any other useful state variables into object 
+
+
+
 ## Glossary
 
 - **wallet balance** - The wallet balance is refers to an address's EOS ERC20 token balance
@@ -114,3 +340,4 @@ If `overwrite_snapshot` is set to true, all the above files will be put into the
 - **snapshot-unregistered** - A file containing Ethereum addressees and balances. This file could potentially be imported during an EOSIO boot sequence into the table of a contract that enables Ethereum based claiming.
 - **liquid supply** - The liquid supply represents total aggregate EOS ERC20 tokens that are presently in circulation and detected by snapshot script, after the crowdsale ends, the liquid supply should equal the total supply.
 - **expected supply** - Expected supply is a mathematically determined value representing what the script expects the liquid supply to equal. Liquid Supply should be within 0.00000001% of expected supply as a result of dust acquired by precision reduction.
+- **registration fallback** - Registering an EOS Public Key for an unregistered address utilizing a discovered public key. 

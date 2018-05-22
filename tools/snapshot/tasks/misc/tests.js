@@ -5,10 +5,12 @@ module.exports = ( state, complete ) => {
 
   state.tests = {}
 
+  console.log(art("level 5","2"))
+
   const passed = (test_results) => {
     let table = new Table('Tests Passed'),
         count = 0
-    Object.keys(test_results).forEach(function(key,index) {
+    Object.keys(test_results).forEach((key,index) => {
       if(test_results[key] === true) {
         table.addRow(key.replace("_", " "), '✓')
         count++
@@ -25,9 +27,14 @@ module.exports = ( state, complete ) => {
         table.addRow(key.replace("_", " "), test_results[key])
         count++
       }
+      if(count>0) {
+        console.log(art("try again","2"))
+        console.log("Try with recalculate wallets, if that doesn't work remove --resume")
+      }
     });
     if(count)
       console.log(colors.red(table.render())),
+
       console.log(colors.red("Data has problems, cannot generate accurate snapshot from data.")),
       process.exit()
   }
@@ -38,13 +45,13 @@ module.exports = ( state, complete ) => {
     require('../../tests/total-daily-buys.js'),
     require('../../tests/negative-balances.js'),
     require('../../tests/validation-balance.js')
-  ], (error, results) => {
+  ], (error, state) => {
     if(error) {
       throw new Error(error)
       process.exit()
     } else {
-      passed(results.tests)
-      failed(results.tests)
+      passed(state.tests)
+      failed(state.tests)
       setTimeout( () => complete( null, state ), 5000 )
     }
   })

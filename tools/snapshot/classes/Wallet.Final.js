@@ -3,7 +3,7 @@ const async  = require('async'),
       Wallet = require('./Wallet'),
       util = require('../utilities')
 
-class WalletMainnet extends Wallet {
+class WalletFinal extends Wallet {
 
   process_key( complete ){
     this.maybe_fix_key()
@@ -77,4 +77,4 @@ class WalletMainnet extends Wallet {
   }
 }
 
-module.exports = WalletMainnet
+module.exports = WalletFinal
