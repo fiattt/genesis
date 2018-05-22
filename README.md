@@ -9,6 +9,7 @@ This tool can be used to generate snapshots for **any period** in a **determinis
 - [Troubleshooting](#troubleshooting)
 - [Common Usage](#comnmon-usage)
 - [Configuration Options](#configuration-options)
+- [FAQ](#faq)
 - [How it works](#how-it-works)
 - [Glossary](#glossary)
 
