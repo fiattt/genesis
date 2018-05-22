@@ -190,16 +190,20 @@ Registration Fallback will attempt to find a public key for the address, and fal
 
 ## Troubleshooting
 
-1. Tests are failing
+### Tests are failing
 
 Data is corrupted, try running with `--recalculate_wallets`, if that doesn't work, run without `resume`
 
-2. I got a "module not found error"
+###  I got a "module not found error"
 
 ```
 npm update
 npm install
 ```
+
+### I got a "block not found" error
+
+You probably started your Parity node without `--no-warp` (add --no-warp to parity startup), if using geth make sure `syncmode` is set to "full"` is set (`--syncmode "full"`_
 
 ## Common Usage
 
