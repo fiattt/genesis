@@ -56,7 +56,7 @@ MySQL stores all the intricate details of the distribution and the contract. The
 
 **The instructions below are for IPC because it's the recommended connection method. HTTP/WS has issues with multi-threading, and so you will be limited to a single thread for public key sync.**
 
-#### 4. Parity
+#### Parity
 
 On most linux systems, the default IPC defined in config.default.js should work for most linux platforms. 
 
