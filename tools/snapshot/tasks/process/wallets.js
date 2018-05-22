@@ -35,7 +35,7 @@ module.exports = (state, complete) => {
         /**
         * Holds resume period if any for entire scope
         */
-        resume_period = 0,
+        resume_period = -1,
 
         /**
         * In case of resume, block range is adjusted in this scope only, otherwise state block range is inherited.
@@ -235,7 +235,7 @@ module.exports = (state, complete) => {
     * @param {function} next Proceed to next step in control flow
     */
     const check_resume = next => {
-      if(!config.resume) {
+      if(!config.resume || config.recalculate_wallets) {
         next()
         return
       }
@@ -245,11 +245,19 @@ module.exports = (state, complete) => {
           where: { meta_key: `sync_wallets_period` }
         })
         .then(resume_from => {
-          if(resume_from && resume_from.length)
-            resume_period = parseInt(resume_from[0].dataValues.meta_value),
-            console.log(`Resuming from Period ${resume_period} up to ${config.period}`)
-          else
+          if(resume_from && resume_from.length) {
+            let _resume_from = parseInt(resume_from[0].dataValues.meta_value)
+            if(_resume_from <= config.period) {
+              resume_period = _resume_from,
+              console.log(`Resuming from Period ${_resume_from} up to ${config.period}`)
+            }
+            else {
+              console.log(`Configured period is lower than last ran period, ${config.period}<${_resume_from}, this requires Wallets Table Truncation`)
+            }
+          }
+          else {
             console.log(`Starting at Period 0 up to ${config.period}`)
+          }
           next()
         })
         .catch( e => { throw new Error(e) })
@@ -260,11 +268,11 @@ module.exports = (state, complete) => {
     * @param {function} next Proceed to next step in control flow
     */
     const handle_resume = next => {
-      if(resume_period == config.period && !config.recalculate_wallets && (resume_period != 0 || (resume_period==0 && config.period==0))) {
+      if(resume_period == config.period && !config.recalculate_wallets) {
         console.log(`Wallets already calculated for Period #${resume_period}, if you would like to recalculate, run script with --recalculate_wallets parameter`)
         complete(null, state)
       }
-      else if(config.resume && resume_period < config.period && !config.recalculate_wallets && !config.only_produce_final_snapshot) {
+      else if(config.resume && resume_period>-1 && resume_period < config.period && !config.recalculate_wallets) {
         //Only query addresses with activity since last recorded sync.
         //If period x was synced previously, and period z is being synced now, then from the first block of period x+1=y (period[y].begin)
         // block_begin = state.period_map[resume_period+1].begin //this results in supply loss >_<
