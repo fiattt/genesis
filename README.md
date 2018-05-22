@@ -161,13 +161,13 @@ _Misuse of these parameters without understanding the implications can result in
 Unclaimed tokens are attributed to the contributing address. 
 
 ### What if an address sent EOS ERC20 tokens to EOSCrowdsale or EOSToken contract?
-Those tokens are assigned to the sending address.
+Tokens accidentally sent to one of the contracts are attributed to the sending address.
 
 ### What happens if a wallet isn't registered?
 It is exposed to fallback registeration. Script will sync all ethereum public keys in block range. If it can locate a public key belonging to an unregsitered address, it will generate an EOS Public Key from the Ethereum Public Key. The Ethereum Private Key then matches the EOS Public Key.
 
 ### What happens to the unregistered supply of tokens?
-Unregistered addresses are exported to `snapshot-unregistered.csv` file, which could prove useful. 
+Addresses not exposed to fallback registrations that remain invalid are exported to `snapshot-unregistered.csv` file, which could prove useful. 
 
 ### What is determinstic index?
 Determinstic index is the order of all wallets with respect to when they were seen by either of the contract's (EOSCrowdsale and EOSTokens)
