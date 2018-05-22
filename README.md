@@ -209,8 +209,8 @@ npm install
 You probably started your Parity node without `--no-warp` (add --no-warp to parity startup), if using geth make sure `syncmode` is set to "full"` is set (`--syncmode "full"`_
 
 
-### I'm seeing an useful error or I public keys don't appear to be syncing
-First, run snapshot with `--verbose_mt`, this will display the stdout of the child processes for public key sync. If there's an error, look into it. Most likely you just need to `npm install`
+### I'm seeing a useless error or I public keys don't appear to be syncing
+First, run snapshot with `--verbose_mt`, this will display the stdout of the child processes for public key sync. If there's an error, look into it. Most likely you just need to `npm install`. You can also add `BLUEBIRD_LONG_STACK_TRACES=1` to your snapshot startup like... `BLUEBIRD_LONG_STACK_TRACES=1 node snapshot...`
 
 ### I get an error during NPM install related to web3 or lerna
 This is related to the web3 fork mentioned in FAQ. Web3.js team runs lerna before releasing a package, this package is not listed on NPM, so your system will have to run lerna. I'm not doing the package process to keep the forked repo as close to origin as possible.
