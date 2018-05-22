@@ -1,5 +1,3 @@
-**MASTER WILL NOT WORK PAST PERIOD 321 DUE TO BUG IN WEB3.JS ([issue](https://github.com/ethereum/web3.js/issues/1610)), THIS ISSUE IS BEING ADDRESSED IN ALPHA TESTING OF OPTIMIZATIONS BRANCH AND WILL BE MERGED IN AFTER TESTING** 
-
 # EOS Snapshot Generator
 
 This tool was created to aggregate the EOS ERC20 token distribution in it's entirety, acknowledge various scenarios, run validation on data and provide files representing balances in various states. 
