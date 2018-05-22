@@ -158,6 +158,12 @@ _Misuse of these parameters without understanding the implications can result in
 
 ## FAQ
 
+### Why does syncing the Ethereum Node take so long?
+Because you need to sync the entire blockchain.
+
+### Why is a database necessary?
+Because this distribution requires an ETL mechanism in order to determinstically aggregate the distribution. 
+
 ### What happens to tokens left unclaimed in contract?
 Unclaimed tokens are attributed to the contributing address. 
 
