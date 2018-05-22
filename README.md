@@ -262,7 +262,7 @@ There are some differences between "ongoing" and "final" snapshots that need to 
    - Block range for each period must be found (determinism) 
 	- Balances are calculated cumulatively, as opposed to `balanceOf()` method provided by  EOSCrowdsale contract
 	- EOS Key Registration is concluded by last registration within the block range. 
--*Final* simplifies a few things. However, it would be recommended that a cutoff block be enforced to encourage network consensus (primarily for registration transactions)
+- *Final* simplifies a few things. However, it would be recommended that a cutoff block be enforced to encourage network consensus (primarily for registration transactions)
 	- Balances are not calculated but inferred from state returned by `balanceOf()` function provided by Token Contract.
 	- EOS Key Registration is concluded by last registration within the block range. (keys public constant provided by EOSCrowdsale contract is not used) 
 
