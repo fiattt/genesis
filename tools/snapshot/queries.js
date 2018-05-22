@@ -208,8 +208,8 @@ query.destroy_above_block = (block_number, callback) => {
 //Returns liquid supply
 query.supply_liquid = () => {
   let query = `SELECT sum(balance_total) FROM wallets WHERE address!="${CS_ADDRESS_TOKEN}" AND address!="${CS_ADDRESS_CROWDSALE}"`
-  if(!config.include_b1)
-    query = `${query} AND address!="${CS_ADDRESS_B1}"`
+  // if(!config.include_b1)
+    // query = `${query} AND address!="${CS_ADDRESS_B1}"`
   return db.sequelize.query(query, {type: db.sequelize.QueryTypes.SELECT})
 }
 
@@ -303,16 +303,16 @@ query.address_sum_transfer_balance = (address, block_from, block_to) => {
     SELECT SUM(_ti.eos_amount) AS wallet
     FROM transfers AS _ti
     WHERE \`to\`="${address}"
-    AND block_number<${block_to}
-    AND block_number>${block_from}
+    AND block_number<=${block_to}
+    AND block_number>=${block_from}
   )
   UNION
   (
     SELECT (SUM(_to.eos_amount)*-1) AS wallet
     FROM transfers AS _to
     WHERE \`from\`="${address}"
-    AND block_number<${block_to}
-    AND block_number>${block_from}
+    AND block_number<=${block_to}
+    AND block_number>=${block_from}
   )) AS wallet`
   return db.sequelize.query(query, {type: db.sequelize.QueryTypes.SELECT})
 }
