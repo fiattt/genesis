@@ -68,7 +68,7 @@ query.last_register = (address, begin, end, callback) => {
 }
 
 // Returns a promise with an addresses' claims within a defined block range
-query.address_claims = (address, begin, end) => {
+query.address_claims = (address, begin, end, period) => {
   return db.Claims
     .findAll({
       where : {
@@ -82,6 +82,11 @@ query.address_claims = (address, begin, end) => {
           {
             block_number: {
               [Op.lte] : end
+            }
+          },
+          {
+            period: {
+              [Op.lte] : period
             }
           }
         ]

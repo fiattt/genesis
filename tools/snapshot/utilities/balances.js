@@ -28,7 +28,6 @@ balances.wallet_cumulative = ( transfers, callback) => {
 
 balances.unclaimed = ( buys, claims, period_max, callback) => {
   let unclaimed
-  // buys = buys.map( buy => new bn(buy || 0) )
   const periods = util.misc.iota(Number(CS_NUMBER_OF_PERIODS)).map(i => {
     let period = {}
     period.tokens_available = new bn( i == 0 ? CS_CREATE_FIRST_PERIOD : CS_CREATE_PER_PERIOD )
