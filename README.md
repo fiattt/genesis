@@ -167,7 +167,7 @@ Those tokens are assigned to the sending address.
 It is exposed to fallback registeration. Script will sync all ethereum public keys in block range. If it can locate a public key belonging to an unregsitered address, it will generate an EOS Public Key from the Ethereum Public Key. The Ethereum Private Key then matches the EOS Public Key.
 
 ### What happens to the unregistered supply of tokens?
-The script will attampt to register unregistered users with fallback
+Unregistered addresses are exported to `snapshot-unregistered.csv` file, which could prove useful. 
 
 ### What is determinstic index?
 Determinstic index is the order of all wallets with respect to when they were seen by either of the contract's (EOSCrowdsale and EOSTokens)
