@@ -20,7 +20,7 @@ module.exports = ( state, callback ) => {
           })
           // .catch( error => { throw new Error(error) } )
       })
-      .catch( error => { throw new Error(error) })
+      // .catch( error => { throw new Error(error) })
   }
 
   //It may seem redundant to do a select and insert on table and then find it again a second later,
@@ -36,6 +36,6 @@ module.exports = ( state, callback ) => {
           console.log( 'Snapshot Table Synced' )
           csv( callback )
         })
-        .catch( error => { throw new Error(error) })
+        // .catch( error => { throw new Error(error) })
     })
 }
