@@ -214,6 +214,15 @@ module.exports = ( state, complete ) => {
     callback()
   }
 
+  const get_public_key_count = callback => {
+    db.Keys
+      .count()
+      .then( count => {
+        data.public_keys = count
+        callback()
+      })
+  }
+
 
   console.log('Generating snapshot.json')
   async.series([
@@ -236,6 +245,7 @@ module.exports = ( state, complete ) => {
     get_config,
     get_block_range,
     get_dist_status,
+    get_public_key_count,
     output,
   ], () => complete(null, state) )
 
