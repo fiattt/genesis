@@ -33,8 +33,8 @@ module.exports = ( state, complete ) => {
     data.parameters = {
       period:                config.period,
       block_begin:           state.block_begin,
-      block_end:             state.block_end,
-      b1_dist:               config.include_b1
+      block_end:             state.block_end
+      // b1_dist:               config.include_b1
     }
     data.meta.author = config.author
     data.meta.timestamp_started = state.timestamp_started
@@ -51,8 +51,7 @@ module.exports = ( state, complete ) => {
   }
 
   const get_supply_expected = callback => {
-    data.supply.expected = 200000000+(config.period*2000000)
-    if(config.include_b1) data.supply.expected += 100000000
+    data.supply.expected = 200000000+(config.period*2000000)+100000000
     callback()
   }
 

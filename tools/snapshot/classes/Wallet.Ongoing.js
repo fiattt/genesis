@@ -60,7 +60,7 @@ class WalletOngoing extends Wallet {
 
   process_exclude(complete){
     const exclude = [CS_ADDRESS_CROWDSALE, CS_ADDRESS_TOKEN]
-    if(!this.config.include_b1) exclude.push(CS_ADDRESS_B1)
+    // if(!this.config.include_b1) exclude.push(CS_ADDRESS_B1)
     if(exclude.indexOf(this.address) > -1)
       this.accepted           = false,
       this.register_error     = 'exclude'
