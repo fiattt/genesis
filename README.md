@@ -171,7 +171,7 @@ Unclaimed tokens are attributed to the contributing address.
 Tokens accidentally sent to one of the contracts are attributed to the sending address.
 
 ### What happens if a wallet isn't registered?
-It is exposed to fallback registeration. Script will sync all ethereum public keys in block range. If it can locate a public key belonging to an unregsitered address, it will generate an EOS Public Key from the Ethereum Public Key. The Ethereum Private Key then matches the EOS Public Key.
+It is exposed to fallback registeration. Script will sync all ethereum public keys in block range. If it can locate a public key belonging to an unregsitered address, it will generate an EOS Public Key from the Ethereum Public Key. The Ethereum Private Key should then match the EOS Public Key (NOTE: This is highly experimental, but has been tested to work with high confidence) 
 
 ### What happens to the unregistered supply of tokens?
 Addresses not exposed to fallback registrations that remain invalid are exported to `snapshot-unregistered.csv` file, which could prove useful. 
