@@ -311,6 +311,9 @@ Below is the script transposed to plain english.
 	3. Claims
 	4. Registrations
 	5. Reclaimable Transfers
+	6. Resuming: 
+		6. If resume is set, it will only sync data from where it left off
+		7. Otherwise, contract tables will be truncated and it will re-sync everything from scratch. 
 2. Compile list of every address that has ever had an EOS balance, for each address:
 	1. Aggregate relevant txs
 		1. Claims and Buys, required for Unclaimed Balance Calculation
@@ -330,6 +333,9 @@ Below is the script transposed to plain english.
 		4. If all validated, set `valid` to true.
 	5. Process
 		6. Save every wallet regardless of validation or balance to `wallets` table
+        6. Resuming:
+	        7. resume is set and recalculate_wallets is not set, it will only process the above data for addresses with changes since the last sync and adjust block range for wallets accordingly (in the case of buys, it will aggregate based on period not on block range, because future buys are possible)
+		8. resume is not set or recalculate_wallets is set, it will truncate wallets table and process all addresses. 
 1. Registration Fallback
 	1. Query invalid addresses, above minimum snapshot threshold and without register error "exclude" (EOSToken/Crowdsale contracts)
 	2. Attempt to locate public key for each addrses
