@@ -10,7 +10,7 @@ class WalletFinal extends Wallet {
     address_key( this.address )
       .then( key => {
         //encode because some of register function exploits ... fixes a different problem from the web3 fork problem
-        this.eos_key = encodeURIComponent(key)
+        this.eos_key = util.misc.clean_user_input(key)
         this.maybe_fix_key()
         complete()
       })
