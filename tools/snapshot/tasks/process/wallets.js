@@ -63,6 +63,11 @@ module.exports = (state, complete) => {
   * @param {function} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   */
   const key = (wallet, finished) => {
+    if(state.mode == "final")  {
+      //use EOSCrowdsale.keys()
+      finished( null, wallet )
+      return
+    }
     query.last_register(wallet.address, state.block_begin, state.block_end, eos_key => {
       wallet.eos_key = eos_key
       finished( null, wallet )
