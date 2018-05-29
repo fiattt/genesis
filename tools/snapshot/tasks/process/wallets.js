@@ -48,7 +48,7 @@ module.exports = (state, complete) => {
   /**
   * Instantiates the wallet and passes into the control flow.
   * @param {object} wallet Cumulative object passed through waterfall control_flow
-  * @param {boolean} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
+  * @param {function} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   */
   const init = (address, finished) => {
     let wallet = new Wallet( address, config )
@@ -58,9 +58,14 @@ module.exports = (state, complete) => {
   /**
   * Queries the most recent register within the block range and saves it to wallet. This is required for determinism, "keys" constant function cannot be used here.
   * @param {object} wallet Cumulative object passed through waterfall control_flow
-  * @param {boolean} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
+  * @param {function} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   */
   const key = (wallet, finished) => {
+    if(state.mode == "final")  {
+      //use EOSCrowdsale.keys()
+      finished( null, wallet )
+      return
+    }
     query.last_register(wallet.address, state.block_begin, state.block_end, eos_key => {
       wallet.eos_key = eos_key
       finished( null, wallet )
@@ -70,7 +75,7 @@ module.exports = (state, complete) => {
   /**
   * If mode is ongoing, queries incoming/outgoing transfers separately, and saves them to wallet for later processing by utility.balance.transfersCumulative
   * @param {object} wallet Cumulative object passed through waterfall control_flow
-  * @param {boolean} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
+  * @param {function} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   */
   const transfers = (wallet, finished) => {
     //Cumulative balance calculations are not required for final snapshot because tokens will be frozen, final snapshot uses tokenContract.balanceOf()
@@ -132,7 +137,7 @@ module.exports = (state, complete) => {
   /**
   * Queries claims where true to an array filled with "false" by period.
   * @param {object} wallet Cumulative object passed through waterfall control_flow
-  * @param {boolean} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
+  * @param {function} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   */
   const claims = (wallet, finished) => {
     // console.log('Wallet Claims')
@@ -149,7 +154,7 @@ module.exports = (state, complete) => {
   /**
   * Queries buys belonging to address, cumulative sums multiple reclaimables belonging to a single address and maps them in a format consumable by utility.balance.unclaimed
   * @param {object} wallet Cumulative object passed through waterfall control_flow
-  * @param {boolean} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
+  * @param {function} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   */
   const buys = ( wallet, finished ) => {
     query.address_buys(wallet.address, state.block_begin, state.block_end, config.period)
@@ -165,7 +170,7 @@ module.exports = (state, complete) => {
   /**
   * Queries reclaimables belonging to address, and maps them in a format consumable by utility.balance.reclaimables
   * @param {object} wallet Cumulative object passed through waterfall control_flow
-  * @param {boolean} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
+  * @param {function} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   */
   const reclaimables = ( wallet, finished ) => {
     query.address_reclaimables( wallet.address, state.block_begin, state.block_end )
@@ -180,7 +185,7 @@ module.exports = (state, complete) => {
   /**
   * Invokes query to find first block seen, used for deterministic index, and saves lowest block to wallet object as first_seen
   * @param {object} wallet Cumulative object passed through waterfall control_flow
-  * @param {boolean} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
+  * @param {function} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   */
   const first_seen = ( wallet, finished ) => {
     query.address_first_seen( wallet.address )
@@ -194,7 +199,7 @@ module.exports = (state, complete) => {
   /**
   * Checks query cache for bulkCreate and invokes bulk upsert if conditional is true, invoking control_flow callback onComplete or invokes control_flow callback
   * @param {object} wallet Cumulative object passed through waterfall control_flow
-  * @param {boolean} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
+  * @param {function} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   */
   const processing = ( wallet, finished ) => {
     wallet.process( json => {
@@ -207,7 +212,7 @@ module.exports = (state, complete) => {
   /**
   * Checks query cache for bulkCreate and invokes bulk upsert if conditional is true, invoking control_flow callback onComplete or invokes control_flow callback
   * @param {function} next_address eachSeries control_flow callback
-  * @param {boolean} is_complete Override used to force upsert the cache.
+  * @param {function} is_complete Override used to force upsert the cache.
   */
   const save_or_continue = (next_address, is_complete = false) => {
     if(cache.length >= 50 || is_complete || cache.length == state.total )

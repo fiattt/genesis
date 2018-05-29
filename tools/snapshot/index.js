@@ -80,8 +80,15 @@ module.exports = (COMPLETE) => {
       throw new Error(error)
     }
     else {
-      console.log(art("complete","2"))
-      console.log(`Snapshot for Period #${config.period} Completed.`)
+      if(state.mode == "final") {
+        console.log(art("final snapshot complete","2"))
+        process.exit()
+        return
+      }
+      else {
+        console.log(art("complete","2"))
+        console.log(`Snapshot for Period #${config.period} Completed.`)
+      }
     }
 
     // const sync_progress_destroy = require('./queries').sync_progress_destroy
@@ -109,8 +116,8 @@ module.exports = (COMPLETE) => {
     //In polling, the config.period is autoincremented before check_for_poll() is called,
     //so if it's greater than the highest period index (350) and the last closed period eq highest period index
     //Check if the token is frozen before attempting to generate final snapshot (tasks/block_range.js will force run the final snapshot.)
-    else if(period.last_closed == CS_MAX_PERIOD_INDEX && config.period > CS_MAX_PERIOD_INDEX) {
-      contract = require('../../helpers/web3-contract.js')
+    else if(period.last_closed() == CS_MAX_PERIOD_INDEX) {
+      contract = require('./helpers/web3-contract.js')
       contract.$token.methods.stopped().call()
         .then( stopped => {
           if(stopped) {
@@ -178,12 +185,11 @@ module.exports = (COMPLETE) => {
       else if(config.period > period.last_closed()) {
         let cache_period = config.period
         config.period = period.last_closed()
-        console.log(colors.italic.red(`It appears you've set your period to ${cache_period}, has not completed yet. Period has been reset to ${config.period}`))
-      }
-      else if(config.period > CS_MAX_PERIOD_INDEX) {
-        let cache_period = config.period
-        config.period = CS_MAX_PERIOD_INDEX
-        console.log(colors.italic.red(`It appears you've set your period to ${cache_period}, which doesn't exist. Period has been reset to ${config.period}`))
+        if(config.period < 0)
+          console.log(colors.bold.red(`Period 0 hasn't even finished yet, exiting. try again later`)),
+          process.exit()
+        else
+          console.log(colors.italic.red(`It appears you've set your period to ${cache_period}, has not completed yet. Period has been reset to ${config.period}`))
       }
 
       next(null, config)
