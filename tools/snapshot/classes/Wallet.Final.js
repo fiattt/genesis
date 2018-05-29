@@ -1,13 +1,22 @@
 const async  = require('async'),
       bn     = require('bignumber.js'),
       Wallet = require('./Wallet'),
-      util = require('../utilities')
+      util = require('../utilities'),
+      address_key = require('../helpers/web3-address').key
 
 class WalletFinal extends Wallet {
 
   process_key( complete ){
-    this.maybe_fix_key()
-    complete()
+    address_key( this.address )
+      .then( key => {
+        //encode because some of register function exploits ... fixes a different problem from the web3 fork problem
+        this.eos_key = encodeURIComponent(key)
+        this.maybe_fix_key()
+        complete()
+      })
+      .catch( e => {
+        throw new Error(e)
+      })
   }
 
   process_balance_wallet( complete ){
