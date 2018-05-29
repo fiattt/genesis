@@ -62,7 +62,7 @@ const convert_ethpk_to_eospk = ( pubkey ) => {
   return eoskey
 }
 
-const clean_user_input = ( input ) => {
+const sanitize_user_input = ( input ) => {
   return encodeURIComponent(input.replace(/[^0-z]+/g, "").replace(/[^\x20-\x7E]+/g, ''))
 }
 
@@ -78,5 +78,5 @@ module.exports = {
   pubkey_from_tx_hash: pubkey_from_tx_hash,
   convert_ethpk_to_eospk: convert_ethpk_to_eospk,
   address_is_contract: address_is_contract,
-  clean_user_input : clean_user_input
+  sanitize_user_input : sanitize_user_input
 }

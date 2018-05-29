@@ -121,7 +121,7 @@ module.exports = ( state, complete ) => {
               block_number: registration.blockNumber,
               address:      registration.returnValues.user.toLowerCase(),
               //encode because some of register function exploits ... fixes a different problem from the web3 fork problem
-              eos_key:      util.misc.clean_user_input(registration.returnValues.key)
+              eos_key:      util.misc.sanitize_user_input(registration.returnValues.key)
             }
           })
           state.sync_contract.registrations+=request.length
