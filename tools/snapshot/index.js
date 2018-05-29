@@ -80,6 +80,15 @@ module.exports = (COMPLETE) => {
       throw new Error(error)
     }
     else {
+      if(state.mode == "final") {
+        console.log(art("final snapshot complete","2"))
+        process.exit()
+        return
+      }
+      else {
+        console.log(art("complete","2"))
+        console.log(`Snapshot for Period #${config.period} Completed.`)
+      }
     }
 
     // const sync_progress_destroy = require('./queries').sync_progress_destroy
