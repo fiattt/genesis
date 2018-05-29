@@ -153,7 +153,6 @@ module.exports = (state, complete) => {
   /**
   * Queries buys belonging to address, cumulative sums multiple reclaimables belonging to a single address and maps them in a format consumable by utility.balance.unclaimed
   * @param {object} wallet Cumulative object passed through waterfall control_flow
-  * @param {boolean} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   * @param {function} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   */
   const buys = ( wallet, finished ) => {
@@ -170,7 +169,6 @@ module.exports = (state, complete) => {
   /**
   * Queries reclaimables belonging to address, and maps them in a format consumable by utility.balance.reclaimables
   * @param {object} wallet Cumulative object passed through waterfall control_flow
-  * @param {boolean} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   * @param {function} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   */
   const reclaimables = ( wallet, finished ) => {
@@ -186,7 +184,6 @@ module.exports = (state, complete) => {
   /**
   * Invokes query to find first block seen, used for deterministic index, and saves lowest block to wallet object as first_seen
   * @param {object} wallet Cumulative object passed through waterfall control_flow
-  * @param {boolean} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   * @param {function} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   */
   const first_seen = ( wallet, finished ) => {
@@ -201,7 +198,6 @@ module.exports = (state, complete) => {
   /**
   * Checks query cache for bulkCreate and invokes bulk upsert if conditional is true, invoking control_flow callback onComplete or invokes control_flow callback
   * @param {object} wallet Cumulative object passed through waterfall control_flow
-  * @param {boolean} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   * @param {function} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   */
   const processing = ( wallet, finished ) => {
@@ -215,7 +211,6 @@ module.exports = (state, complete) => {
   /**
   * Checks query cache for bulkCreate and invokes bulk upsert if conditional is true, invoking control_flow callback onComplete or invokes control_flow callback
   * @param {function} next_address eachSeries control_flow callback
-  * @param {boolean} is_complete Override used to force upsert the cache.
   * @param {function} is_complete Override used to force upsert the cache.
   */
   const save_or_continue = (next_address, is_complete = false) => {
