@@ -48,7 +48,6 @@ module.exports = (state, complete) => {
   /**
   * Instantiates the wallet and passes into the control flow.
   * @param {object} wallet Cumulative object passed through waterfall control_flow
-  * @param {boolean} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   * @param {function} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   */
   const init = (address, finished) => {
@@ -59,7 +58,6 @@ module.exports = (state, complete) => {
   /**
   * Queries the most recent register within the block range and saves it to wallet. This is required for determinism, "keys" constant function cannot be used here.
   * @param {object} wallet Cumulative object passed through waterfall control_flow
-  * @param {boolean} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   * @param {function} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   */
   const key = (wallet, finished) => {
@@ -77,7 +75,6 @@ module.exports = (state, complete) => {
   /**
   * If mode is ongoing, queries incoming/outgoing transfers separately, and saves them to wallet for later processing by utility.balance.transfersCumulative
   * @param {object} wallet Cumulative object passed through waterfall control_flow
-  * @param {boolean} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   * @param {function} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   */
   const transfers = (wallet, finished) => {
@@ -140,7 +137,6 @@ module.exports = (state, complete) => {
   /**
   * Queries claims where true to an array filled with "false" by period.
   * @param {object} wallet Cumulative object passed through waterfall control_flow
-  * @param {boolean} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   * @param {function} finished Waterfall control_flow callback, passes (error, subject), subject is passed to next function in control flow
   */
   const claims = (wallet, finished) => {
