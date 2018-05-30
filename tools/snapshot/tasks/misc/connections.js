@@ -123,8 +123,7 @@ module.exports = (state, all_systems_go) => {
           setTimeout( check, 1000*30)
       })
       .catch( e => {
-        if(e.toString().toLowerCase().includes("web3")) {
-          throw new Error(e)
+        if(e.toString().toLowerCase().includes("connection error")) {
           setTimeout( check, 1000*30 )
         } else {
           throw new Error(e)
