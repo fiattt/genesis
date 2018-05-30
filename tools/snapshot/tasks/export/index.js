@@ -3,7 +3,6 @@ module.exports = ( state, complete ) => {
   state.completed = (Date.now() / 1000 | 0)
   //
 
-  console.log(art("level 6","2"))
   console.log(art("exports","2"))
 
   const series    = require('async').series,
