@@ -7,7 +7,7 @@ module.exports = (state, all_systems_go) => {
   const util = require('util')
 
   const connect = () => {
-    console.log(art("level 2","2"))
+    console.log(art("connections","2"))
 
     async.series([
       // connect_redis,
@@ -123,8 +123,7 @@ module.exports = (state, all_systems_go) => {
           setTimeout( check, 1000*30)
       })
       .catch( e => {
-        if(e.toString().toLowerCase().includes("web3")) {
-          throw new Error(e)
+        if(e.toString().toLowerCase().includes("connection error")) {
           setTimeout( check, 1000*30 )
         } else {
           throw new Error(e)

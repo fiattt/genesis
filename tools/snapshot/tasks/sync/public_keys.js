@@ -19,7 +19,7 @@ module.exports = ( state, complete ) => {
       logIntval,
       progressIntval
 
-  console.log(art("level 3","2"))
+  console.log(art("sync keys","2"))
 
   // if(config.recalculate_wallets === true) {
   //   console.log('recalculate_wallets set to true, skipping ethereum public key sync')
@@ -28,8 +28,8 @@ module.exports = ( state, complete ) => {
   // }
 
   if(config.eth_node_type !== "ipc") {
-    console.log(colors.bold.red("Multithreaded implementation cannot be used on HTTP JSON RPC or WS!!!! I did suggest using IPC AFTER ALL!"))
-    console.log(colors.bold.red("Slow and single threaded for you."))
+    console.log(colors.bold.red("Multithreaded implementation cannot be used on HTTP JSON RPC or WS!!!! IPC SUGGESTED!"))
+    console.log(colors.bold.red("Threads Available for HTTP/WS: 1"))
     threads = 1
   }
 

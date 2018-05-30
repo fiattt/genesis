@@ -1,6 +1,6 @@
 const bn = require('bignumber.js')
 
-global.VERSION                            = "0.4.1b-stable"
+global.VERSION                            = "0.4.2-stable"
 
 //Crowdsale Globals
 global.CS_ADDRESS_CROWDSALE               = "0xd0a6e6c54dbc68db5db3a091b171a77407ff7ccf"
@@ -32,8 +32,14 @@ global.SS_ACCEPTABLE_SUPPLY_DEVIATION     = 5 //total number of EOS deviation al
 global.CS_END_TIME                        = CS_START_TIME + ((CS_MAX_PERIOD_INDEX) * CS_PERIOD_LENGTH_SECONDS)
 // global.CS_END_TIME                        = 1527893999
 
+//EOS Keys to disallow from inclusion in snapshot becuase their private key is publicly available.
+global.BURNED_EOS_KEYS                    = ["EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"]
+
+
 //For screen output
 global.art = require('ascii-text-generator')
+
+
 
 //Services are global to help avoid extraneous connection bottlenecks.
 global.web3

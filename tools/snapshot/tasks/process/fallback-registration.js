@@ -82,6 +82,7 @@ module.exports = ( state, complete ) => {
   const fallback = (address, callback) => {
     async.waterfall([
       next => next( null, address ),
+      check_address_contract,
       pub_key_from_cache,
       eos_key_from_pk
     ],
@@ -90,6 +91,16 @@ module.exports = ( state, complete ) => {
         callback(error)
       else {
         callback(null, eos_key)
+      }
+    })
+  }
+
+  const check_address_contract = (address, callback) => {
+    util.misc.address_is_contract( address, is_contract => {
+      if(is_contract)
+        callback("address_is_contract") //error
+      else {
+        callback(null, address) //continue
       }
     })
   }
@@ -112,8 +123,7 @@ module.exports = ( state, complete ) => {
             }
           ]
         },
-        attributes: ['public_key'],
-        limit: 1
+        attributes: ['public_key']
       }, {type: db.sequelize.QueryTypes.SELECT})
       .then( results => {
         if(results.length)
