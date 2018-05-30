@@ -137,7 +137,7 @@ module.exports = (COMPLETE) => {
 
   const configure = (callback) => {
 
-    console.log(art("level 1","2"))
+    console.log(art("configuration","2"))
 
     //Show prompt?
     const show_prompt = next => {

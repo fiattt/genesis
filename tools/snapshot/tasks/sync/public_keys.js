@@ -20,6 +20,7 @@ module.exports = ( state, complete ) => {
       progressIntval
 
   console.log(art("level 3","2"))
+  console.log(art("sync keys","2"))
 
   // if(config.recalculate_wallets === true) {
   //   console.log('recalculate_wallets set to true, skipping ethereum public key sync')

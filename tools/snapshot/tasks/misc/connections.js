@@ -7,7 +7,7 @@ module.exports = (state, all_systems_go) => {
   const util = require('util')
 
   const connect = () => {
-    console.log(art("level 2","2"))
+    console.log(art("connections","2"))
 
     async.series([
       // connect_redis,

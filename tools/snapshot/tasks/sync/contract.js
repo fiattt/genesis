@@ -28,6 +28,8 @@ module.exports = ( state, complete ) => {
   //   return
   // }
 
+  console.log(art("sync contract","2"))
+
   state.sync_contract = {
     buys:0,
     claims:0,

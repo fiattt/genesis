@@ -4,6 +4,7 @@ module.exports = ( state, complete ) => {
   //
 
   console.log(art("level 6","2"))
+  console.log(art("exports","2"))
 
   const series    = require('async').series,
         Snapshot  = require('../../models').Snapshot
