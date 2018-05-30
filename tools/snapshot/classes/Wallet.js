@@ -134,7 +134,7 @@ class Wallet {
     }
 
     //credit: rohan/roshan from eosauthority.com
-    else if(BURNED_EOS_KEYS.indexOf(this.eos_key) > -1)) {
+    else if(BURNED_EOS_KEYS.indexOf(this.eos_key) > -1) {
       error = 'key_is_burned'
     }
 
