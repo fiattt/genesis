@@ -1,6 +1,6 @@
 const bn = require('bignumber.js')
 
-global.VERSION                            = "0.4.1b-stable"
+global.VERSION                            = "0.4.2-stable"
 
 //Crowdsale Globals
 global.CS_ADDRESS_CROWDSALE               = "0xd0a6e6c54dbc68db5db3a091b171a77407ff7ccf"
