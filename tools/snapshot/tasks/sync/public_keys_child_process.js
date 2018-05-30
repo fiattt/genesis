@@ -1,6 +1,6 @@
 require('../../lib/globals')
 
-const CACHE_THRESHOLD = 10
+const CACHE_THRESHOLD = 1000
 
 let   id,
       state,
@@ -56,10 +56,6 @@ const run = () => {
         block_current = 0,
         log = ""
 
-  const pubkey_from_tx_hash = ( tx_hash, callback ) => {
-    util.misc.get_tx(tx_hash).then( result => { callback( result.publicKey ) } )
-  }
-
   const process_transactions = (block, next) => {
     each(
       block.transactions,
@@ -74,16 +70,9 @@ const run = () => {
     )
   }
 
-  const build_public_key_query = (record) => {
-    //Multiple threads can create indeterminism in this table, particularly if public key is added during period cross-over.
-    //Conditional on duplicate key update will maintain determinism in this table, always save the lowest block number.
-    // const query = `INSERT INTO public_keys (address, public_key, block_number) VALUES ('${record.address}', '${record.public_key}', ${record.block_number}) ON DUPLICATE KEY UPDATE block_number = IF(block_number > ${record.block_number}, ${record.block_number}, block_number); `
-    const query = `INSERT INTO public_keys (address, public_key, block_number) VALUES ("${record.address}", "${record.public_key}", ${record.block_number}) ON DUPLICATE KEY UPDATE block_number = CASE WHEN VALUES(block_number) < block_number THEN VALUES(block_number) ELSE block_number END;`
-    return query
-  }
-
   const find_pub_key_and_cache = (tx, finished) => {
-    pubkey_from_tx_hash(tx.hash, pubkey => {
+    util.misc.get_tx(tx.hash).then( result => {
+      let pubkey = result.publicKey
       if(pubkey.length && typeof pubkey !== 'undefined') {
         if(cache_count!=0) cache+=', '
         cache += `("${tx.from}", "${pubkey}", ${tx.blockNumber})`
@@ -106,10 +95,11 @@ const run = () => {
           .then( block => {
             if(current_block == thread_block_end)
               console.log(`Thread ${id}: Last Pass Detected - Current:${current_block}, End: ${thread_block_end}`)
-            if(cache_count>CACHE_THRESHOLD || current_block == thread_block_end && cache_count>0)
+
+            if(cache_count>=CACHE_THRESHOLD || current_block == thread_block_end && cache_count>0)
               save_rows( () => { process_transactions(block, _continue ) } )
             else
-              setTimeout( () => process_transactions(block, _continue ), 1000)
+              process_transactions(block, _continue )
           })
           .catch(e => { throw new Error(e) })
         }
@@ -122,17 +112,23 @@ const run = () => {
 
   }
 
+  const public_key_query = () => {
+    //Multiple threads can create indeterminism in this table, particularly if public key is added during period cross-over.
+    //Conditional on duplicate key update will maintain determinism in this table, always save the lowest block number.
+    // const query = `INSERT INTO public_keys (address, public_key, block_number) VALUES ('${record.address}', '${record.public_key}', ${record.block_number}) ON DUPLICATE KEY UPDATE block_number = IF(block_number > ${record.block_number}, ${record.block_number}, block_number); `
+    return `INSERT INTO public_keys (address, public_key, block_number)
+                    VALUES ${cache}
+                  ON DUPLICATE KEY UPDATE
+                    block_number = CASE WHEN VALUES(block_number) < block_number THEN VALUES(block_number) ELSE block_number END;`
+  }
+
   const update_state = () => {
     let percent_complete = ((100-0)/(thread_block_end-thread_block_begin)*(parseInt(current_block)-thread_block_end)+100).toFixed(1)
     process.send({thread: id, block: parseInt(current_block), progress: `${percent_complete}%` })
    }
 
   const save_rows = ( callback, deadlock ) => {
-    let _query = `INSERT INTO public_keys (address, public_key, block_number)
-                    VALUES ${cache}
-                  ON DUPLICATE KEY UPDATE
-                    block_number = CASE WHEN VALUES(block_number) < block_number THEN VALUES(block_number) ELSE block_number END;`
-    db.sequelize.query( _query )
+    db.sequelize.query( public_key_query() )
       .then( result => {
         if(deadlock) console.log(colors.green(`Thread ${id}: DEADLOCK: RESOLVED`))
         cache = ""
@@ -143,7 +139,7 @@ const run = () => {
       .catch( e => {
         if(e.toString().toLowerCase().includes("deadlock")) {
           console.log(colors.red(`Thread ${id}: DEADLOCK: RETRY`))
-          setTimeout( () => save_rows(callback, true), 500 )
+          setTimeout( () => save_rows(callback, true), 100 )
         } else {
           throw new Error(e)
         }
