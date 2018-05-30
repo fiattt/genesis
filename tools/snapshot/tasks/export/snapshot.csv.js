@@ -31,7 +31,7 @@ module.exports = ( state, callback ) => {
     .destroy({ truncate : true, cascade: false })
     .then( () => {
       db.sequelize
-        .query('INSERT INTO snapshot (id, user, account_name, `key`, balance) SELECT deterministic_index, address, account_name, eos_key, balance_total FROM wallets WHERE valid=1 ORDER BY deterministic_index, address ASC')
+        .query('INSERT INTO snapshot (id, user, account_name, `key`, balance) SELECT deterministic_index, address, account_name, eos_key, balance_total FROM wallets WHERE valid=1 ORDER BY deterministic_index ASC, address ASC')
         .then(results => {
           console.log( 'Snapshot Table Synced' )
           csv( callback )
