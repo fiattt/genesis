@@ -33,13 +33,13 @@ global.CS_END_TIME                        = CS_START_TIME + ((CS_MAX_PERIOD_INDE
 // global.CS_END_TIME                        = 1527893999
 
 //EOS Keys to disallow from inclusion in snapshot becuase their private key is publicly available.
-global.BURNED_EOS_KEYS                    = ["EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"]
-
+// Note1: Burned Keypairs
+// Note2: https://github.com/EOSIO/eos/issues/3577
+// Note3: https://github.com/EOSIO/eos/issues/3584
+global.BURNED_EOS_KEYS                    = ["EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV", "EOS6qnCLMm5d67JdP11EF31Kf4UUNr6ktUKBqPsDhSXADT1CHfNG2", "EOS6vizDzpZMxtt27WVVCUVYEFHXgaLhEfPuLQAXfpAJaf2oWAcwg", "EOS7KKga2itCjyLAm6n4GHqujN4arBv3GQEWpZwQqSDWyNEj7iuxQ", "EOS6iBVEaRDS3mofUJpa8bjD94vohHrsSqqez1wcsWjhPpeNArfBF"]
 
 //For screen output
 global.art = require('ascii-text-generator')
-
-
 
 //Services are global to help avoid extraneous connection bottlenecks.
 global.web3
