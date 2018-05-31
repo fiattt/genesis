@@ -27,7 +27,7 @@ This tool can be used to generate snapshots for **any period** in a **determinis
 
 1. MySQL (local or remote)
 2. Parity 1.7.8+
-3. [Node 8+](https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions)
+3. [Node 8+](https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
 
 #### Time
 1. For a full sync, Parity can take 3-4 days.
@@ -93,6 +93,8 @@ From the *root directory of this project directory*, run the following:
 - `npm install` (first time)
 - `node snapshot.js --load_config`
 
+**Note** See other useful configuration options, such as `--resume` and `--poll`, below
+
 ### 5. Connections
 
 1. If MySQL and Parity are running, and Parity is synced, the script will start running.
@@ -109,7 +111,8 @@ From the *root directory of this project directory*, run the following:
 - This functionality helps with verification of determinism and for development purposes.
 
 #### 6b. Files
-- `snapshot.csv` - This file contains the Ethereum Address, EOS Key and EOS Balance of every address that registered correctly with the contract up to the configured period, and has a balance greater than the value set by `snapshot_minimum_balance` (default:1)
+- `snapshot.csv` - This file contains the Et
+um Address, EOS Key and EOS Balance of every address that registered correctly with the contract up to the configured period, and has a balance greater than the value set by `snapshot_minimum_balance` (default:1)
 - `snapshot-unregistered.csv` - This file contains the Ethereum Address and EOS Balance of every address that either failed to register or registered incorrectly with the crowdsale contract up to the configured period.
 - `distribution.csv` - This file includes the Ethereum Address and EOS balance of the entire distribution up to the configured period, with no rules or validation imposed.
 - `snapshot.json` - This file contains information about the snapshot-session that created the above files. This file should not be used for verification, but can be used for debugging and to help identify indeterminism.
