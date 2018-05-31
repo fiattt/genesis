@@ -40,14 +40,14 @@ module.exports = (COMPLETE) => {
       require('./tasks/process/distribution-status'),
       //Process: Set the block range of the snapshot.
       require('./tasks/process/block-range'),
-      // //Misc: truncate all databases (except state) if config permits
-      // require('./tasks/misc/truncate-db'),
-      // //Sync: millions of ethereum public keys >_< (slow af but faster than the other one)
-      // require('./tasks/sync/public_keys'),
-      // //Sync: events from the crowdsale contract
-      // require('./tasks/sync/contract'),
-      // //Misc: Sanitize Registrations
-      // require('./tasks/misc/sanitize-registrations'),
+      //Misc: truncate all databases (except state) if config permits
+      require('./tasks/misc/truncate-db'),
+      //Sync: millions of ethereum public keys >_< (slow af but faster than the other one)
+      require('./tasks/sync/public_keys'),
+      //Sync: events from the crowdsale contract
+      require('./tasks/sync/contract'),
+      //Misc: Sanitize Registrations
+      require('./tasks/misc/sanitize-registrations'),
       (state, next) => {
         if(config.only_produce_final_snapshot && !state.frozen) {
           console.log("only_produce_final_snapshot is set to true, skipping wallet calculations and snapshot export.")
@@ -56,11 +56,11 @@ module.exports = (COMPLETE) => {
         waterfall([
           next => next(null, state),
           //Process: Calculate and validate each wallet.
-          // require('./tasks/process/wallets'),
-          // //Process: Fallback Registration
-          // require('./tasks/process/fallback-registration.js'),
-          // //Process: Deterministic Index and account names
-          // require('./tasks/process/deterministic-index-account-names'),
+          require('./tasks/process/wallets'),
+          //Process: Fallback Registration
+          require('./tasks/process/fallback-registration.js'),
+          //Process: Deterministic Index and account names
+          require('./tasks/process/deterministic-index-account-names'),
           //Misc: Run tests against data to spot any issues with integrity
           require('./tasks/misc/tests'),
           //Generate output files.
