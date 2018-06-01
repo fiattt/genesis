@@ -143,7 +143,7 @@ module.exports = ( state, complete ) => {
   const get_table_checksum = callback => {
     console.log(`Generating DB Table Checksums`)
     db.sequelize
-      .query('CHECKSUM TABLE wallets, buys, claims, registrations, transfers, snapshot, public_keys')
+      .query('CHECKSUM TABLE wallets, buys, claims, registrations, reclaimables, transfers, snapshot, public_keys')
       .then( results => {
         results[0].forEach( result => {
           let key = result.Table.split('.')[1]

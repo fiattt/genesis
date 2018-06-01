@@ -119,7 +119,7 @@ const run = () => {
     return `INSERT INTO public_keys (address, public_key, block_number)
                     VALUES ${cache}
                   ON DUPLICATE KEY UPDATE
-                    block_number = CASE WHEN VALUES(block_number) < block_number THEN VALUES(block_number) ELSE block_number END;`
+                    block_number = CASE WHEN VALUES(block_number)<block_number THEN VALUES(block_number) ELSE block_number END;`
   }
 
   const update_state = () => {
