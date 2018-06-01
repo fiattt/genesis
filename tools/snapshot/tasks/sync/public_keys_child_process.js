@@ -128,22 +128,21 @@ const run = () => {
    }
 
   const save_rows = ( callback, deadlock ) => {
-    db.sequelize.query( public_key_query(), { retry: { match: [ db.sequelize.DatabaseError ] } } )
+    db.sequelize.query( public_key_query(), { retry: { match: [ /Deadlock/i ], max: 1000 } } )
       .then( result => {
-        // if(deadlock) console.log(colors.green(`Thread ${id}: DEADLOCK: RESOLVED`))
+        if(deadlock) console.log(colors.green(`Thread ${id}: DEADLOCK: RESOLVED`))
         cache = ""
         cache_count = 0
         update_state()
         callback()
       })
       .catch( e => {
-        console.log(e)
-        // if(e.toString().toLowerCase().includes("deadlock")) {
-        //   console.log(colors.red(`Thread ${id}: DEADLOCK: RETRY`))
-        //   setTimeout( () => save_rows(callback, true), 100 )
-        // } else {
-        //   throw new Error(e)
-        // }
+        if(e.toString().toLowerCase().includes("deadlock")) {
+          console.log(colors.red(`Thread ${id}: DEADLOCK: RETRY`))
+          setTimeout( () => save_rows(callback, true), 100 )
+        } else {
+          throw new Error(e)
+        }
       })
   }
 
