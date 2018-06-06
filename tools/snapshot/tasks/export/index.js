@@ -3,6 +3,8 @@ module.exports = ( state, complete ) => {
   state.completed = (Date.now() / 1000 | 0)
   //
 
+  console.log(art("exports","2"))
+
   const series    = require('async').series,
         Snapshot  = require('../../models').Snapshot
   // const inspect = require('util').inspect
@@ -10,14 +12,13 @@ module.exports = ( state, complete ) => {
   const set_period_subdir = callback => {
     const fs = require('fs'), util = require('util')
     fs.readdir(state.files.period_dir, (err, files) => {
-      // console.log(inspect(files))
       files = files.filter( r => !r.includes('.') )
       callback(files.length)
     });
   }
 
   const get_ss_fs = () => {
-    let snapshot_id = config.mode=="final" ? "final" : config.period
+    let snapshot_id = state.mode=="final" ? "final" : config.period
 
     fs = {}
     fs.file_snapshot_csv                           = 'snapshot.csv'

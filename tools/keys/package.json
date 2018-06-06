@@ -5,7 +5,10 @@
   "main": "main.js",
   "scripts": {
     "compile": "sh ./bin/compile.sh",
-    "compile-all": "sh ./bin/compile-all.sh"
+    "compile-all": "sh ./bin/compile-all.sh",
+    "dist": "build --mac --win",
+    "dist-mac": "build --mac",
+    "dist-win": "build --win"
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [
@@ -16,7 +19,8 @@
   "author": "Sandwich",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "~1.7.8"
+    "electron": "~1.7.8",
+    "electron-builder": "^20.10.0"
   },
   "dependencies": {
     "Tabby": "github:cferdinandi/tabby",
@@ -24,5 +28,15 @@
     "clipboard": "1.7.1",
     "eosjs-ecc": "2.0.1",
     "jquery": "3.2.1"
+  },
+  "build": {
+    "appId": "io.eos.genesis.key-utility",
+    "mac": {
+      "category": "public.app-category.developer-tools"
+    },
+    "win": {
+      "publisherName": "Block.one LLC",
+      "certificateSubjectName": "Block.one LLC"
+    }
   }
 }

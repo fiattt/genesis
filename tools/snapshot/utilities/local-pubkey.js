@@ -32,6 +32,7 @@ const query_address_tx_hash = ( type, field, address, callback ) => {
             callback(`${address} not found in ${type}`)
         })
     })
+    .catch( e => { throw new Error(e)} )
 }
 
 const pubkey_from_cache = ( address, callback ) => {
@@ -49,6 +50,7 @@ const pubkey_from_cache = ( address, callback ) => {
       else
         callback('ethpk_not_found')
     })
+    .catch( e => { throw new Error(e)} )
 }
 
 const complete = (error, pubkey, callback) => {
